@@ -1,0 +1,12 @@
+# Lazarus
+*.o
+*.ppu
+*.compiled
+*.lps
+
+#carpetas de build/backup de la tarea
+Tareas/Tarea1/bin/
+Tareas/Tarea1/lib/
+Tareas/Tarea1/backup/
+.DS_Store
+.vscode/

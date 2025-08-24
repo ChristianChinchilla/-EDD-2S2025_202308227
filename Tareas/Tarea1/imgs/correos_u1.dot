@@ -1,0 +1,6 @@
+digraph G { rankdir=LR; node [shape=record, style=filled, fillcolor=lightblue];
+labelloc="t"; label="Correos de Luis Garcia (lgarcia@edd.com)";
+n0 [label="Id:101 | Bienvenido Luis | 2025-08-20"];
+n0 -> n1 [dir=both];
+n1 [label="Id:102 | Promociones del mes | 2025-08-18"];
+}

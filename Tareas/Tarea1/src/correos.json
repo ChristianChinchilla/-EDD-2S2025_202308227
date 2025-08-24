@@ -1,0 +1,82 @@
+{
+  "correos": [
+    {
+      "usuario_id": 1,
+      "bandeja_entrada": [
+        {
+          "id": 101,
+          "remitente": "soporte@edd.com",
+          "estado": "no leído",
+          "programado": "no",
+          "asunto": "Bienvenido Luis",
+          "fecha": "2025-08-20",
+          "mensaje": "Hola Luis, tu cuenta ha sido creada exitosamente."
+        },
+        {
+          "id": 102,
+          "remitente": "ventas@edd.com",
+          "estado": "leído",
+          "programado": "no",
+          "asunto": "Promociones del mes",
+          "fecha": "2025-08-18",
+          "mensaje": "Estimado Luis, revisa nuestras promociones de agosto."
+        }
+      ]
+    },
+    {
+      "usuario_id": 2,
+      "bandeja_entrada": [
+        {
+          "id": 201,
+          "remitente": "noticias@edd.com",
+          "estado": "no leído",
+          "programado": "sí",
+          "asunto": "Resumen semanal",
+          "fecha": "2025-08-21",
+          "mensaje": "Hola Marcos, este es tu resumen semanal de actividad."
+        },
+        {
+          "id": 202,
+          "remitente": "soporte@edd.com",
+          "estado": "leído",
+          "programado": "no",
+          "asunto": "Actualización de seguridad",
+          "fecha": "2025-08-19",
+          "mensaje": "Por favor actualiza tu contraseña antes del 25 de agosto."
+        },
+        {
+          "id": 203,
+          "remitente": "eventos@edd.com",
+          "estado": "no leído",
+          "programado": "no",
+          "asunto": "Invitación a webinar",
+          "fecha": "2025-08-20",
+          "mensaje": "Participa en nuestro próximo webinar sobre nuevas tecnologías."
+        }
+      ]
+    },
+    {
+      "usuario_id": 3,
+      "bandeja_entrada": [
+        {
+          "id": 301,
+          "remitente": "gkroah-hartman@linuxfoundation.org",
+          "estado": "leído",
+          "programado": "no",
+          "asunto": "Revisión de Kernel",
+          "fecha": "2025-08-17",
+          "mensaje": "Greg, se adjunta la revisión del kernel para tu análisis."
+        },
+        {
+          "id": 302,
+          "remitente": "soporte@edd.com",
+          "estado": "no leído",
+          "programado": "no",
+          "asunto": "Verificación de cuenta",
+          "fecha": "2025-08-18",
+          "mensaje": "Confirma tu dirección de correo para activar funciones avanzadas."
+        }
+      ]
+    }
+  ]
+}
