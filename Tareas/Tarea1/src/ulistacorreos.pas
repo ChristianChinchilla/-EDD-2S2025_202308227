@@ -56,7 +56,7 @@ end;
 
 function TListaCorreos.Count: SizeInt; begin Result:=FCount end;
 
-// JSON: {"correos":[{"usuario_id":N,"bandeja_entrada":[ {...}, ... ]}, ...]}
+//JSON
 procedure TListaCorreos.CargarDesdeJSON(const Ruta:String; UsuarioId: LongInt);
 var j:TJSONData; arr, inbox:TJSONArray; i,k:Integer; s:TStringStream; o,oMail:TJSONObject;
 begin
