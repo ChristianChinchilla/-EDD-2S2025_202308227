@@ -1,4 +1,4 @@
-unit frminbox;
+unit uInboxForm;
 
 {$mode ObjFPC}{$H+}
 
@@ -45,7 +45,7 @@ type
   end;
 
 var
-  InboxForm: TfrmInbox;
+  frmInbox: TfrmInbox;
 
 implementation
 

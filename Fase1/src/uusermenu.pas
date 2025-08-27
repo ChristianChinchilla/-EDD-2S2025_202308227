@@ -10,10 +10,12 @@ uses
 type
   TfrmUserMenu = class(TForm)
     btnBandeja: TButton;
+    btnEnviar: TButton;
     lblHola: TLabel;
     btnCerrarSesion: TButton;
     procedure btnBandejaClick(Sender: TObject);
     procedure btnCerrarSesionClick(Sender: TObject);
+    procedure btnEnviarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     FEmailActual: string;
@@ -29,7 +31,7 @@ implementation
 {$R *.lfm}
 
 uses
-  uMain, uData, frmInbox;  // <-- frmInbox aquí en IMPLEMENTATION para evitar ciclos
+  uMain, uData, uInboxForm, uComposeForm;
 
 procedure TfrmUserMenu.FormCreate(Sender: TObject);
 begin
@@ -48,16 +50,23 @@ end;
 
 procedure TfrmUserMenu.btnCerrarSesionClick(Sender: TObject);
 begin
-  // GUsuarioActual := nil; // si lo usas
   Form1.Show;
   Hide;
 end;
 
+procedure TfrmUserMenu.btnEnviarClick(Sender: TObject);
+begin
+  if not Assigned(ComposeForm) then
+    Application.CreateForm(TfrmCompose, ComposeForm);
+  ComposeForm.OpenForUser(FEmailActual);
+  Hide; // opcional
+end;
+
 procedure TfrmUserMenu.btnBandejaClick(Sender: TObject);
 begin
-  if not Assigned(InboxForm) then
-    Application.CreateForm(TfrmInbox, InboxForm);
-  InboxForm.OpenForUser(FEmailActual);
+  if not Assigned(frmInbox) then
+    Application.CreateForm(TfrmInbox, frmInbox);
+  frmInbox.OpenForUser(FEmailActual);
   Hide; // opcional
 end;
 

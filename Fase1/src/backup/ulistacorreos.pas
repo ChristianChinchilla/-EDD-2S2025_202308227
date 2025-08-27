@@ -32,11 +32,16 @@ type
     function  Add(const AId: LongInt; const ARem, ADest, AEstado, AProg, AAsunto, AFecha, AMsg: string): PCorreo;
     function  Count: SizeInt;
 
+    // === NUEVO: helpers usados por frminbox ===
+    function  First: PCorreo;
+    procedure Remove(ACorreo: PCorreo);
+
     // Carga masiva (soporta dos “formas” comunes de JSON)
     procedure LoadFromJSON(const ARuta: string; const Usuarios: TListaUsuarios);
 
-    // Reporte de relaciones (remitente -> destinatario, colapsando múltiples correos)
-    procedure ExportRelacionesDOT(const ARuta: string);
+    // Reportes
+    procedure ExportRelacionesDOT(const ARuta: string);              // simple: aristas con conteo
+    procedure ExportRelacionesMatrizDOT(const ARuta: string);        // matriz dispersa (como el PDF)
   end;
 
 implementation
@@ -90,7 +95,36 @@ begin
   Result := n;
 end;
 
-function TListaCorreos.Count: SizeInt; begin Result := FCount; end;
+function TListaCorreos.Count: SizeInt;
+begin
+  Result := FCount;
+end;
+
+// === NUEVO ===
+function TListaCorreos.First: PCorreo;
+begin
+  Result := FHead;
+end;
+
+// === NUEVO ===
+procedure TListaCorreos.Remove(ACorreo: PCorreo);
+begin
+  if ACorreo = nil then Exit;
+
+  // Re-enlazar
+  if ACorreo^.prev <> nil then
+    ACorreo^.prev^.next := ACorreo^.next
+  else
+    FHead := ACorreo^.next;
+
+  if ACorreo^.next <> nil then
+    ACorreo^.next^.prev := ACorreo^.prev
+  else
+    FTail := ACorreo^.prev;
+
+  Dispose(ACorreo);
+  if FCount > 0 then Dec(FCount);
+end;
 
 procedure TListaCorreos.LoadFromJSON(const ARuta: string; const Usuarios: TListaUsuarios);
 var
@@ -113,11 +147,10 @@ begin
       if j.JSONType <> jtObject then Exit;
       root := TJSONObject(j);
 
-      // Forma A: cada elemento ya trae remitente y destinatario como emails
+      // Forma A
       if root.Find('correos') <> nil then
       begin
         arr := root.Arrays['correos'];
-        // si el primer elemento tiene 'remitente' ya sabemos que es forma A
         if (arr.Count > 0) and (arr.Objects[0].Find('remitente') <> nil) then
         begin
           for i := 0 to arr.Count - 1 do
@@ -138,8 +171,7 @@ begin
         end;
       end;
 
-      // Forma B (del enunciado):
-      // { "correos": [ { "usuario_id": N, "bandeja_entrada": [ { remitente, ... }, ... ] }, ... ] }
+      // Forma B (enunciado)
       if root.Find('correos') = nil then Exit;
       arr := root.Arrays['correos'];
 
@@ -148,8 +180,8 @@ begin
         o   := arr.Objects[i];
         uid := o.Get('usuario_id', 0);
         destEmail := Usuarios.EmailById(uid);
-        if destEmail = '' then Continue;                      // usuario no existe
-        if not o.Find('bandeja_entrada', mail) then Continue; // sin bandeja_entrada
+        if destEmail = '' then Continue;
+        if not o.Find('bandeja_entrada', mail) then Continue;
 
         for k := 0 to o.Arrays['bandeja_entrada'].Count - 1 do
         begin
@@ -238,6 +270,106 @@ begin
     end;
   finally
     keys.Free;
+  end;
+end;
+
+procedure TListaCorreos.ExportRelacionesMatrizDOT(const ARuta: string);
+var
+  senders, dests : TStringList;
+  counts         : array of array of Integer;
+  i, j           : Integer;
+  cur            : PCorreo;
+  f              : TextFile;
+
+  procedure WriteHeaderRow;
+  var j: Integer;
+  begin
+    WriteLn(f, '  { rank=same;');
+    WriteLn(f, '    nPad0 [label="", shape=box, style=filled, fillcolor="gray70", width=1, height=0.5, fixedsize=true];');
+    for j := 0 to dests.Count-1 do
+      WriteLn(f, Format('    C%d [label="%s", shape=box, style=filled, fillcolor="lightblue", fontsize=10, width=2.4, height=0.6, fixedsize=true];',
+                        [j, StringReplace(dests[j], '"', '\"', [rfReplaceAll])]));
+    for j := 0 to dests.Count-2 do
+      WriteLn(f, Format('    C%d -> C%d [style=invis, weight=10];', [j, j+1]));
+    WriteLn(f, '  }');
+  end;
+
+  procedure WriteRow(i: Integer);
+  var j: Integer; rowId: string;
+  begin
+    rowId := Format('R%d', [i]);
+    WriteLn(f, '  { rank=same;');
+    WriteLn(f, Format('    %s [label="%s", shape=box, style=filled, fillcolor="lightgreen", fontsize=10, width=2.6, height=0.6, fixedsize=true];',
+                      [rowId, StringReplace(senders[i], '"', '\"', [rfReplaceAll])]));
+    for j := 0 to dests.Count-1 do
+    begin
+      if counts[i][j] > 0 then
+        WriteLn(f, Format('    X_%d_%d [label="%d", shape=box, style=filled, fillcolor="orange", fontsize=11, width=0.9, height=0.6, fixedsize=true];',
+                          [i, j, counts[i][j]]))
+      else
+        WriteLn(f, Format('    X_%d_%d [label="", shape=box, style=invis, width=0.9, height=0.6, fixedsize=true];', [i, j]));
+    end;
+    for j := 0 to dests.Count-1 do
+      WriteLn(f, Format('    %s -> X_%d_%d [style=invis, weight=5];', [rowId, i, j]));
+    for j := 0 to dests.Count-2 do
+      WriteLn(f, Format('    X_%d_%d -> X_%d_%d [style=invis, weight=5];', [i, j, i, j+1]));
+    WriteLn(f, '  }');
+
+    for j := 0 to dests.Count-1 do
+      if counts[i][j] > 0 then
+      begin
+        WriteLn(f, Format('  %s -> X_%d_%d [dir=both, arrowsize=0.5];', [rowId, i, j]));
+        WriteLn(f, Format('  X_%d_%d -> C%d [dir=both, arrowsize=0.5];', [i, j, j]));
+      end;
+  end;
+
+var
+  sIdx, dIdx: Integer;
+begin
+  senders := TStringList.Create;
+  dests   := TStringList.Create;
+  try
+    senders.Sorted := True; senders.Duplicates := dupIgnore;
+    dests.Sorted   := True; dests.Duplicates   := dupIgnore;
+
+    cur := FHead;
+    while cur <> nil do
+    begin
+      if cur^.remitente <> '' then senders.Add(cur^.remitente);
+      if cur^.destinatario <> '' then dests.Add(cur^.destinatario);
+      cur := cur^.next;
+    end;
+
+    SetLength(counts, senders.Count, dests.Count);
+    for i := 0 to senders.Count-1 do
+      for j := 0 to dests.Count-1 do
+        counts[i][j] := 0;
+
+    cur := FHead;
+    while cur <> nil do
+    begin
+      sIdx := senders.IndexOf(cur^.remitente);
+      dIdx := dests.IndexOf(cur^.destinatario);
+      if (sIdx >= 0) and (dIdx >= 0) then
+        Inc(counts[sIdx][dIdx]);
+      cur := cur^.next;
+    end;
+
+    AssignFile(f, ARuta); Rewrite(f);
+    try
+      WriteLn(f, 'digraph G {');
+      WriteLn(f, '  graph [splines=false, nodesep=0.3, ranksep=0.4, labelloc="t", label="Matriz Dispersa"];');
+      WriteLn(f, '  node  [fontname="Helvetica"];');
+      WriteHeaderRow;
+      for i := 0 to senders.Count-1 do
+        WriteRow(i);
+      WriteLn(f, '}');
+    finally
+      CloseFile(f);
+    end;
+  finally
+    senders.Free;
+    dests.Free;
   end;
 end;
 

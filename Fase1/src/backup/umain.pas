@@ -32,7 +32,8 @@ implementation
 uses
   uRootMenu,      // frmRootMenu (menú Root)
   uData,          // GUsuarios
-  uListaUsuarios; // TryLogin / Count
+  uListaUsuarios,
+  uUserMenu; // TryLogin / Count
 
 { TForm1 }
 
@@ -47,37 +48,33 @@ const
   ROOT_PASS  = 'root123';
 var
   P: PUsuario;
-  E, PW: string;
+  email, pass: string;
 begin
-  E  := Trim(edtEmail.Text);
-  PW := Trim(edtPass.Text);
+  email := Trim(edtEmail.Text);
+  pass  := Trim(edtPass.Text);
 
-  // 1) ROOT
-  if (CompareText(E, ROOT_EMAIL) = 0) and (PW = ROOT_PASS) then
+  // ROOT primero
+  if (SameText(email, ROOT_EMAIL)) and (pass = ROOT_PASS) then
   begin
-    ShowMessage('Bienvenido, ROOT');
+    ShowMessage('Bienvenido');
     frmRootMenu.Show;
     Self.Hide;
     Exit;
   end;
 
-  // 2) Usuarios estándar (tras Carga Masiva)
-  if GUsuarios.Count = 0 then
-  begin
-    ShowMessage('No hay usuarios cargados. Usa "Carga Masiva" como ROOT antes de iniciar sesión.');
-    Exit;
-  end;
-
-  P := GUsuarios.FindLogin(E, PW);
+  // Usuarios estándar (cargados desde JSON)
+  P := GUsuarios.FindLogin(email, pass);
   if P <> nil then
   begin
     ShowMessage('Bienvenido, ' + P^.nombre);
-    // TODO: aquí abrirás el menú de usuario estándar (nuevo formulario)
-    // por ahora nos quedamos en el login hasta que lo construyamos
-  end
-  else
-    ShowMessage('Credenciales inválidas');
+    TfrmUserMenu.Show;
+    Self.Hide; // Aquí abrirás el menú de usuario estándar cuando lo construyas.
+    Exit;
+  end;
+
+  ShowMessage('Credenciales inválidas');
 end;
+
 
 end.
 

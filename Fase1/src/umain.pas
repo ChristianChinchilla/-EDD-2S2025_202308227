@@ -32,7 +32,8 @@ implementation
 uses
   uRootMenu,      // frmRootMenu (menú Root)
   uData,          // GUsuarios
-  uListaUsuarios; // TryLogin / Count
+  uListaUsuarios, // manejo de usuarios
+  uUserMenu;      // frmUserMenu, SetUser
 
 { TForm1 }
 
@@ -55,7 +56,7 @@ begin
   // ROOT primero
   if (SameText(email, ROOT_EMAIL)) and (pass = ROOT_PASS) then
   begin
-    ShowMessage('Bienvenido');
+    ShowMessage('Bienvenido administrador');
     frmRootMenu.Show;
     Self.Hide;
     Exit;
@@ -66,13 +67,24 @@ begin
   if P <> nil then
   begin
     ShowMessage('Bienvenido, ' + P^.nombre);
-    // Aquí abrirás el menú de usuario estándar cuando lo construyas.
+
+    // Crear formulario de menú si no existe
+    if not Assigned(frmUserMenu) then
+      Application.CreateForm(TfrmUserMenu, frmUserMenu);
+
+    // Pasar datos al menú
+    frmUserMenu.SetUser(P^.nombre, P^.email);
+
+    // Mostrar menú estándar
+    frmUserMenu.Show;
+
+    // Ocultar login
+    Self.Hide;
     Exit;
   end;
 
   ShowMessage('Credenciales inválidas');
 end;
-
 
 end.
 

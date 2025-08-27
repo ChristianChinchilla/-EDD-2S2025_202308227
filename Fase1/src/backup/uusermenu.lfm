@@ -1,0 +1,43 @@
+object frmUserMenu: TfrmUserMenu
+  Left = 336
+  Height = 288
+  Top = 32
+  Width = 527
+  ClientHeight = 288
+  ClientWidth = 527
+  Position = poScreenCenter
+  object btnCerrarSesion: TButton
+    Left = 416
+    Height = 40
+    Top = 8
+    Width = 104
+    Caption = 'Cerrar Sesion'
+    TabOrder = 0
+    OnClick = btnCerrarSesionClick
+  end
+  object lblHola: TLabel
+    Left = 177
+    Height = 19
+    Top = 24
+    Width = 47
+    Caption = 'lblHola'
+  end
+  object btnBandeja: TButton
+    Left = 80
+    Height = 32
+    Top = 72
+    Width = 144
+    Caption = 'Bandeja de Entrada'
+    TabOrder = 1
+    OnClick = btnBandejaClick
+  end
+  object btnEnviar: TButton
+    Left = 256
+    Height = 32
+    Top = 72
+    Width = 144
+    Caption = 'Enviar Correo'
+    TabOrder = 2
+    OnClick = btnEnviarClick
+  end
+end

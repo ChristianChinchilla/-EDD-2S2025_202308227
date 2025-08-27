@@ -33,11 +33,12 @@ type
     // login
     function  FindLogin(const AEmail, APass: string): PUsuario;
 
-    // búsquedas / helpers que necesita uListaCorreos
+    // búsquedas / helpers
     function  FindById(AId: LongInt): PUsuario;
     function  FindByEmail(const AEmail: string): PUsuario;
     function  EmailById(AId: LongInt): string;
     function  IdByEmail(const AEmail: string): LongInt;
+    function  ExistsEmail(const AEmail: string): Boolean; // <- NUEVO
 
     // cargas y reportes
     procedure LoadFromJSON(const ARuta: string);
@@ -89,7 +90,7 @@ begin
   n^.password := APassword;
   n^.email    := AEmail;
   n^.telefono := ATelefono;
-  n^.next     := FHead;  // insertamos al inicio
+  n^.next     := FHead;
   FHead       := n;
   Inc(FCount);
   Result      := n;
@@ -104,7 +105,7 @@ begin
   while cur <> nil do
   begin
     if (CompareText(cur^.email, AEmail) = 0) and (cur^.password = APass) then
-      exit(cur);
+      Exit(cur);
     cur := cur^.next;
   end;
 end;
@@ -117,8 +118,7 @@ begin
   cur := FHead;
   while cur <> nil do
   begin
-    if cur^.id = AId then
-      exit(cur);
+    if cur^.id = AId then Exit(cur);
     cur := cur^.next;
   end;
 end;
@@ -131,8 +131,7 @@ begin
   cur := FHead;
   while cur <> nil do
   begin
-    if CompareText(cur^.email, AEmail) = 0 then
-      exit(cur);
+    if CompareText(cur^.email, AEmail) = 0 then Exit(cur);
     cur := cur^.next;
   end;
 end;
@@ -142,10 +141,7 @@ var
   p: PUsuario;
 begin
   p := FindById(AId);
-  if p <> nil then
-    Result := p^.email
-  else
-    Result := '';
+  if p <> nil then Result := p^.email else Result := '';
 end;
 
 function TListaUsuarios.IdByEmail(const AEmail: string): LongInt;
@@ -153,10 +149,12 @@ var
   p: PUsuario;
 begin
   p := FindByEmail(AEmail);
-  if p <> nil then
-    Result := p^.id
-  else
-    Result := -1;
+  if p <> nil then Result := p^.id else Result := -1;
+end;
+
+function TListaUsuarios.ExistsEmail(const AEmail: string): Boolean;
+begin
+  Result := FindByEmail(AEmail) <> nil;
 end;
 
 procedure TListaUsuarios.LoadFromJSON(const ARuta: string);

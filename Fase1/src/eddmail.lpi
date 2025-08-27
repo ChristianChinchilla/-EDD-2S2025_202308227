@@ -50,6 +50,7 @@
         <Filename Value="urootmenu.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmRootMenu"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uRootMenu"/>
       </Unit>
@@ -62,6 +63,29 @@
         <Filename Value="ulistacorreos.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uListaCorreos"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uinboxform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmInbox"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uInboxForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uusermenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmUserMenu"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uUserMenu"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ucomposeform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmCompose"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uComposeForm"/>
       </Unit>
     </Units>
   </ProjectOptions>

@@ -29,10 +29,18 @@ type
 
     procedure Clear;
     function  Add(AId: LongInt; const ANombre, AUsuario, APassword, AEmail, ATelefono: string): PUsuario;
-    function  FindLogin(const AEmail, APass: string): PUsuario;
-    procedure LoadFromJSON(const ARuta: string);
 
-    // ***** REPORTE *****
+    // login
+    function  FindLogin(const AEmail, APass: string): PUsuario;
+
+    // búsquedas / helpers que necesita uListaCorreos
+    function  FindById(AId: LongInt): PUsuario;
+    function  FindByEmail(const AEmail: string): PUsuario;
+    function  EmailById(AId: LongInt): string;
+    function  IdByEmail(const AEmail: string): LongInt;
+
+    // cargas y reportes
+    procedure LoadFromJSON(const ARuta: string);
     procedure ExportToDOT(const ARuta: string);
 
     property Count: Integer read FCount;
@@ -95,11 +103,60 @@ begin
   cur := FHead;
   while cur <> nil do
   begin
-    // email sin sensibilidad a mayúsculas, pass exacta
     if (CompareText(cur^.email, AEmail) = 0) and (cur^.password = APass) then
       exit(cur);
     cur := cur^.next;
   end;
+end;
+
+function TListaUsuarios.FindById(AId: LongInt): PUsuario;
+var
+  cur: PUsuario;
+begin
+  Result := nil;
+  cur := FHead;
+  while cur <> nil do
+  begin
+    if cur^.id = AId then
+      exit(cur);
+    cur := cur^.next;
+  end;
+end;
+
+function TListaUsuarios.FindByEmail(const AEmail: string): PUsuario;
+var
+  cur: PUsuario;
+begin
+  Result := nil;
+  cur := FHead;
+  while cur <> nil do
+  begin
+    if CompareText(cur^.email, AEmail) = 0 then
+      exit(cur);
+    cur := cur^.next;
+  end;
+end;
+
+function TListaUsuarios.EmailById(AId: LongInt): string;
+var
+  p: PUsuario;
+begin
+  p := FindById(AId);
+  if p <> nil then
+    Result := p^.email
+  else
+    Result := '';
+end;
+
+function TListaUsuarios.IdByEmail(const AEmail: string): LongInt;
+var
+  p: PUsuario;
+begin
+  p := FindByEmail(AEmail);
+  if p <> nil then
+    Result := p^.id
+  else
+    Result := -1;
 end;
 
 procedure TListaUsuarios.LoadFromJSON(const ARuta: string);
@@ -157,13 +214,10 @@ begin
     while cur <> nil do
     begin
       Inc(idx);
-      // mostramos TODOS los campos como en el PDF de ejemplo
       Writeln(f, Format('  n%d [label="ID: %d | Nombre: %s | Usuario: %s | Email: %s | Telefono: %s"];',
         [idx, cur^.id, cur^.nombre, cur^.usuario, cur^.email, cur^.telefono]));
-
       if cur^.next <> nil then
         Writeln(f, Format('  n%d -> n%d;', [idx, idx + 1]));
-
       cur := cur^.next;
     end;
 

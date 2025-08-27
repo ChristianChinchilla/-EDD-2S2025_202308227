@@ -7,7 +7,6 @@ object frmInbox: TfrmInbox
   ClientHeight = 281
   ClientWidth = 585
   Position = poScreenCenter
-  LCLVersion = '4.2.0.0'
   object pnlToolbar: TPanel
     Left = 0
     Height = 44
