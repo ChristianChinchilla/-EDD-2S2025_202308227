@@ -84,9 +84,30 @@
         <Filename Value="ucomposeform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmCompose"/>
+<<<<<<< HEAD
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uComposeForm"/>
       </Unit>
+=======
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uComposeForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="utrashform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmTrash"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uTrashForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uscheduleform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form2"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uScheduleForm"/>
+      </Unit>
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
     </Units>
   </ProjectOptions>
   <CompilerOptions>

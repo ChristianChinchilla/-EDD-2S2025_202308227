@@ -7,6 +7,10 @@ object frmCompose: TfrmCompose
   ClientHeight = 268
   ClientWidth = 489
   Position = poScreenCenter
+<<<<<<< HEAD
+=======
+  LCLVersion = '4.2.0.0'
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
   object lblPara: TLabel
     Left = 24
     Height = 19

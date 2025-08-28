@@ -1,0 +1,78 @@
+object frmTrash: TfrmTrash
+  Left = 336
+  Height = 282
+  Top = 32
+  Width = 558
+  Caption = 'Papelera'
+  ClientHeight = 282
+  ClientWidth = 558
+  Position = poScreenCenter
+  object pnlToolbar: TPanel
+    Left = 0
+    Height = 96
+    Top = 0
+    Width = 552
+    ClientHeight = 96
+    ClientWidth = 552
+    TabOrder = 0
+    object btnVolver: TButton
+      Left = 472
+      Height = 25
+      Top = 8
+      Width = 75
+      Caption = 'Volver'
+      TabOrder = 0
+      OnClick = btnVolverClick
+    end
+    object btnBuscar: TButton
+      Left = 8
+      Height = 25
+      Top = 56
+      Width = 75
+      Caption = 'Buscar'
+      TabOrder = 1
+      OnClick = btnBuscarClick
+      OnKeyDown = edtBuscarKeyDown
+    end
+    object lblCountTxt: TLabel
+      Left = 8
+      Height = 19
+      Top = 8
+      Width = 83
+      Caption = 'En Papelera:'
+    end
+    object lblCount: TLabel
+      Left = 96
+      Height = 19
+      Top = 8
+      Width = 9
+      Caption = '0'
+    end
+    object btnEliminar: TButton
+      Left = 296
+      Height = 25
+      Top = 56
+      Width = 75
+      Caption = 'Eliminar'
+      TabOrder = 2
+      OnClick = btnEliminarClick
+    end
+    object edtBuscar: TEdit
+      Left = 88
+      Height = 36
+      Top = 48
+      Width = 192
+      TabOrder = 3
+    end
+  end
+  object gridTrash: TStringGrid
+    Left = 0
+    Height = 168
+    Top = 96
+    Width = 552
+    ColCount = 3
+    GridLineStyle = psPattern
+    RowCount = 1
+    TabOrder = 1
+  end
+end

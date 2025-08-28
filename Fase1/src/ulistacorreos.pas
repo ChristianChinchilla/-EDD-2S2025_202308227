@@ -34,7 +34,12 @@ type
 
     // Helpers
     function  First: PCorreo;
+<<<<<<< HEAD
     procedure Remove(ACorreo: PCorreo);
+=======
+    procedure Remove(ACorreo: PCorreo);  // quita y LIBERA memoria (borrado definitivo)
+    procedure Detach(ACorreo: PCorreo);  // quita pero NO libera (para mover a papelera)
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
     function  NextId: LongInt;
 
     // Carga masiva
@@ -47,6 +52,27 @@ type
 
 implementation
 
+<<<<<<< HEAD
+=======
+{=== Utilidad local para desenlazar ===}
+procedure UnlinkNode(var Head, Tail: PCorreo; ACorreo: PCorreo);
+begin
+  if ACorreo = nil then Exit;
+
+  if ACorreo^.prev <> nil then
+    ACorreo^.prev^.next := ACorreo^.next
+  else
+    Head := ACorreo^.next;
+
+  if ACorreo^.next <> nil then
+    ACorreo^.next^.prev := ACorreo^.prev
+  else
+    Tail := ACorreo^.prev;
+
+  // Importante: NO tocar ACorreo^.next/prev aquí; el llamador decide si libera
+end;
+
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
 { TListaCorreos }
 
 constructor TListaCorreos.Create;
@@ -109,6 +135,7 @@ end;
 procedure TListaCorreos.Remove(ACorreo: PCorreo);
 begin
   if ACorreo = nil then Exit;
+<<<<<<< HEAD
 
   if ACorreo^.prev <> nil then
     ACorreo^.prev^.next := ACorreo^.next
@@ -122,6 +149,19 @@ begin
 
   Dispose(ACorreo);
   if FCount > 0 then Dec(FCount);
+=======
+  UnlinkNode(FHead, FTail, ACorreo);
+  if FCount > 0 then Dec(FCount);
+  Dispose(ACorreo);              // <- borrado DEFINITIVO
+end;
+
+procedure TListaCorreos.Detach(ACorreo: PCorreo);
+begin
+  if ACorreo = nil then Exit;
+  UnlinkNode(FHead, FTail, ACorreo);
+  if FCount > 0 then Dec(FCount);
+  // <- NO se libera memoria aquí. El llamador (p.ej. Papelera) decide cuándo Dispose.
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
 end;
 
 function TListaCorreos.NextId: LongInt;

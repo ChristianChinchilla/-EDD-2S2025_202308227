@@ -5,9 +5,15 @@ program eddmail;
 uses
   {$IFDEF UNIX} cthreads, {$ENDIF}
   {$IFDEF HASAMIGA} athreads, {$ENDIF}
+<<<<<<< HEAD
   Interfaces, Forms,
   uMain, uData, uRootMenu, uListaUsuarios, uListaCorreos,
   uUserMenu, uInboxForm, uComposeForm;  // <-- el unit correcto
+=======
+  Interfaces, Forms, uMain, uData, uRootMenu, uListaUsuarios, uListaCorreos,
+  uUserMenu, uInboxForm, uComposeForm, uTrashForm,
+  uScheduleForm;  // <-- el unit correcto
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
 
 {$R *.res}
 
@@ -23,6 +29,11 @@ begin
   Application.CreateForm(TfrmUserMenu, frmUserMenu);
   Application.CreateForm(TfrmInbox,    frmInbox);   // <-- variable frmInbox, NO uInboxForm
   Application.CreateForm(TfrmCompose, frmCompose);
+<<<<<<< HEAD
+=======
+  Application.CreateForm(TfrmTrash, frmTrash);
+  Application.CreateForm(TfrmSchedule, TfrmSchedule);
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
   Application.Run;
 end.
 

@@ -29,7 +29,11 @@ type
   end;
 
 var
+<<<<<<< HEAD
   ComposeForm: TfrmCompose;
+=======
+  frmCompose: TfrmCompose;
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
 
 implementation
 

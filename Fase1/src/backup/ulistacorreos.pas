@@ -11,8 +11,13 @@ type
   PCorreo = ^TCorreo;
   TCorreo = record
     id          : LongInt;
+<<<<<<< HEAD
     remitente   : string;   // email remitente
     destinatario: string;   // email destinatario (derivado del usuario_id si hace falta)
+=======
+    remitente   : string;
+    destinatario: string;
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
     estado      : string;
     programado  : string;
     asunto      : string;
@@ -32,6 +37,7 @@ type
     function  Add(const AId: LongInt; const ARem, ADest, AEstado, AProg, AAsunto, AFecha, AMsg: string): PCorreo;
     function  Count: SizeInt;
 
+<<<<<<< HEAD
     // === NUEVO: helpers usados por frminbox ===
     function  First: PCorreo;
     procedure Remove(ACorreo: PCorreo);
@@ -42,6 +48,19 @@ type
     // Reportes
     procedure ExportRelacionesDOT(const ARuta: string);              // simple: aristas con conteo
     procedure ExportRelacionesMatrizDOT(const ARuta: string);        // matriz dispersa (como el PDF)
+=======
+    // Helpers
+    function  First: PCorreo;
+    procedure Remove(ACorreo: PCorreo);
+    function  NextId: LongInt;
+
+    // Carga masiva
+    procedure LoadFromJSON(const ARuta: string; const Usuarios: TListaUsuarios);
+
+    // Reportes
+    procedure ExportRelacionesDOT(const ARuta: string);
+    procedure ExportRelacionesMatrizDOT(const ARuta: string);
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
   end;
 
 implementation
@@ -79,6 +98,7 @@ var
   n: PCorreo;
 begin
   New(n);
+<<<<<<< HEAD
   n^.id          := AId;
   n^.remitente   := ARem;
   n^.destinatario:= ADest;
@@ -87,6 +107,16 @@ begin
   n^.asunto      := AAsunto;
   n^.fecha       := AFecha;
   n^.mensaje     := AMsg;
+=======
+  n^.id           := AId;
+  n^.remitente    := ARem;
+  n^.destinatario := ADest;
+  n^.estado       := AEstado;
+  n^.programado   := AProg;
+  n^.asunto       := AAsunto;
+  n^.fecha        := AFecha;
+  n^.mensaje      := AMsg;
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
   n^.next := nil; n^.prev := FTail;
 
   if FTail <> nil then FTail^.next := n else FHead := n;
@@ -100,18 +130,27 @@ begin
   Result := FCount;
 end;
 
+<<<<<<< HEAD
 // === NUEVO ===
+=======
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
 function TListaCorreos.First: PCorreo;
 begin
   Result := FHead;
 end;
 
+<<<<<<< HEAD
 // === NUEVO ===
+=======
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
 procedure TListaCorreos.Remove(ACorreo: PCorreo);
 begin
   if ACorreo = nil then Exit;
 
+<<<<<<< HEAD
   // Re-enlazar
+=======
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
   if ACorreo^.prev <> nil then
     ACorreo^.prev^.next := ACorreo^.next
   else
@@ -126,6 +165,24 @@ begin
   if FCount > 0 then Dec(FCount);
 end;
 
+<<<<<<< HEAD
+=======
+function TListaCorreos.NextId: LongInt;
+var
+  cur: PCorreo;
+  m  : LongInt;
+begin
+  m := 0;
+  cur := FHead;
+  while cur <> nil do
+  begin
+    if cur^.id > m then m := cur^.id;
+    cur := cur^.next;
+  end;
+  Result := m + 1;
+end;
+
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
 procedure TListaCorreos.LoadFromJSON(const ARuta: string; const Usuarios: TListaUsuarios);
 var
   s : TStringStream;
@@ -171,7 +228,11 @@ begin
         end;
       end;
 
+<<<<<<< HEAD
       // Forma B (enunciado)
+=======
+      // Forma B
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
       if root.Find('correos') = nil then Exit;
       arr := root.Arrays['correos'];
 
@@ -210,7 +271,11 @@ end;
 procedure TListaCorreos.ExportRelacionesDOT(const ARuta: string);
 var
   f: TextFile;
+<<<<<<< HEAD
   keys : TStringList;   // “a|b” → contador
+=======
+  keys : TStringList;
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
   cur  : PCorreo;
 
   function K(const a,b:string):string; inline;

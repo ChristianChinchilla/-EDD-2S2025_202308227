@@ -32,7 +32,11 @@ object frmUserMenu: TfrmUserMenu
     OnClick = btnBandejaClick
   end
   object btnEnviar: TButton
+<<<<<<< HEAD
     Left = 256
+=======
+    Left = 240
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
     Height = 32
     Top = 72
     Width = 144
@@ -40,4 +44,25 @@ object frmUserMenu: TfrmUserMenu
     TabOrder = 2
     OnClick = btnEnviarClick
   end
+<<<<<<< HEAD
+=======
+  object btnPapelera: TButton
+    Left = 80
+    Height = 32
+    Top = 112
+    Width = 144
+    Caption = 'Papelera'
+    TabOrder = 3
+    OnClick = btnPapeleraClick
+  end
+  object btnProgramar: TButton
+    Left = 240
+    Height = 32
+    Top = 112
+    Width = 144
+    Caption = 'Programar'
+    TabOrder = 4
+    OnClick = btnProgramarClick
+  end
+>>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
 end
