@@ -1,0 +1,59 @@
+object frmNewContact: TfrmNewContact
+  Left = 336
+  Height = 198
+  Top = 32
+  Width = 481
+  Caption = 'Agregar Contacto'
+  ClientHeight = 198
+  ClientWidth = 481
+  Position = poScreenCenter
+  object pnlCard: TPanel
+    Left = 8
+    Height = 176
+    Top = 8
+    Width = 456
+    BevelOuter = bvNone
+    ClientHeight = 176
+    ClientWidth = 456
+    TabOrder = 0
+    object lblTitle: TLabel
+      Left = 168
+      Height = 19
+      Top = 17
+      Width = 114
+      Caption = 'Agregar Contacto'
+    end
+    object lblCorreo: TLabel
+      Left = 72
+      Height = 19
+      Top = 72
+      Width = 49
+      Caption = 'Correo:'
+    end
+    object edtCorreo: TEdit
+      Left = 128
+      Height = 36
+      Top = 64
+      Width = 256
+      TabOrder = 0
+    end
+    object btnAgregar: TButton
+      Left = 184
+      Height = 25
+      Top = 120
+      Width = 75
+      Caption = 'Agregar'
+      TabOrder = 1
+      OnClick = btnAgregarClick
+    end
+    object btnVolver: TButton
+      Left = 350
+      Height = 25
+      Top = 11
+      Width = 75
+      Caption = 'Volver'
+      TabOrder = 2
+      OnClick = btnVolverClick
+    end
+  end
+end

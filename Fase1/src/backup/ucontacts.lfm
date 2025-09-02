@@ -1,0 +1,72 @@
+object frmContacts: TfrmContacts
+  Left = 336
+  Height = 290
+  Top = 32
+  Width = 377
+  Caption = 'Contactos'
+  ClientHeight = 290
+  ClientWidth = 377
+  Position = poScreenCenter
+  object Label1: TLabel
+    Left = 160
+    Height = 19
+    Top = 14
+    Width = 65
+    Caption = 'Contactos'
+  end
+  object btnPrev: TButton
+    Left = 24
+    Height = 25
+    Top = 48
+    Width = 24
+    Caption = '<'
+    TabOrder = 0
+    OnClick = btnPrevClick
+  end
+  object btnNext: TButton
+    Left = 336
+    Height = 25
+    Top = 48
+    Width = 25
+    Caption = '>'
+    TabOrder = 1
+    OnClick = btnNextClick
+  end
+  object btnVolver: TButton
+    Left = 288
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Volver'
+    TabOrder = 2
+    OnClick = btnVolverClick
+  end
+  object lblNombreV: TLabel
+    Left = 67
+    Height = 19
+    Top = 80
+    Width = 58
+    Caption = 'Nombre:'
+  end
+  object lblUsuarioV: TLabel
+    Left = 64
+    Height = 19
+    Top = 120
+    Width = 55
+    Caption = 'Usuario:'
+  end
+  object lblCorreoV: TLabel
+    Left = 64
+    Height = 19
+    Top = 160
+    Width = 49
+    Caption = 'Correo:'
+  end
+  object lblTelefonoV: TLabel
+    Left = 64
+    Height = 19
+    Top = 200
+    Width = 61
+    Caption = 'Telefono:'
+  end
+end

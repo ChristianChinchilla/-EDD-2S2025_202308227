@@ -84,11 +84,6 @@
         <Filename Value="ucomposeform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmCompose"/>
-<<<<<<< HEAD
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="uComposeForm"/>
-      </Unit>
-=======
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uComposeForm"/>
@@ -97,17 +92,63 @@
         <Filename Value="utrashform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmTrash"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uTrashForm"/>
       </Unit>
       <Unit>
         <Filename Value="uscheduleform.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form2"/>
+        <ComponentName Value="frmSchedule"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uScheduleForm"/>
       </Unit>
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
+      <Unit>
+        <Filename Value="uproglistform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmProgList"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uProgListForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ucontacts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmContacts"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uContacts"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uaddcontactform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmAddContact"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uAddContactForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unewcontactform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmNewContact"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uNewContactForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uprofileform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmProfile"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uProfileForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uuserreports.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uUserReports"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

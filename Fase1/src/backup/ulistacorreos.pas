@@ -1,6 +1,6 @@
 unit uListaCorreos;
 
-{$mode objfpc}{$H+}
+{$mode ObjFPC}{$H+}
 
 interface
 
@@ -11,15 +11,10 @@ type
   PCorreo = ^TCorreo;
   TCorreo = record
     id          : LongInt;
-<<<<<<< HEAD
-    remitente   : string;   // email remitente
-    destinatario: string;   // email destinatario (derivado del usuario_id si hace falta)
-=======
     remitente   : string;
     destinatario: string;
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
-    estado      : string;
-    programado  : string;
+    estado      : string;  // 'NL' o 'L'
+    programado  : string;  // fecha/hora si aplica
     asunto      : string;
     fecha       : string;
     mensaje     : string;
@@ -33,25 +28,16 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+
     procedure Clear;
-    function  Add(const AId: LongInt; const ARem, ADest, AEstado, AProg, AAsunto, AFecha, AMsg: string): PCorreo;
+    function  Add(const AId: LongInt; const ARem, ADest, AEstado, AProg,
+                  AAsunto, AFecha, AMsg: string): PCorreo;
     function  Count: SizeInt;
 
-<<<<<<< HEAD
-    // === NUEVO: helpers usados por frminbox ===
-    function  First: PCorreo;
-    procedure Remove(ACorreo: PCorreo);
-
-    // Carga masiva (soporta dos “formas” comunes de JSON)
-    procedure LoadFromJSON(const ARuta: string; const Usuarios: TListaUsuarios);
-
-    // Reportes
-    procedure ExportRelacionesDOT(const ARuta: string);              // simple: aristas con conteo
-    procedure ExportRelacionesMatrizDOT(const ARuta: string);        // matriz dispersa (como el PDF)
-=======
     // Helpers
     function  First: PCorreo;
-    procedure Remove(ACorreo: PCorreo);
+    procedure Remove(ACorreo: PCorreo);  // quita y LIBERA memoria
+    procedure Detach(ACorreo: PCorreo);  // quita SIN liberar (p.ej. mover a papelera)
     function  NextId: LongInt;
 
     // Carga masiva
@@ -60,17 +46,34 @@ type
     // Reportes
     procedure ExportRelacionesDOT(const ARuta: string);
     procedure ExportRelacionesMatrizDOT(const ARuta: string);
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
   end;
 
 implementation
+
+{=== Utilidad local para desenlazar un nodo doblemente enlazado ===}
+procedure UnlinkNode(var Head, Tail: PCorreo; ACorreo: PCorreo);
+begin
+  if ACorreo = nil then Exit;
+
+  if ACorreo^.prev <> nil then
+    ACorreo^.prev^.next := ACorreo^.next
+  else
+    Head := ACorreo^.next;
+
+  if ACorreo^.next <> nil then
+    ACorreo^.next^.prev := ACorreo^.prev
+  else
+    Tail := ACorreo^.prev;
+end;
 
 { TListaCorreos }
 
 constructor TListaCorreos.Create;
 begin
   inherited Create;
-  FHead := nil; FTail := nil; FCount := 0;
+  FHead := nil;
+  FTail := nil;
+  FCount := 0;
 end;
 
 destructor TListaCorreos.Destroy;
@@ -81,33 +84,26 @@ end;
 
 procedure TListaCorreos.Clear;
 var
-  cur, nxt: PCorreo;
+  cur, nx: PCorreo;
 begin
   cur := FHead;
   while cur <> nil do
   begin
-    nxt := cur^.next;
+    nx := cur^.next;
     Dispose(cur);
-    cur := nxt;
+    cur := nx;
   end;
-  FHead := nil; FTail := nil; FCount := 0;
+  FHead := nil;
+  FTail := nil;
+  FCount := 0;
 end;
 
-function TListaCorreos.Add(const AId: LongInt; const ARem, ADest, AEstado, AProg, AAsunto, AFecha, AMsg: string): PCorreo;
+function TListaCorreos.Add(const AId: LongInt; const ARem, ADest, AEstado, AProg,
+                           AAsunto, AFecha, AMsg: string): PCorreo;
 var
   n: PCorreo;
 begin
   New(n);
-<<<<<<< HEAD
-  n^.id          := AId;
-  n^.remitente   := ARem;
-  n^.destinatario:= ADest;
-  n^.estado      := AEstado;
-  n^.programado  := AProg;
-  n^.asunto      := AAsunto;
-  n^.fecha       := AFecha;
-  n^.mensaje     := AMsg;
-=======
   n^.id           := AId;
   n^.remitente    := ARem;
   n^.destinatario := ADest;
@@ -116,10 +112,14 @@ begin
   n^.asunto       := AAsunto;
   n^.fecha        := AFecha;
   n^.mensaje      := AMsg;
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
-  n^.next := nil; n^.prev := FTail;
+  n^.next := nil;
+  n^.prev := FTail;
 
-  if FTail <> nil then FTail^.next := n else FHead := n;
+  if FTail <> nil then
+    FTail^.next := n
+  else
+    FHead := n;
+
   FTail := n;
   Inc(FCount);
   Result := n;
@@ -130,43 +130,27 @@ begin
   Result := FCount;
 end;
 
-<<<<<<< HEAD
-// === NUEVO ===
-=======
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
 function TListaCorreos.First: PCorreo;
 begin
   Result := FHead;
 end;
 
-<<<<<<< HEAD
-// === NUEVO ===
-=======
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
 procedure TListaCorreos.Remove(ACorreo: PCorreo);
 begin
   if ACorreo = nil then Exit;
-
-<<<<<<< HEAD
-  // Re-enlazar
-=======
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
-  if ACorreo^.prev <> nil then
-    ACorreo^.prev^.next := ACorreo^.next
-  else
-    FHead := ACorreo^.next;
-
-  if ACorreo^.next <> nil then
-    ACorreo^.next^.prev := ACorreo^.prev
-  else
-    FTail := ACorreo^.prev;
-
-  Dispose(ACorreo);
+  UnlinkNode(FHead, FTail, ACorreo);
   if FCount > 0 then Dec(FCount);
+  Dispose(ACorreo);                // borrado definitivo
 end;
 
-<<<<<<< HEAD
-=======
+procedure TListaCorreos.Detach(ACorreo: PCorreo);
+begin
+  if ACorreo = nil then Exit;
+  UnlinkNode(FHead, FTail, ACorreo);
+  if FCount > 0 then Dec(FCount);
+  // NO liberar aquí (lo hará quien corresponda)
+end;
+
 function TListaCorreos.NextId: LongInt;
 var
   cur: PCorreo;
@@ -182,7 +166,6 @@ begin
   Result := m + 1;
 end;
 
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
 procedure TListaCorreos.LoadFromJSON(const ARuta: string; const Usuarios: TListaUsuarios);
 var
   s : TStringStream;
@@ -201,65 +184,65 @@ begin
     s.LoadFromFile(ARuta);
     j := GetJSON(s.DataString);
     try
-      if j.JSONType <> jtObject then Exit;
-      root := TJSONObject(j);
-
-      // Forma A
-      if root.Find('correos') <> nil then
+      // Forma A: { "correos": [ {remitente, destinatario, ...}, ... ] }
+      if (j.JSONType = jtObject) then
       begin
-        arr := root.Arrays['correos'];
-        if (arr.Count > 0) and (arr.Objects[0].Find('remitente') <> nil) then
+        root := TJSONObject(j);
+
+        if root.Find('correos', arr) then
         begin
+          // Si el primer elemento ya tiene 'remitente', asumimos forma A
+          if (arr.Count > 0) and (arr.Objects[0].Find('remitente') <> nil) then
+          begin
+            for i := 0 to arr.Count - 1 do
+            begin
+              o := arr.Objects[i];
+              Add(
+                o.Get('id', i+1),
+                o.Get('remitente',''),
+                o.Get('destinatario',''),
+                o.Get('estado',''),
+                o.Get('programado',''),
+                o.Get('asunto',''),
+                o.Get('fecha',''),
+                o.Get('mensaje','')
+              );
+            end;
+            Exit;
+          end;
+
+          // Forma B: { "correos": [ {usuario_id, bandeja_entrada:[ {...}, ... ]}, ... ] }
           for i := 0 to arr.Count - 1 do
           begin
             o := arr.Objects[i];
-            Add(
-              o.Get('id', i+1),
-              o.Get('remitente',''),
-              o.Get('destinatario',''),
-              o.Get('estado',''),
-              o.Get('programado',''),
-              o.Get('asunto',''),
-              o.Get('fecha',''),
-              o.Get('mensaje','')
-            );
+            uid := o.Get('usuario_id', 0);
+            destEmail := Usuarios.EmailById(uid);
+            if destEmail = '' then Continue;
+            if not o.Find('bandeja_entrada', mail) then Continue;
+
+            for k := 0 to o.Arrays['bandeja_entrada'].Count - 1 do
+            begin
+              mail  := o.Arrays['bandeja_entrada'].Objects[k];
+              remit := mail.Get('remitente','');
+              Add(
+                mail.Get('id', (i+1)*1000 + k + 1),
+                remit,
+                destEmail,
+                mail.Get('estado',''),
+                mail.Get('programado',''),
+                mail.Get('asunto',''),
+                mail.Get('fecha',''),
+                mail.Get('mensaje','')
+              );
+            end;
           end;
-          Exit;
+
+          Exit; // terminó forma B
         end;
       end;
 
-<<<<<<< HEAD
-      // Forma B (enunciado)
-=======
-      // Forma B
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
-      if root.Find('correos') = nil then Exit;
-      arr := root.Arrays['correos'];
-
-      for i := 0 to arr.Count - 1 do
-      begin
-        o   := arr.Objects[i];
-        uid := o.Get('usuario_id', 0);
-        destEmail := Usuarios.EmailById(uid);
-        if destEmail = '' then Continue;
-        if not o.Find('bandeja_entrada', mail) then Continue;
-
-        for k := 0 to o.Arrays['bandeja_entrada'].Count - 1 do
-        begin
-          mail  := o.Arrays['bandeja_entrada'].Objects[k];
-          remit := mail.Get('remitente','');
-          Add(
-            mail.Get('id', (i+1)*1000 + k + 1),
-            remit,
-            destEmail,
-            mail.Get('estado',''),
-            mail.Get('programado',''),
-            mail.Get('asunto',''),
-            mail.Get('fecha',''),
-            mail.Get('mensaje','')
-          );
-        end;
-      end;
+      // Si llega aquí, el JSON no matcheó las formas soportadas.
+      // No se lanza excepción: simplemente deja la lista vacía.
     finally
       j.Free;
     end;
@@ -271,11 +254,7 @@ end;
 procedure TListaCorreos.ExportRelacionesDOT(const ARuta: string);
 var
   f: TextFile;
-<<<<<<< HEAD
-  keys : TStringList;   // “a|b” → contador
-=======
   keys : TStringList;
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
   cur  : PCorreo;
 
   function K(const a,b:string):string; inline;
@@ -346,97 +325,85 @@ var
   cur            : PCorreo;
   f              : TextFile;
 
-  procedure WriteHeaderRow;
-  var j: Integer;
+  procedure W(const S: string); inline;
   begin
-    WriteLn(f, '  { rank=same;');
-    WriteLn(f, '    nPad0 [label="", shape=box, style=filled, fillcolor="gray70", width=1, height=0.5, fixedsize=true];');
-    for j := 0 to dests.Count-1 do
-      WriteLn(f, Format('    C%d [label="%s", shape=box, style=filled, fillcolor="lightblue", fontsize=10, width=2.4, height=0.6, fixedsize=true];',
-                        [j, StringReplace(dests[j], '"', '\"', [rfReplaceAll])]));
-    for j := 0 to dests.Count-2 do
-      WriteLn(f, Format('    C%d -> C%d [style=invis, weight=10];', [j, j+1]));
-    WriteLn(f, '  }');
+    WriteLn(f, S);
   end;
 
-  procedure WriteRow(i: Integer);
-  var j: Integer; rowId: string;
+  procedure WriteHeaderRow;   // fila superior (destinatarios)
+  var j: Integer;
+  begin
+    W('  { rank=same;');
+    W('    Corner [label="", shape=box, style=filled, fillcolor="gray70", width=1, height=0.5, fixedsize=true];');
+    for j := 0 to dests.Count-1 do
+      W(Format(
+        '    C%d [label="%s", shape=box, style=filled, fillcolor="lightblue", fontsize=10, width=2.6, height=0.6, fixedsize=true];',
+        [j, StringReplace(dests[j], '"', '\"', [rfReplaceAll])]));
+    // alineación horizontal
+    for j := -1 to dests.Count-2 do
+      if j = -1 then W('    Corner -> C0 [style=invis, weight=50];')
+      else            W(Format('    C%d -> C%d [style=invis, weight=50];', [j, j+1]));
+    W('  }');
+
+    // flechas entre cabeceras (como la maqueta)
+    for j := 0 to dests.Count-2 do
+      W(Format('  C%d -> C%d [dir=both, arrowsize=0.5];', [j, j+1]));
+  end;
+
+  procedure WriteRow(i: Integer); // columna izquierda + celdas
+  var
+    j: Integer;
+    rowId: string;
+
+    // Devuelve el ID del nodo de la celda (visible X_ o invisible P_)
+    function CellId(ii, jj: Integer): string;
+    begin
+      if counts[ii][jj] > 0 then
+        Result := Format('X_%d_%d', [ii, jj])
+      else
+        Result := Format('P_%d_%d', [ii, jj]);
+    end;
+
   begin
     rowId := Format('R%d', [i]);
-    WriteLn(f, '  { rank=same;');
-    WriteLn(f, Format('    %s [label="%s", shape=box, style=filled, fillcolor="lightgreen", fontsize=10, width=2.6, height=0.6, fixedsize=true];',
-                      [rowId, StringReplace(senders[i], '"', '\"', [rfReplaceAll])]));
+
+    // remitente a la izquierda
+    W('  { rank=same;');
+    W(Format(
+      '    %s [label="%s", shape=box, style=filled, fillcolor="lightgreen", fontsize=10, width=2.8, height=0.6, fixedsize=true];',
+      [rowId, StringReplace(senders[i], '"', '\"', [rfReplaceAll])]));
+
+    // nodos de celdas (visibles en naranja si hay conteo; invisibles si no)
     for j := 0 to dests.Count-1 do
     begin
       if counts[i][j] > 0 then
-        WriteLn(f, Format('    X_%d_%d [label="%d", shape=box, style=filled, fillcolor="orange", fontsize=11, width=0.9, height=0.6, fixedsize=true];',
-                          [i, j, counts[i][j]]))
+        W(Format(
+          '    X_%d_%d [label="%d", shape=box, style=filled, fillcolor="orange", fontsize=11, width=1.0, height=0.6, fixedsize=true];',
+          [i, j, counts[i][j]]))
       else
-        WriteLn(f, Format('    X_%d_%d [label="", shape=box, style=invis, width=0.9, height=0.6, fixedsize=true];', [i, j]));
+        W(Format(
+          '    P_%d_%d [label="", shape=box, style=invis, width=1.0, height=0.6, fixedsize=true];',
+          [i, j]));
     end;
-    for j := 0 to dests.Count-1 do
-      WriteLn(f, Format('    %s -> X_%d_%d [style=invis, weight=5];', [rowId, i, j]));
-    for j := 0 to dests.Count-2 do
-      WriteLn(f, Format('    X_%d_%d -> X_%d_%d [style=invis, weight=5];', [i, j, i, j+1]));
-    WriteLn(f, '  }');
 
+    // alineación horizontal de la fila (de izquierda a derecha) — sin IfThen
+    if dests.Count > 0 then
+      W(Format('    %s -> %s [style=invis, weight=50];', [rowId, CellId(i,0)]));
+    for j := 0 to dests.Count-2 do
+      W(Format('    %s -> %s [style=invis, weight=50];', [CellId(i,j), CellId(i,j+1)]));
+
+    W('  }');
+
+    // conexiones visibles: remitente ↔ celda y celda ↔ cabecera
     for j := 0 to dests.Count-1 do
       if counts[i][j] > 0 then
       begin
-        WriteLn(f, Format('  %s -> X_%d_%d [dir=both, arrowsize=0.5];', [rowId, i, j]));
-        WriteLn(f, Format('  X_%d_%d -> C%d [dir=both, arrowsize=0.5];', [i, j, j]));
+        W(Format('  %s -> X_%d_%d [dir=both, arrowsize=0.5];', [rowId, i, j]));
+        W(Format('  X_%d_%d -> C%d [dir=both, arrowsize=0.5];', [i, j, j]));
       end;
   end;
 
-var
-  sIdx, dIdx: Integer;
-begin
-  senders := TStringList.Create;
-  dests   := TStringList.Create;
-  try
-    senders.Sorted := True; senders.Duplicates := dupIgnore;
-    dests.Sorted   := True; dests.Duplicates   := dupIgnore;
 
-    cur := FHead;
-    while cur <> nil do
-    begin
-      if cur^.remitente <> '' then senders.Add(cur^.remitente);
-      if cur^.destinatario <> '' then dests.Add(cur^.destinatario);
-      cur := cur^.next;
-    end;
-
-    SetLength(counts, senders.Count, dests.Count);
-    for i := 0 to senders.Count-1 do
-      for j := 0 to dests.Count-1 do
-        counts[i][j] := 0;
-
-    cur := FHead;
-    while cur <> nil do
-    begin
-      sIdx := senders.IndexOf(cur^.remitente);
-      dIdx := dests.IndexOf(cur^.destinatario);
-      if (sIdx >= 0) and (dIdx >= 0) then
-        Inc(counts[sIdx][dIdx]);
-      cur := cur^.next;
-    end;
-
-    AssignFile(f, ARuta); Rewrite(f);
-    try
-      WriteLn(f, 'digraph G {');
-      WriteLn(f, '  graph [splines=false, nodesep=0.3, ranksep=0.4, labelloc="t", label="Matriz Dispersa"];');
-      WriteLn(f, '  node  [fontname="Helvetica"];');
-      WriteHeaderRow;
-      for i := 0 to senders.Count-1 do
-        WriteRow(i);
-      WriteLn(f, '}');
-    finally
-      CloseFile(f);
-    end;
-  finally
-    senders.Free;
-    dests.Free;
-  end;
-end;
 
 end.
 

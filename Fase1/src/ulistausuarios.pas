@@ -1,6 +1,6 @@
 unit uListaUsuarios;
 
-{$mode objfpc}{$H+}
+{$mode ObjFPC}{$H+}
 
 interface
 
@@ -12,39 +12,34 @@ type
   TUsuario = record
     id       : LongInt;
     nombre   : string;
-    usuario  : string;
-    password : string;
+    usuario  : string;  // <— NUEVO
     email    : string;
-    telefono : string;
+    telefono : string;  // <— NUEVO
     next     : PUsuario;
   end;
 
   TListaUsuarios = class
   private
-    FHead : PUsuario;
-    FCount: Integer;
+    FHead  : PUsuario;
+    FCount : SizeInt;
   public
     constructor Create;
     destructor Destroy; override;
 
     procedure Clear;
-    function  Add(AId: LongInt; const ANombre, AUsuario, APassword, AEmail, ATelefono: string): PUsuario;
 
-    // login
-    function  FindLogin(const AEmail, APass: string): PUsuario;
+    // Compatibilidad + versión completa
+    function  Add(const AId: LongInt; const ANombre, AEmail: string): PUsuario; overload;
+    function  Add(const AId: LongInt; const ANombre, AUsuario, AEmail, ATelefono: string): PUsuario; overload;
 
-    // búsquedas / helpers
-    function  FindById(AId: LongInt): PUsuario;
     function  FindByEmail(const AEmail: string): PUsuario;
-    function  EmailById(AId: LongInt): string;
-    function  IdByEmail(const AEmail: string): LongInt;
-    function  ExistsEmail(const AEmail: string): Boolean; // <- NUEVO
+    function  EmailById(const AId: LongInt): string;
+    function  Count: SizeInt;
+    function  NextId: LongInt;
 
-    // cargas y reportes
-    procedure LoadFromJSON(const ARuta: string);
-    procedure ExportToDOT(const ARuta: string);
-
-    property Count: Integer read FCount;
+    // Carga / Reporte
+    procedure LoadFromJSON(const AFile: string);
+    procedure ExportToDOT(const AFile: string);
   end;
 
 implementation
@@ -66,20 +61,34 @@ end;
 
 procedure TListaUsuarios.Clear;
 var
-  cur, nxt: PUsuario;
+  c, nx: PUsuario;
 begin
-  cur := FHead;
-  while cur <> nil do
+  c := FHead;
+  while c <> nil do
   begin
-    nxt := cur^.next;
-    Dispose(cur);
-    cur := nxt;
+    nx := c^.next;
+    Dispose(c);
+    c := nx;
   end;
   FHead  := nil;
   FCount := 0;
 end;
 
-function TListaUsuarios.Add(AId: LongInt; const ANombre, AUsuario, APassword, AEmail, ATelefono: string): PUsuario;
+// --- Add (compatibilidad) ---
+function TListaUsuarios.Add(const AId: LongInt; const ANombre, AEmail: string): PUsuario;
+var
+  baseUser: string;
+begin
+  // Derivar usuario si no se da: parte antes de la @
+  baseUser := '';
+  if Pos('@', AEmail) > 1 then
+    baseUser := Copy(AEmail, 1, Pos('@', AEmail)-1);
+
+  Result := Add(AId, ANombre, baseUser, AEmail, '');
+end;
+
+// --- Add (completo) ---
+function TListaUsuarios.Add(const AId: LongInt; const ANombre, AUsuario, AEmail, ATelefono: string): PUsuario;
 var
   n: PUsuario;
 begin
@@ -87,105 +96,122 @@ begin
   n^.id       := AId;
   n^.nombre   := ANombre;
   n^.usuario  := AUsuario;
-  n^.password := APassword;
   n^.email    := AEmail;
   n^.telefono := ATelefono;
   n^.next     := FHead;
-  FHead       := n;
+
+  FHead := n;
   Inc(FCount);
-  Result      := n;
-end;
-
-function TListaUsuarios.FindLogin(const AEmail, APass: string): PUsuario;
-var
-  cur: PUsuario;
-begin
-  Result := nil;
-  cur := FHead;
-  while cur <> nil do
-  begin
-    if (CompareText(cur^.email, AEmail) = 0) and (cur^.password = APass) then
-      Exit(cur);
-    cur := cur^.next;
-  end;
-end;
-
-function TListaUsuarios.FindById(AId: LongInt): PUsuario;
-var
-  cur: PUsuario;
-begin
-  Result := nil;
-  cur := FHead;
-  while cur <> nil do
-  begin
-    if cur^.id = AId then Exit(cur);
-    cur := cur^.next;
-  end;
+  Result := n;
 end;
 
 function TListaUsuarios.FindByEmail(const AEmail: string): PUsuario;
 var
-  cur: PUsuario;
+  c: PUsuario;
 begin
-  Result := nil;
-  cur := FHead;
-  while cur <> nil do
+  c := FHead;
+  while c <> nil do
   begin
-    if CompareText(cur^.email, AEmail) = 0 then Exit(cur);
-    cur := cur^.next;
+    if SameText(c^.email, AEmail) then Exit(c);
+    c := c^.next;
   end;
+  Result := nil;
 end;
 
-function TListaUsuarios.EmailById(AId: LongInt): string;
+function TListaUsuarios.EmailById(const AId: LongInt): string;
 var
-  p: PUsuario;
+  c: PUsuario;
 begin
-  p := FindById(AId);
-  if p <> nil then Result := p^.email else Result := '';
+  c := FHead;
+  while c <> nil do
+  begin
+    if c^.id = AId then Exit(c^.email);
+    c := c^.next;
+  end;
+  Result := '';
 end;
 
-function TListaUsuarios.IdByEmail(const AEmail: string): LongInt;
+function TListaUsuarios.Count: SizeInt;
+begin
+  Result := FCount;
+end;
+
+function TListaUsuarios.NextId: LongInt;
 var
-  p: PUsuario;
+  c: PUsuario; m: LongInt;
 begin
-  p := FindByEmail(AEmail);
-  if p <> nil then Result := p^.id else Result := -1;
+  m := 0; c := FHead;
+  while c <> nil do
+  begin
+    if c^.id > m then m := c^.id;
+    c := c^.next;
+  end;
+  Result := m + 1;
 end;
 
-function TListaUsuarios.ExistsEmail(const AEmail: string): Boolean;
-begin
-  Result := FindByEmail(AEmail) <> nil;
-end;
+procedure TListaUsuarios.LoadFromJSON(const AFile: string);
 
-procedure TListaUsuarios.LoadFromJSON(const ARuta: string);
+  procedure addFromObj(o: TJSONObject; idxBase: Integer);
+  var
+    idv, nombrev, usuariov, emailv, telv: string;
+  begin
+    idv     := IntToStr(o.Get('id', idxBase));
+    nombrev := o.Get('nombre', '');
+    // aceptar claves alternativas
+    if o.Find('usuario') <> nil then
+      usuariov := o.Get('usuario','')
+    else
+      usuariov := o.Get('user','');
+    emailv   := o.Get('email','');
+    if o.Find('telefono') <> nil then
+      telv := o.Get('telefono','')
+    else
+      telv := o.Get('phone','');
+
+    // si no trae usuario, derivar del email
+    if (usuariov = '') and (Pos('@', emailv) > 1) then
+      usuariov := Copy(emailv, 1, Pos('@', emailv)-1);
+
+    Add(StrToIntDef(idv, idxBase), nombrev, usuariov, emailv, telv);
+  end;
+
 var
   s : TStringStream;
   j : TJSONData;
-  root: TJSONObject;
   arr: TJSONArray;
-  i  : Integer;
+  obj: TJSONObject;
   o  : TJSONObject;
+  i  : Integer;
 begin
   Clear;
 
   s := TStringStream.Create('');
   try
-    s.LoadFromFile(ARuta);
+    s.LoadFromFile(AFile);
     j := GetJSON(s.DataString);
     try
-      root := j as TJSONObject;
-      arr  := root.Arrays['usuarios'];
-      for i := 0 to arr.Count - 1 do
-      begin
-        o := arr.Objects[i];
-        Add(
-          o.Integers['id'],
-          o.Strings['nombre'],
-          o.Strings['usuario'],
-          o.Strings['password'],
-          o.Strings['email'],
-          o.Strings['telefono']
-        );
+      case j.JSONType of
+        jtArray:
+          begin
+            arr := TJSONArray(j);
+            for i := 0 to arr.Count-1 do
+            begin
+              o := arr.Objects[i];
+              addFromObj(o, i+1);
+            end;
+          end;
+        jtObject:
+          begin
+            obj := TJSONObject(j);
+            if obj.Find('usuarios', arr) then
+            begin
+              for i := 0 to arr.Count-1 do
+              begin
+                o := arr.Objects[i];
+                addFromObj(o, i+1);
+              end;
+            end;
+          end;
       end;
     finally
       j.Free;
@@ -195,35 +221,63 @@ begin
   end;
 end;
 
-procedure TListaUsuarios.ExportToDOT(const ARuta: string);
+procedure TListaUsuarios.ExportToDOT(const AFile: string);
 var
-  f  : TextFile;
-  cur: PUsuario;
-  idx: Integer;
-begin
-  AssignFile(f, ARuta);
-  Rewrite(f);
-  try
-    Writeln(f, 'digraph G { rankdir=LR;');
-    Writeln(f, '  node [shape=record, style=filled, fillcolor=lightblue];');
+  f: TextFile;
+  u, nextU: PUsuario;
 
-    cur := FHead;
-    idx := 0;
-    while cur <> nil do
+  function Esc(const s: string): string; inline;
+  begin
+    Result := StringReplace(s, '"', '\"', [rfReplaceAll]);
+  end;
+
+  function CardLabel(p: PUsuario): string;
+  begin
+  // Orden correcto
+  Result := Format(
+    'ID: %d\nNombre: %s\nUsuario: %s\nEmail: %s\nTeléfono: %s',
+    [p^.id, Esc(p^.nombre), Esc(p^.usuario), Esc(p^.email), Esc(p^.telefono)]
+  );
+  end;
+
+
+begin
+  AssignFile(f, AFile); Rewrite(f);
+  try
+    Writeln(f, 'digraph G {');
+    Writeln(f, '  rankdir=LR;');
+    Writeln(f, '  labelloc="t"; label="Reporte de Usuarios";');
+    Writeln(f, '  node  [shape=box, style=filled, fillcolor="#cfe8f3", color="#6a8db5", fontname="Helvetica"];');
+    Writeln(f, '  edge  [arrowsize=0.7, color="#444444"];');
+
+    // marco con esquinas redondeadas como en tu ejemplo
+    Writeln(f, '  subgraph cluster_lista {');
+    Writeln(f, '    label="Lista Enlazada"; style="rounded"; color="#808080";');
+
+    // nodos (tarjetas)
+    u := FHead;
+    while u <> nil do
     begin
-      Inc(idx);
-      Writeln(f, Format('  n%d [label="ID: %d | Nombre: %s | Usuario: %s | Email: %s | Telefono: %s"];',
-        [idx, cur^.id, cur^.nombre, cur^.usuario, cur^.email, cur^.telefono]));
-      if cur^.next <> nil then
-        Writeln(f, Format('  n%d -> n%d;', [idx, idx + 1]));
-      cur := cur^.next;
+      Writeln(f, Format('    u%d [label="%s"];', [u^.id, CardLabel(u)]));
+      u := u^.next;
     end;
 
+    // enlaces u1 -> u2 -> u3 ...
+    u := FHead;
+    while (u <> nil) and (u^.next <> nil) do
+    begin
+      nextU := u^.next;
+      Writeln(f, Format('    u%d -> u%d;', [u^.id, nextU^.id]));
+      u := nextU;
+    end;
+
+    Writeln(f, '  }'); // cluster
     Writeln(f, '}');
   finally
     CloseFile(f);
   end;
 end;
+
 
 end.
 

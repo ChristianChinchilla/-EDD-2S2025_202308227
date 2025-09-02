@@ -1,78 +1,76 @@
 object frmTrash: TfrmTrash
-  Left = 336
-  Height = 282
-  Top = 32
-  Width = 464
+  Left = 220
+  Height = 520
+  Top = 130
+  Width = 820
   Caption = 'Papelera'
-  ClientHeight = 282
-  ClientWidth = 464
-  Position = poScreenCenter
+  ClientHeight = 520
+  ClientWidth = 820
   object pnlToolbar: TPanel
     Left = 0
-    Height = 96
+    Height = 40
     Top = 0
-    Width = 464
-    ClientHeight = 96
-    ClientWidth = 464
+    Width = 820
+    Align = alTop
+    ClientHeight = 40
+    ClientWidth = 820
     TabOrder = 0
     object btnVolver: TButton
-      Left = 384
-      Height = 25
+      Left = 8
+      Height = 24
       Top = 8
-      Width = 75
+      Width = 80
       Caption = 'Volver'
       TabOrder = 0
       OnClick = btnVolverClick
     end
-    object btnBuscar: TButton
-      Left = 8
-      Height = 25
-      Top = 56
-      Width = 75
-      Caption = 'Buscar'
+    object edtBuscar: TEdit
+      Left = 96
+      Height = 36
+      Top = 0
+      Width = 240
       TabOrder = 1
+    end
+    object btnBuscar: TButton
+      Left = 346
+      Height = 24
+      Top = 8
+      Width = 80
+      Caption = 'Buscar'
+      TabOrder = 2
       OnClick = btnBuscarClick
-      OnKeyDown = edtBuscarKeyDown
+    end
+    object btnEliminar: TButton
+      Left = 432
+      Height = 24
+      Top = 8
+      Width = 90
+      Caption = 'Eliminar'
+      TabOrder = 3
+      OnClick = btnEliminarClick
     end
     object lblCountTxt: TLabel
-      Left = 8
+      Left = 540
       Height = 19
-      Top = 8
+      Top = 12
       Width = 83
       Caption = 'En Papelera:'
     end
     object lblCount: TLabel
-      Left = 96
+      Left = 624
       Height = 19
-      Top = 8
+      Top = 12
       Width = 9
       Caption = '0'
-    end
-    object btnEliminar: TButton
-      Left = 296
-      Height = 25
-      Top = 56
-      Width = 75
-      Caption = 'Eliminar'
-      TabOrder = 2
-      OnClick = btnEliminarClick
-    end
-    object edtBuscar: TEdit
-      Left = 88
-      Height = 36
-      Top = 48
-      Width = 192
-      TabOrder = 3
-      Text = 'edtBuscar'
     end
   end
   object gridTrash: TStringGrid
     Left = 0
-    Height = 168
-    Top = 96
-    Width = 376
+    Height = 480
+    Top = 40
+    Width = 820
+    Align = alClient
     ColCount = 3
-    GridLineStyle = psPattern
     RowCount = 1
     TabOrder = 1
   end

@@ -47,19 +47,20 @@ begin
   lblTitle.Caption := 'Root';
   OpenDialog1.Filter := 'JSON|*.json|Todos|*.*';
 end;
-
 procedure TfrmRootMenu.btnCargaMasivaClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
   try
     GUsuarios.LoadFromJSON(OpenDialog1.FileName);
-    // Si ya tienes Count puedes poner: Format('Usuarios cargados: %d', [GUsuarios.Count])
-    ShowMessage('Usuarios cargados correctamente desde: ' + OpenDialog1.FileName);
+    ShowMessage(Format('Usuarios cargados: %d', [GUsuarios.Count]));
   except
     on E: Exception do
       ShowMessage('Error al cargar JSON: ' + E.Message);
   end;
 end;
+
+
+
 
 procedure TfrmRootMenu.RunDot(const dotFile, pngFile: string);
 var
@@ -116,33 +117,21 @@ end;
 
 procedure TfrmRootMenu.btnRepRelacionesClick(Sender: TObject);
 var
-  f        : TextFile;
-  dot, png : string;
+  dot, png: string;
 begin
-  // Placeholder hasta que tengas uListaCorreos listo
   ForceDirectories('Root-Reportes');
   dot := 'Root-Reportes/relaciones.dot';
   png := 'Root-Reportes/relaciones.png';
 
-  AssignFile(f, dot);
-  Rewrite(f);
-  try
-    Writeln(f, 'digraph G {');
-    Writeln(f, '  label="Relaciones (pendiente)\nIntegra uListaCorreos para graficar remitente -> destinatario";');
-    Writeln(f, '  labelloc="t"; fontsize=16;');
-    Writeln(f, '  "remitente" -> "destinatario";');
-    Writeln(f, '}');
-  finally
-    CloseFile(f);
-  end;
-
+  // Genera la MATRIZ (nuevo)
+  GCorreos.ExportRelacionesMatrizDOT(dot);
   RunDot(dot, png);
 
   if FileExists(png) then
-    ShowMessage('Reporte de Relaciones generado (placeholder): ' + png)
+    ShowMessage('Reporte de Relaciones (matriz) generado: ' + png)
   else
-    ShowMessage('Se generó relaciones.dot (placeholder): ' + dot + LineEnding +
-                '(Cuando tengas correos, reemplazamos por el real y generamos .png)');
+    ShowMessage('Se generó relaciones.dot: ' + dot + LineEnding +
+                '(Instala graphviz para crear el .png)');
 end;
 
 procedure TfrmRootMenu.btnLogoutClick(Sender: TObject);

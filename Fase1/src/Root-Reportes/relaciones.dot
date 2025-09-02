@@ -1,7 +1,0 @@
-digraph G {
-  graph [splines=false, nodesep=0.3, ranksep=0.4, labelloc="t", label="Matriz Dispersa"];
-  node  [fontname="Helvetica"];
-  { rank=same;
-    nPad0 [label="", shape=box, style=filled, fillcolor="gray70", width=1, height=0.5, fixedsize=true];
-  }
-}

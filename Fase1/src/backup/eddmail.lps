@@ -7,10 +7,10 @@
       <Unit>
         <Filename Value="eddmail.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="8"/>
-        <TopLine Value="11"/>
-        <CursorPos Y="28"/>
-        <UsageCount Value="33"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="2"/>
+        <CursorPos X="72" Y="11"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -20,10 +20,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uMain"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="75"/>
-        <CursorPos Y="90"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -31,11 +28,10 @@
         <Filename Value="udata.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uData"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="21"/>
-        <CursorPos Y="38"/>
-        <UsageCount Value="33"/>
+        <TopLine Value="316"/>
+        <CursorPos Y="333"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -45,9 +41,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uRootMenu"/>
-        <TopLine Value="120"/>
-        <CursorPos X="5" Y="134"/>
-        <UsageCount Value="33"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="116"/>
+        <CursorPos Y="131"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -55,20 +52,14 @@
         <Filename Value="ulistausuarios.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uListaUsuarios"/>
-        <EditorIndex Value="6"/>
-        <TopLine Value="212"/>
-        <CursorPos Y="229"/>
-        <UsageCount Value="32"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="30"/>
       </Unit>
       <Unit>
         <Filename Value="ulistacorreos.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uListaCorreos"/>
-        <EditorIndex Value="7"/>
-        <TopLine Value="373"/>
-        <CursorPos Y="390"/>
-        <UsageCount Value="32"/>
+        <EditorIndex Value="13"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -78,9 +69,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uInboxForm"/>
-        <EditorIndex Value="3"/>
-        <CursorPos X="34" Y="15"/>
-        <UsageCount Value="25"/>
+        <EditorIndex Value="14"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -91,10 +81,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uUserMenu"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="59"/>
-        <CursorPos Y="74"/>
-        <UsageCount Value="25"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="203"/>
+        <CursorPos Y="218"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -102,135 +92,239 @@
         <Filename Value="ucomposeform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmCompose"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uComposeForm"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="22"/>
-        <CursorPos X="27" Y="11"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="6"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="utrashform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmTrash"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uTrashForm"/>
+        <EditorIndex Value="12"/>
+        <UsageCount Value="30"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uscheduleform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmSchedule"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uScheduleForm"/>
+        <EditorIndex Value="11"/>
+        <UsageCount Value="30"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uproglistform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmProgList"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uProgListForm"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="30"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ucontacts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmContacts"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uContacts"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="120"/>
+        <CursorPos Y="135"/>
+        <UsageCount Value="30"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uaddcontactform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmAddContact"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uAddContactForm"/>
+        <UsageCount Value="30"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unewcontactform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmNewContact"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uNewContactForm"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="67"/>
+        <CursorPos Y="82"/>
+        <UsageCount Value="30"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uprofileform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmProfile"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uProfileForm"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="107"/>
+        <CursorPos Y="127"/>
+        <UsageCount Value="28"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.2.0/lcl/include/control.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="3604"/>
+        <CursorPos X="18" Y="3618"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uuserreports.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uUserReports"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="332"/>
+        <CursorPos Y="349"/>
+        <UsageCount Value="27"/>
+        <Loaded Value="True"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
       <Position>
-        <Filename Value="eddmail.lpr"/>
-        <Caret Line="12" Column="66" TopLine="4"/>
+        <Filename Value="uprofileform.pas"/>
+        <Caret Line="60" Column="6" TopLine="52"/>
       </Position>
       <Position>
-        <Filename Value="eddmail.lpr"/>
-        <Caret Line="19" Column="61" TopLine="6"/>
+        <Filename Value="uprofileform.pas"/>
+        <Caret Line="135" TopLine="120"/>
       </Position>
       <Position>
-        <Filename Value="eddmail.lpr"/>
-        <Caret Line="17" Column="29" TopLine="9"/>
+        <Filename Value="uprofileform.pas"/>
+        <Caret Line="116" Column="36" TopLine="107"/>
       </Position>
       <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="58" Column="27" TopLine="50"/>
+        <Filename Value="urootmenu.pas"/>
       </Position>
       <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="53" Column="15" TopLine="51"/>
+        <Filename Value="urootmenu.pas"/>
+        <Caret Line="111" Column="29" TopLine="108"/>
       </Position>
       <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="57" Column="15" TopLine="50"/>
-      </Position>
-      <Position>
-        <Filename Value="umain.pas"/>
-        <Caret Line="36" Column="12" TopLine="28"/>
-      </Position>
-      <Position>
-        <Filename Value="umain.pas"/>
-        <Caret Line="79" TopLine="64"/>
-      </Position>
-      <Position>
-        <Filename Value="umain.pas"/>
-        <Caret Line="70" Column="36" TopLine="63"/>
+        <Filename Value="urootmenu.pas"/>
+        <Caret Line="127" Column="37" TopLine="121"/>
       </Position>
       <Position>
         <Filename Value="uusermenu.pas"/>
-        <Caret Line="38" Column="23" TopLine="31"/>
+        <Caret Line="202" TopLine="187"/>
       </Position>
       <Position>
         <Filename Value="uusermenu.pas"/>
-        <Caret Line="39" Column="11" TopLine="33"/>
+        <Caret Line="147" Column="14" TopLine="140"/>
       </Position>
       <Position>
-        <Filename Value="ucomposeform.pas"/>
+        <Filename Value="uusermenu.pas"/>
+        <Caret Line="191" Column="18" TopLine="188"/>
       </Position>
       <Position>
-        <Filename Value="ucomposeform.pas"/>
-        <Caret Line="42" Column="3" TopLine="31"/>
+        <Filename Value="uusermenu.pas"/>
+        <Caret Line="219" TopLine="204"/>
       </Position>
       <Position>
-        <Filename Value="ucomposeform.pas"/>
-        <Caret Line="46" Column="19" TopLine="36"/>
+        <Filename Value="uusermenu.pas"/>
+        <Caret Line="15" Column="22"/>
       </Position>
       <Position>
-        <Filename Value="ucomposeform.pas"/>
-        <Caret Line="121" TopLine="106"/>
+        <Filename Value="uusermenu.pas"/>
+        <Caret Line="219" TopLine="204"/>
       </Position>
       <Position>
-        <Filename Value="ulistacorreos.pas"/>
-        <Caret Line="41" Column="46" TopLine="30"/>
+        <Filename Value="uusermenu.pas"/>
+        <Caret Line="8" Column="27"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="7" Column="14"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="266" TopLine="249"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="111" Column="29" TopLine="101"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="261" Column="26" TopLine="249"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="296" TopLine="279"/>
+      </Position>
+      <Position>
+        <Filename Value="uusermenu.pas"/>
+        <Caret Line="161" Column="33" TopLine="152"/>
+      </Position>
+      <Position>
+        <Filename Value="uusermenu.pas"/>
+        <Caret Line="210" Column="26" TopLine="205"/>
+      </Position>
+      <Position>
+        <Filename Value="uusermenu.pas"/>
+        <Caret Line="163" Column="23" TopLine="153"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="284" Column="33" TopLine="280"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="343" TopLine="326"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="146" Column="25" TopLine="134"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="344" TopLine="327"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="167" Column="22" TopLine="152"/>
       </Position>
       <Position>
         <Filename Value="udata.pas"/>
-        <Caret Line="10" Column="19" TopLine="5"/>
+        <Caret Line="6" Column="14"/>
       </Position>
       <Position>
-        <Filename Value="ulistausuarios.pas"/>
-        <Caret Line="223" Column="31" TopLine="215"/>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="346" TopLine="329"/>
       </Position>
       <Position>
-        <Filename Value="ucomposeform.pas"/>
-        <Caret Line="121" TopLine="106"/>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="179" Column="33" TopLine="167"/>
       </Position>
       <Position>
-        <Filename Value="ulistausuarios.pas"/>
-        <Caret Line="229" TopLine="212"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="67" Column="19" TopLine="59"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="81" Column="24" TopLine="72"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="68" Column="25" TopLine="59"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="74" TopLine="59"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="62" Column="31" TopLine="50"/>
-      </Position>
-      <Position>
-        <Filename Value="ucomposeform.pas"/>
-        <Caret Line="14" Column="42"/>
-      </Position>
-      <Position>
-        <Filename Value="ucomposeform.pas"/>
-        <Caret Line="91" Column="25" TopLine="85"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="62" Column="12" TopLine="55"/>
-      </Position>
-      <Position>
-        <Filename Value="ulistacorreos.pas"/>
-        <Caret Line="232" Column="32" TopLine="220"/>
-      </Position>
-      <Position>
-        <Filename Value="udata.pas"/>
-        <Caret Line="24" Column="12" TopLine="17"/>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="338" Column="36" TopLine="330"/>
       </Position>
     </JumpHistory>
     <RunParams>

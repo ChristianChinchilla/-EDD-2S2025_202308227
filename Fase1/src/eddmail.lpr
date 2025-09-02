@@ -3,17 +3,12 @@ program eddmail;
 {$mode objfpc}{$H+}
 
 uses
-  {$IFDEF UNIX} cthreads, {$ENDIF}
-  {$IFDEF HASAMIGA} athreads, {$ENDIF}
-<<<<<<< HEAD
+  {$IFDEF UNIX}cthreads,{$ENDIF}
+  {$IFDEF HASAMIGA}athreads,{$ENDIF}
   Interfaces, Forms,
   uMain, uData, uRootMenu, uListaUsuarios, uListaCorreos,
-  uUserMenu, uInboxForm, uComposeForm;  // <-- el unit correcto
-=======
-  Interfaces, Forms, uMain, uData, uRootMenu, uListaUsuarios, uListaCorreos,
-  uUserMenu, uInboxForm, uComposeForm, uTrashForm,
-  uScheduleForm;  // <-- el unit correcto
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
+  uUserMenu, uInboxForm, uComposeForm, uTrashForm, uScheduleForm,
+  uProgListForm, uContacts, uNewContactForm, uProfileForm, uUserReports;
 
 {$R *.res}
 
@@ -27,14 +22,13 @@ begin
   Application.CreateForm(TForm1,       Form1);
   Application.CreateForm(TfrmRootMenu, frmRootMenu);
   Application.CreateForm(TfrmUserMenu, frmUserMenu);
-  Application.CreateForm(TfrmInbox,    frmInbox);   // <-- variable frmInbox, NO uInboxForm
-<<<<<<< HEAD
-  Application.CreateForm(TfrmCompose, ComposeForm);
-=======
-  Application.CreateForm(TfrmCompose, frmCompose);
-  Application.CreateForm(TfrmTrash, frmTrash);
+  Application.CreateForm(TfrmInbox,    frmInbox);
+  Application.CreateForm(TfrmCompose,  frmCompose);
+  Application.CreateForm(TfrmTrash,    frmTrash);
   Application.CreateForm(TfrmSchedule, frmSchedule);
->>>>>>> e486c4b (actualizacion en el codigo de bandeja de entrada, interfaz y codigo de enviar correo, interfaz de programar correo, correcciones en papelera y codigo de progrgamar correo)
+  Application.CreateForm(TfrmProgList, frmProgList);
+  Application.CreateForm(TfrmNewContact, frmNewContact);
+  Application.CreateForm(TfrmProfile, frmProfile);
   Application.Run;
 end.
 
