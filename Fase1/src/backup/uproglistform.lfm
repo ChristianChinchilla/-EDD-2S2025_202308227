@@ -7,6 +7,7 @@ object frmProgList: TfrmProgList
   ClientHeight = 293
   ClientWidth = 405
   Position = poScreenCenter
+  LCLVersion = '4.2.0.0'
   object lblTitle: TLabel
     Left = 136
     Height = 19
@@ -43,6 +44,7 @@ object frmProgList: TfrmProgList
     Width = 75
     Caption = 'Enviar'
     TabOrder = 1
+    OnClick = btnEnviarClick
   end
   object btnVolver: TButton
     Left = 216
@@ -51,5 +53,6 @@ object frmProgList: TfrmProgList
     Width = 75
     Caption = 'Volver'
     TabOrder = 2
+    OnClick = btnVolverClick
   end
 end

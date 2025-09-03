@@ -7,9 +7,10 @@
       <Unit>
         <Filename Value="eddmail.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="7"/>
-        <TopLine Value="2"/>
-        <CursorPos X="72" Y="11"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="19"/>
+        <TopLine Value="17"/>
+        <CursorPos X="5" Y="32"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit>
@@ -29,8 +30,8 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uData"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="316"/>
-        <CursorPos Y="333"/>
+        <TopLine Value="196"/>
+        <CursorPos X="52" Y="208"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit>
@@ -42,7 +43,7 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uRootMenu"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="116"/>
+        <TopLine Value="114"/>
         <CursorPos Y="131"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
@@ -58,7 +59,9 @@
         <Filename Value="ulistacorreos.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uListaCorreos"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="23"/>
+        <TopLine Value="462"/>
+        <CursorPos Y="479"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit>
@@ -69,7 +72,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uInboxForm"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="24"/>
+        <TopLine Value="157"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -82,7 +86,7 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uUserMenu"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="203"/>
+        <TopLine Value="201"/>
         <CursorPos Y="218"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
@@ -107,7 +111,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uTrashForm"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="22"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -119,7 +123,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uScheduleForm"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="21"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -131,7 +135,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uProgListForm"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="20"/>
+        <TopLine Value="140"/>
+        <CursorPos Y="157"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -143,8 +149,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uContacts"/>
-        <EditorIndex Value="8"/>
-        <TopLine Value="120"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="118"/>
         <CursorPos Y="135"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
@@ -167,7 +173,7 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uNewContactForm"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="67"/>
+        <TopLine Value="65"/>
         <CursorPos Y="82"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
@@ -180,12 +186,22 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uProfileForm"/>
-        <EditorIndex Value="9"/>
-        <TopLine Value="107"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="110"/>
         <CursorPos Y="127"/>
         <UsageCount Value="28"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uuserreports.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uUserReports"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="343"/>
+        <CursorPos Y="360"/>
+        <UsageCount Value="27"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/share/lazarus/4.2.0/lcl/include/control.inc"/>
@@ -195,136 +211,225 @@
         <UsageCount Value="9"/>
       </Unit>
       <Unit>
-        <Filename Value="uuserreports.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="uUserReports"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="332"/>
-        <CursorPos Y="349"/>
-        <UsageCount Value="27"/>
+        <Filename Value="umain.lfm"/>
+        <EditorIndex Value="10"/>
+        <UsageCount Value="10"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="frminbox.lfm"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="103"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ucomposeform.lfm"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="57"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ucontacts.lfm"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="83"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uinboxform.lfm"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="37"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unewcontactform.lfm"/>
+        <EditorIndex Value="11"/>
+        <TopLine Value="42"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uprofileform.lfm"/>
+        <EditorIndex Value="12"/>
+        <TopLine Value="69"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uproglistform.lfm"/>
+        <EditorIndex Value="13"/>
+        <TopLine Value="41"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uprogramarform.lfm"/>
+        <EditorIndex Value="14"/>
+        <TopLine Value="38"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="urootmenu.lfm"/>
+        <EditorIndex Value="15"/>
+        <TopLine Value="43"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uscheduleform.lfm"/>
+        <EditorIndex Value="16"/>
+        <TopLine Value="67"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="utrashform.lfm"/>
+        <EditorIndex Value="17"/>
+        <TopLine Value="55"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uusermenu.lfm"/>
+        <EditorIndex Value="18"/>
+        <TopLine Value="90"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
       <Position>
-        <Filename Value="uprofileform.pas"/>
-        <Caret Line="60" Column="6" TopLine="52"/>
-      </Position>
-      <Position>
-        <Filename Value="uprofileform.pas"/>
-        <Caret Line="135" TopLine="120"/>
-      </Position>
-      <Position>
-        <Filename Value="uprofileform.pas"/>
-        <Caret Line="116" Column="36" TopLine="107"/>
-      </Position>
-      <Position>
-        <Filename Value="urootmenu.pas"/>
-      </Position>
-      <Position>
-        <Filename Value="urootmenu.pas"/>
-        <Caret Line="111" Column="29" TopLine="108"/>
-      </Position>
-      <Position>
-        <Filename Value="urootmenu.pas"/>
-        <Caret Line="127" Column="37" TopLine="121"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="202" TopLine="187"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="147" Column="14" TopLine="140"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="191" Column="18" TopLine="188"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="219" TopLine="204"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="15" Column="22"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="219" TopLine="204"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="8" Column="27"/>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="338" Column="36" TopLine="330"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="7" Column="14"/>
+        <Caret Line="349" TopLine="332"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="266" TopLine="249"/>
+        <Caret Line="182" Column="41" TopLine="170"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="111" Column="29" TopLine="101"/>
+        <Caret Line="349" TopLine="311"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="261" Column="26" TopLine="249"/>
+        <Caret Line="182" Column="32" TopLine="170"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="296" TopLine="279"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="161" Column="33" TopLine="152"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="210" Column="26" TopLine="205"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.pas"/>
-        <Caret Line="163" Column="23" TopLine="153"/>
+        <Caret Line="239" Column="21" TopLine="231"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="284" Column="33" TopLine="280"/>
+        <Caret Line="178" Column="21" TopLine="171"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="343" TopLine="326"/>
+        <Caret Line="243" Column="46" TopLine="231"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="146" Column="25" TopLine="134"/>
+        <Caret Line="349" TopLine="332"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="344" TopLine="327"/>
+        <Caret Line="180" Column="22" TopLine="170"/>
+      </Position>
+      <Position>
+        <Filename Value="ulistacorreos.pas"/>
+        <Caret Line="15" Column="5" TopLine="7"/>
+      </Position>
+      <Position>
+        <Filename Value="ulistacorreos.pas"/>
+        <Caret Line="479" TopLine="462"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="167" Column="22" TopLine="152"/>
+        <Caret Line="178" Column="21" TopLine="170"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="243" Column="37" TopLine="231"/>
+      </Position>
+      <Position>
+        <Filename Value="uuserreports.pas"/>
+        <Caret Line="341" TopLine="324"/>
+      </Position>
+      <Position>
+        <Filename Value="uproglistform.pas"/>
+        <Caret Line="7" Column="5"/>
+      </Position>
+      <Position>
+        <Filename Value="uproglistform.pas"/>
+        <Caret Line="14" TopLine="6"/>
+      </Position>
+      <Position>
+        <Filename Value="uproglistform.pas"/>
+        <Caret Line="190" TopLine="154"/>
+      </Position>
+      <Position>
+        <Filename Value="uproglistform.pas"/>
+        <Caret Line="15" Column="73" TopLine="7"/>
       </Position>
       <Position>
         <Filename Value="udata.pas"/>
-        <Caret Line="6" Column="14"/>
+        <Caret Line="208" Column="52" TopLine="196"/>
+      </Position>
+      <Position>
+        <Filename Value="uproglistform.pas"/>
+        <Caret Line="17" Column="39" TopLine="7"/>
+      </Position>
+      <Position>
+        <Filename Value="uproglistform.pas"/>
+        <Caret Line="157" TopLine="142"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="346" TopLine="329"/>
+        <Caret Line="16" TopLine="8"/>
       </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
-        <Caret Line="179" Column="33" TopLine="167"/>
+        <Caret Line="360" TopLine="343"/>
       </Position>
       <Position>
-        <Filename Value="uuserreports.pas"/>
-        <Caret Line="338" Column="36" TopLine="330"/>
+        <Filename Value="uinboxform.pas"/>
+        <Caret TopLine="157"/>
+      </Position>
+      <Position>
+        <Filename Value="umain.pas"/>
+      </Position>
+      <Position>
+        <Filename Value="uusermenu.lfm"/>
+        <Caret TopLine="90"/>
+      </Position>
+      <Position>
+        <Filename Value="eddmail.lpr"/>
+        <Caret Line="23" Column="5" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="eddmail.lpr"/>
+        <Caret Line="24" Column="5" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="eddmail.lpr"/>
+        <Caret Line="29" Column="5" TopLine="17"/>
       </Position>
     </JumpHistory>
     <RunParams>
@@ -332,4 +437,15 @@
       <Modes ActiveMode=""/>
     </RunParams>
   </ProjectSession>
+  <Debugging>
+    <BreakPoints>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="uproglistform.pas"/>
+        <Line Value="1"/>
+      </Item>
+    </BreakPoints>
+  </Debugging>
 </CONFIG>

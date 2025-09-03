@@ -57,9 +57,17 @@ end;
 
 function TForm1.EsRootLogin(const Email, Pass: string): Boolean;
 begin
+<<<<<<< HEAD
   Result := SameText(Trim(Email), 'root@edd.com') and (Trim(Pass) = 'root');
 end;
 
+=======
+  // Root ahora es root@edd.com con contraseña root123
+  Result := SameText(Trim(Email), 'root@edd.com') and (Trim(Pass) = 'root123');
+end;
+
+
+>>>>>>> 93f5b82 (Fase1)
 procedure TForm1.IrMenuRoot;
 begin
   if not Assigned(frmRootMenu) then

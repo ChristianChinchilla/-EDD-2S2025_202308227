@@ -7,6 +7,7 @@ object frmProgList: TfrmProgList
   ClientHeight = 293
   ClientWidth = 405
   Position = poScreenCenter
+  LCLVersion = '4.2.0.0'
   object lblTitle: TLabel
     Left = 136
     Height = 19

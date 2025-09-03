@@ -20,15 +20,15 @@ begin
   {$POP}
   Application.Initialize;
   Application.CreateForm(TForm1,       Form1);
-  Application.CreateForm(TfrmRootMenu, frmRootMenu);
-  Application.CreateForm(TfrmUserMenu, frmUserMenu);
-  Application.CreateForm(TfrmInbox,    frmInbox);
-  Application.CreateForm(TfrmCompose,  frmCompose);
-  Application.CreateForm(TfrmTrash,    frmTrash);
-  Application.CreateForm(TfrmSchedule, frmSchedule);
-  Application.CreateForm(TfrmProgList, frmProgList);
-  Application.CreateForm(TfrmNewContact, frmNewContact);
-  Application.CreateForm(TfrmProfile, frmProfile);
-  Application.Run;
+  //Application.CreateForm(TfrmRootMenu, frmRootMenu);
+  //Application.CreateForm(TfrmUserMenu, frmUserMenu);
+  //Application.CreateForm(TfrmInbox,    frmInbox);
+  //Application.CreateForm(TfrmCompose,  frmCompose);
+  //Application.CreateForm(TfrmTrash,    frmTrash);
+  //Application.CreateForm(TfrmSchedule, frmSchedule);
+  //Application.CreateForm(TfrmProgList, frmProgList);
+  //Application.CreateForm(TfrmNewContact, frmNewContact);
+  //Application.CreateForm(TfrmProfile, frmProfile);
+  //Application.Run;
 end.
 

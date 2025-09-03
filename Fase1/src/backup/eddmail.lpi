@@ -140,8 +140,14 @@
         <Filename Value="uprofileform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmProfile"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uProfileForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uuserreports.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uUserReports"/>
       </Unit>
     </Units>
   </ProjectOptions>

@@ -13,31 +13,37 @@ implementation
 
 uses
   FileUtil, Process,
-  uData,
-  uListaUsuarios,
-  uListaCorreos;
+  uData,           // GPapelera, GScheduled, GContacts, GCorreos
+  uListaUsuarios,  // PUsuario, GUsuarios
+  uListaCorreos;   // PCorreo, TListaCorreos (First/next)
 
+{------------------- utilidades -------------------}
 function Sanitize(const S: string): string;
-var i: Integer;
+var
+  i: Integer;
 begin
   Result := '';
   for i := 1 to Length(S) do
-    if S[i] in ['a'..'z','A'..'Z','0'..'9','-','_','@','.'] then Result += S[i]
-    else Result += '_';
+    if S[i] in ['a'..'z','A'..'Z','0'..'9','-','_','@','.'] then
+      Result += S[i]
+    else
+      Result += '_';
 end;
 
 function HTMLEscape(const S: string): string;
-var i: Integer; c: Char;
+var
+  i: Integer;
+  c: Char;
 begin
   Result := '';
   for i := 1 to Length(S) do
   begin
     c := S[i];
     case c of
-      '&': Result += '&amp;';
-      '<': Result += '&lt;';
-      '>': Result += '&gt;';
-      '"': Result += '&quot;';
+      '&' : Result += '&amp;';
+      '<' : Result += '&lt;';
+      '>' : Result += '&gt;';
+      '"' : Result += '&quot;';
       '''': Result += '&#39;';
     else
       Result += c;
@@ -46,7 +52,9 @@ begin
 end;
 
 procedure RunDot(const dotFile, pngFile: string);
-var P: TProcess; Exe: string;
+var
+  P  : TProcess;
+  Exe: string;
 begin
   Exe := FindDefaultExecutablePath('dot'); if Exe = '' then Exe := 'dot';
   P := TProcess.Create(nil);
@@ -54,8 +62,7 @@ begin
     P.Executable := Exe;
     P.Parameters.Add('-Tpng');
     P.Parameters.Add(dotFile);
-    P.Parameters.Add('-o');
-    P.Parameters.Add(pngFile);
+    P.Parameters.Add('-o'); P.Parameters.Add(pngFile);
     P.Options := [poNoConsole, poWaitOnExit];
     try P.Execute; except end;
   finally
@@ -70,13 +77,13 @@ begin
   RunDot(Dot, Png);
 end;
 
-{-------------------- Contactos (lista circular, horizontal) ------------------}
+{------------------- CONTACTOS (lista circular, HORIZONTAL) -------------------}
 procedure ExportContactsDOT(const OwnerEmail, TargetDot, TargetPng: string);
 var
-  L, List: TStringList;
-  i: Integer;
-  mail: string;
-  U: PUsuario;
+  L, List : TStringList;
+  i       : Integer;
+  mail    : string;
+  U       : PUsuario;
 begin
   L := TStringList.Create;
   try
@@ -89,15 +96,15 @@ begin
 
     List := GContacts.GetListCopy(OwnerEmail);
     try
-      if (List = nil) or (List.Count = 0) then
+      if (List=nil) or (List.Count=0) then
         L.Add('  Empty [label="(sin contactos)"];')
       else
       begin
-        for i := 0 to List.Count - 1 do
+        for i := 0 to List.Count-1 do
         begin
           mail := List[i];
           U := GUsuarios.FindByEmail(mail);
-          if U <> nil then
+          if U<>nil then
             L.Add(Format(
               '  n%d [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#cfe8ff">'+
               '<tr><td><b>ID:</b> %d</td></tr>'+
@@ -107,7 +114,7 @@ begin
               '<tr><td><b>Teléfono:</b> %s</td></tr>'+
               '</table>>];',
               [i+1, i+1, HTMLEscape(U^.nombre), HTMLEscape(U^.usuario),
-                     HTMLEscape(U^.email), HTMLEscape(U^.telefono)]))
+                     HTMLEscape(U^.email),  HTMLEscape(U^.telefono)]))
           else
             L.Add(Format(
               '  n%d [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#cfe8ff">'+
@@ -117,8 +124,8 @@ begin
               [i+1, i+1, HTMLEscape(mail)]));
         end;
 
-        for i := 0 to List.Count - 1 do
-          L.Add(Format('  n%d -> n%d;', [i+1, ((i+1) mod List.Count) + 1]));
+        for i := 0 to List.Count-1 do
+          L.Add(Format('  n%d -> n%d;', [i+1, ((i+1) mod List.Count)+1]));
       end;
     finally
       List.Free;
@@ -131,14 +138,14 @@ begin
   end;
 end;
 
-{-------------------- Inbox (lista doblemente enlazada) -----------------------}
+{------------------- INBOX (lista doblemente enlazada) -------------------}
 procedure ExportInboxDOT(const OwnerEmail, TargetDot, TargetPng: string);
 var
-  L: TStringList;
-  logicalIdx: Integer;
+  L          : TStringList;
+  logicalIdx : Integer;
 
   procedure AddCorreoNode(const NId, Id: Integer;
-    const Remitente, Estado, Programado, Asunto, Fecha, Mensaje: string);
+                          const Remitente, Estado, ProgSN, Asunto, Fecha, Mensaje: string);
   begin
     L.Add(Format(
       '  n%d [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc">'+
@@ -149,13 +156,14 @@ var
       '<tr><td><b>Asunto:</b> %s</td></tr>'+
       '<tr><td><b>Fecha:</b> %s</td></tr>'+
       '<tr><td><b>Mensaje:</b> %s</td></tr></table>>];',
-      [NId, Id, HTMLEscape(Remitente), HTMLEscape(Estado), HTMLEscape(Programado),
+      [NId, Id, HTMLEscape(Remitente), HTMLEscape(Estado), HTMLEscape(ProgSN),
        HTMLEscape(Asunto), HTMLEscape(Fecha), HTMLEscape(Mensaje)]));
   end;
 
 var
-  p: PCorreo;
-  i: Integer;
+  p      : PCorreo;
+  progSN : string;
+  i      : Integer;
 begin
   L := TStringList.Create;
   try
@@ -168,13 +176,15 @@ begin
 
     logicalIdx := 0;
 
+    // Recorrer la lista enlazada: First -> next
     p := GCorreos.First;
     while p <> nil do
     begin
       if (p^.destinatario = OwnerEmail) and (UpperCase(p^.estado) <> 'EL') then
       begin
         Inc(logicalIdx);
-        AddCorreoNode(logicalIdx, p^.id, p^.remitente, p^.estado, p^.programado,
+        if Trim(p^.programado) <> '' then progSN := 'Sí' else progSN := 'No';
+        AddCorreoNode(logicalIdx, p^.id, p^.remitente, p^.estado, progSN,
                       p^.asunto, p^.fecha, p^.mensaje);
       end;
       p := p^.next;
@@ -183,7 +193,7 @@ begin
     if logicalIdx = 0 then
       L.Add('  Empty [label="(sin correos)"];')
     else
-      for i := 1 to logicalIdx - 1 do
+      for i := 1 to logicalIdx-1 do
         L.Add(Format('  n%d -> n%d;', [i, i+1]));
 
     L.Add('  }'); L.Add('}');
@@ -193,14 +203,16 @@ begin
   end;
 end;
 
-{-------------------- Papelera (pila) -----------------------------------------}
+{------------------- PAPELERA (pila) -------------------}
 procedure ExportTrashDOT(const OwnerEmail, TargetDot, TargetPng: string);
 var
-  L: TStringList;
-  logicalIdx: Integer;
+  L          : TStringList;
+  logicalIdx : Integer;
+  A          : TPCorreoArray;
+  i          : Integer;
 
   procedure AddCorreoNode(const NId, Id: Integer;
-    const Remitente, Estado, Programado, Asunto, Fecha, Mensaje: string);
+                          const Remitente, EstadoLegible, ProgSN, Asunto, Fecha, Mensaje: string);
   begin
     L.Add(Format(
       '  n%d [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#ffd6d6">'+
@@ -211,36 +223,40 @@ var
       '<tr><td><b>Asunto:</b> %s</td></tr>'+
       '<tr><td><b>Fecha:</b> %s</td></tr>'+
       '<tr><td><b>Mensaje:</b> %s</td></tr></table>>];',
-      [NId, Id, HTMLEscape(Remitente), HTMLEscape(Estado), HTMLEscape(Programado),
+      [NId, Id, HTMLEscape(Remitente), HTMLEscape(EstadoLegible), HTMLEscape(ProgSN),
        HTMLEscape(Asunto), HTMLEscape(Fecha), HTMLEscape(Mensaje)]));
   end;
 
 var
-  p: PCorreo;
+  progSN: string;
 begin
   L := TStringList.Create;
   try
     L.Add('digraph G {');
+    L.Add('  rankdir=TB;'); // pila vertical
     L.Add('  graph [fontname="Helvetica"]; node [shape=plaintext, fontname="Helvetica"];');
     L.Add('  labelloc="t"; label="Reporte de Papelera";');
     L.Add('  subgraph cluster0 { label="Pila"; style="rounded"; color="lightcoral";');
 
     logicalIdx := 0;
 
-    p := GCorreos.First;
-    while p <> nil do
-    begin
-      if (p^.destinatario = OwnerEmail) and (UpperCase(p^.estado) = 'EL') then
+    // Tomar snapshot de la pila (de arriba hacia abajo)
+    A := GPapelera.Snapshot;
+
+    for i := 0 to High(A) do
+      if (A[i] <> nil) and (A[i]^.destinatario = OwnerEmail) then
       begin
         Inc(logicalIdx);
-        AddCorreoNode(logicalIdx, p^.id, p^.remitente, p^.estado, p^.programado,
-                      p^.asunto, p^.fecha, p^.mensaje);
+        if Trim(A[i]^.programado) <> '' then progSN := 'Sí' else progSN := 'No';
+        AddCorreoNode(logicalIdx, A[i]^.id, A[i]^.remitente, 'Eliminado', progSN,
+                      A[i]^.asunto, A[i]^.fecha, A[i]^.mensaje);
       end;
-      p := p^.next;
-    end;
 
     if logicalIdx = 0 then
-      L.Add('  Empty [label="(papelera vacía)"];');
+      L.Add('  Empty [label="(papelera vacía)"];')
+    else
+      for i := 1 to logicalIdx-1 do
+        L.Add(Format('  n%d -> n%d;', [i, i+1]));
 
     L.Add('  }'); L.Add('}');
     SaveAndMaybePng(TargetDot, TargetPng, L);
@@ -249,43 +265,44 @@ begin
   end;
 end;
 
-{-------------------- Programados (cola) --------------------------------------}
+{------------------- PROGRAMADOS (cola, VERTICAL) -------------------}
 procedure ExportScheduledDOT(const OwnerEmail, TargetDot, TargetPng: string);
 var
-  L: TStringList;
-  logicalIdx: Integer;
-  i: Integer;
+  L          : TStringList;
+  logicalIdx : Integer;
+  i          : Integer;
 
   procedure AddCorreoNode(const NId, Id: Integer;
-    const Remitente, Estado, Programado, Asunto, Fecha, Mensaje: string);
+                          const Remitente, ProgSN, Asunto, Fecha, Mensaje: string);
   begin
     L.Add(Format(
       '  n%d [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#d6f0ff">'+
       '<tr><td><b>ID:</b> %d</td></tr>'+
       '<tr><td><b>Remitente:</b> %s</td></tr>'+
-      '<tr><td><b>Estado:</b> %s</td></tr>'+
+      '<tr><td><b>Estado:</b> Programado</td></tr>'+
       '<tr><td><b>Programado:</b> %s</td></tr>'+
       '<tr><td><b>Asunto:</b> %s</td></tr>'+
       '<tr><td><b>Fecha:</b> %s</td></tr>'+
       '<tr><td><b>Mensaje:</b> %s</td></tr></table>>];',
-      [NId, Id, HTMLEscape(Remitente), HTMLEscape(Estado), HTMLEscape(Programado),
+      [NId, Id, HTMLEscape(Remitente), HTMLEscape(ProgSN),
        HTMLEscape(Asunto), HTMLEscape(Fecha), HTMLEscape(Mensaje)]));
   end;
 
 var
-  p: PCorreo;
-  n: Integer;
+  p : PCorreo;
+  n : Integer;
 begin
   L := TStringList.Create;
   try
     L.Add('digraph G {');
-    L.Add('  rankdir=LR;');
+    L.Add('  rankdir=TB;'); // vertical
     L.Add('  graph [fontname="Helvetica"]; node [shape=plaintext, fontname="Helvetica"];');
     L.Add('  labelloc="t"; label="Reporte de Correos Programados";');
     L.Add('  subgraph cluster0 { label="Cola"; style="rounded"; color="lightskyblue";');
 
     logicalIdx := 0;
 
+    // Recorrer la cola sin consumirla
     n := GScheduled.Count;
     while n > 0 do
     begin
@@ -295,7 +312,8 @@ begin
         if (p^.remitente = OwnerEmail) and (Trim(p^.programado) <> '') then
         begin
           Inc(logicalIdx);
-          AddCorreoNode(logicalIdx, p^.id, p^.remitente, p^.estado, p^.programado,
+          // Es cola de programados: “Programado: Sí”
+          AddCorreoNode(logicalIdx, p^.id, p^.remitente, 'Sí',
                         p^.asunto, p^.fecha, p^.mensaje);
         end;
         GScheduled.Enqueue(p);
@@ -306,8 +324,8 @@ begin
     if logicalIdx = 0 then
       L.Add('  Empty [label="(sin programados)"];')
     else
-      for i := 1 to logicalIdx - 1 do
-        L.Add(Format('  n%d -> n%d;', [i, i+1]));
+      for i := 1 to logicalIdx-1 do
+        L.Add(Format('  n%d -> n%d [arrowhead=vee];', [i, i+1]));
 
     L.Add('  }'); L.Add('}');
     SaveAndMaybePng(TargetDot, TargetPng, L);
@@ -316,9 +334,10 @@ begin
   end;
 end;
 
-{-------------------- Orquestador --------------------------------------------}
+{------------------- ORQUESTADOR -------------------}
 function GenerateAllUserReports(const AEmail: string; out ABaseDir: string): string;
-var base, userSafe: string;
+var
+  base, userSafe: string;
 begin
   base     := 'Reportes' + DirectorySeparator + 'Usuario-Reportes';
   userSafe := Sanitize(AEmail);
