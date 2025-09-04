@@ -8,12 +8,16 @@ uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Dialogs;
 
 type
+
   { TfrmRootMenu }
+
   TfrmRootMenu = class(TForm)
     btnCargaMasiva: TButton;
     btnRepUsuarios: TButton;
     btnRepRelaciones: TButton;
     btnLogout: TButton;
+    Button1: TButton;
+    Button1btnCargaMasiva: TButton;
     lblTitle: TLabel;
     OpenDialog1: TOpenDialog;
     procedure btnCargaMasivaClick(Sender: TObject);
@@ -22,6 +26,7 @@ type
     procedure btnLogoutClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
+    function  GetReportsDir: string;           // <-- ahora devuelve Reportes/Root-Reportes/
     procedure RunDot(const dotFile, pngFile: string);
   public
   end;
@@ -33,13 +38,7 @@ implementation
 
 {$R *.lfm}
 
-// Modelo en IMPLEMENTATION
-uses
-  uData,            // GUsuarios (y luego GCorreos)
-  uListaUsuarios,   // ExportToDOT, etc.
-  Process, FileUtil; // FindDefaultExecutablePath
-
-{ TfrmRootMenu }
+uses uData, uListaUsuarios, Process, FileUtil;
 
 procedure TfrmRootMenu.FormCreate(Sender: TObject);
 begin
@@ -47,6 +46,7 @@ begin
   lblTitle.Caption := 'Root';
   OpenDialog1.Filter := 'JSON|*.json|Todos|*.*';
 end;
+
 procedure TfrmRootMenu.btnCargaMasivaClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
@@ -54,23 +54,25 @@ begin
     GUsuarios.LoadFromJSON(OpenDialog1.FileName);
     ShowMessage(Format('Usuarios cargados: %d', [GUsuarios.Count]));
   except
-    on E: Exception do
-      ShowMessage('Error al cargar JSON: ' + E.Message);
+    on E: Exception do ShowMessage('Error al cargar JSON: ' + E.Message);
   end;
 end;
 
-
-
+function TfrmRootMenu.GetReportsDir: string;
+var
+  base: string;
+begin
+  // …/Reportes/Root-Reportes/ junto al ejecutable
+  base   := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
+  Result := IncludeTrailingPathDelimiter(base + 'Reportes' + DirectorySeparator + 'Root-Reportes');
+  ForceDirectories(Result);
+end;
 
 procedure TfrmRootMenu.RunDot(const dotFile, pngFile: string);
 var
-  p  : TProcess;
-  exe: string;
+  p: TProcess; exe: string;
 begin
-  // Intentar localizar 'dot' con FileUtil; si no aparece, usar 'dot' directo (requiere que esté en PATH)
-  exe := FindDefaultExecutablePath('dot');
-  if exe = '' then exe := 'dot';
-
+  exe := FindDefaultExecutablePath('dot'); if exe = '' then exe := 'dot';
   p := TProcess.Create(nil);
   try
     p.Executable := exe;
@@ -79,15 +81,9 @@ begin
     p.Parameters.Add('-o');
     p.Parameters.Add(pngFile);
     p.Options := [poNoConsole, poWaitOnExit];
-    try
-      p.Execute;
-    except
+    try p.Execute; except
       on E: Exception do
-      begin
-        // Si falla dot, al menos queda el .dot
-        ShowMessage('No se pudo ejecutar Graphviz (dot). Se generó solo el .dot.' + LineEnding +
-                    'Error: ' + E.Message);
-      end;
+        ShowMessage('No se pudo ejecutar Graphviz (dot). Se generó solo el .dot.'+LineEnding+'Error: '+E.Message);
     end;
   finally
     p.Free;
@@ -96,16 +92,13 @@ end;
 
 procedure TfrmRootMenu.btnRepUsuariosClick(Sender: TObject);
 var
-  dot, png: string;
+  dir, dot, png: string;
 begin
-  ForceDirectories('Root-Reportes');
-  dot := 'Root-Reportes/usuarios.dot';
-  png := 'Root-Reportes/usuarios.png';
+  dir := GetReportsDir;               // …/Reportes/Root-Reportes/
+  dot := dir + 'usuarios.dot';
+  png := dir + 'usuarios.png';
 
-  // Exporta la lista de usuarios a DOT (método dentro de TListaUsuarios)
-  GUsuarios.ExportToDOT('Root-Reportes/usuarios.dot');
-
-  // Intenta generar PNG con Graphviz
+  GUsuarios.ExportToDOT(dot);
   RunDot(dot, png);
 
   if FileExists(png) then
@@ -117,13 +110,12 @@ end;
 
 procedure TfrmRootMenu.btnRepRelacionesClick(Sender: TObject);
 var
-  dot, png: string;
+  dir, dot, png: string;
 begin
-  ForceDirectories('Root-Reportes');
-  dot := 'Root-Reportes/relaciones.dot';
-  png := 'Root-Reportes/relaciones.png';
+  dir := GetReportsDir;               // …/Reportes/Root-Reportes/
+  dot := dir + 'relaciones.dot';
+  png := dir + 'relaciones.png';
 
-  // Genera la MATRIZ (nuevo)
   GCorreos.ExportRelacionesMatrizDOT(dot);
   RunDot(dot, png);
 
@@ -136,8 +128,8 @@ end;
 
 procedure TfrmRootMenu.btnLogoutClick(Sender: TObject);
 begin
-  Application.MainForm.Show; // volver al login
-  Self.Hide;
+  Application.MainForm.Show;
+  Hide;
 end;
 
 end.

@@ -7,7 +7,6 @@ object frmProgList: TfrmProgList
   ClientHeight = 293
   ClientWidth = 405
   Position = poScreenCenter
-  LCLVersion = '4.2.0.0'
   object lblTitle: TLabel
     Left = 136
     Height = 19
@@ -18,15 +17,18 @@ object frmProgList: TfrmProgList
   object lvQueue: TListView
     Left = 8
     Height = 183
-    Top = 32
+    Top = 40
     Width = 384
     Anchors = [akTop, akLeft, akRight, akBottom]
     Columns = <    
       item
+        Caption = 'Asunto'
       end    
       item
+        Caption = 'Remitente'
       end    
       item
+        Caption = 'Fecha de envio'
       end    
       item
         Width = 219

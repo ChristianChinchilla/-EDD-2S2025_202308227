@@ -7,11 +7,10 @@
       <Unit>
         <Filename Value="eddmail.lpr"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="19"/>
-        <TopLine Value="17"/>
-        <CursorPos X="5" Y="32"/>
-        <UsageCount Value="30"/>
+        <EditorIndex Value="12"/>
+        <TopLine Value="18"/>
+        <CursorPos X="30" Y="34"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -21,7 +20,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uMain"/>
-        <UsageCount Value="30"/>
+        <IsVisibleTab Value="True"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -32,7 +32,7 @@
         <EditorIndex Value="1"/>
         <TopLine Value="196"/>
         <CursorPos X="52" Y="208"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -43,9 +43,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uRootMenu"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="114"/>
-        <CursorPos Y="131"/>
-        <UsageCount Value="30"/>
+        <TopLine Value="55"/>
+        <CursorPos X="32" Y="68"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -53,16 +53,16 @@
         <Filename Value="ulistausuarios.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uListaUsuarios"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="36"/>
       </Unit>
       <Unit>
         <Filename Value="ulistacorreos.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uListaCorreos"/>
-        <EditorIndex Value="23"/>
+        <EditorIndex Value="16"/>
         <TopLine Value="462"/>
         <CursorPos Y="479"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -72,9 +72,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uInboxForm"/>
-        <EditorIndex Value="24"/>
+        <EditorIndex Value="17"/>
         <TopLine Value="157"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -85,10 +85,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uUserMenu"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="201"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="203"/>
         <CursorPos Y="218"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -99,8 +99,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uComposeForm"/>
-        <EditorIndex Value="6"/>
-        <UsageCount Value="30"/>
+        <EditorIndex Value="8"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -111,8 +111,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uTrashForm"/>
-        <EditorIndex Value="22"/>
-        <UsageCount Value="30"/>
+        <EditorIndex Value="15"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -123,8 +123,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uScheduleForm"/>
-        <EditorIndex Value="21"/>
-        <UsageCount Value="30"/>
+        <EditorIndex Value="14"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -135,10 +135,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uProgListForm"/>
-        <EditorIndex Value="20"/>
-        <TopLine Value="140"/>
+        <EditorIndex Value="13"/>
+        <TopLine Value="142"/>
         <CursorPos Y="157"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -149,10 +149,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uContacts"/>
-        <EditorIndex Value="7"/>
-        <TopLine Value="118"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="120"/>
         <CursorPos Y="135"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -163,7 +163,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uAddContactForm"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="36"/>
       </Unit>
       <Unit>
         <Filename Value="unewcontactform.pas"/>
@@ -172,10 +172,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uNewContactForm"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="65"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="67"/>
         <CursorPos Y="82"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -186,10 +186,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uProfileForm"/>
-        <EditorIndex Value="8"/>
-        <TopLine Value="110"/>
+        <EditorIndex Value="10"/>
+        <TopLine Value="112"/>
         <CursorPos Y="127"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -197,10 +197,30 @@
         <Filename Value="uuserreports.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uUserReports"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="6"/>
         <TopLine Value="343"/>
         <CursorPos Y="360"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="33"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="comunidadesmenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="comunidadesForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="comunidadesMenu"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="listadelistas.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ListaDeListas"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -212,9 +232,8 @@
       </Unit>
       <Unit>
         <Filename Value="umain.lfm"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
@@ -240,106 +259,68 @@
       </Unit>
       <Unit>
         <Filename Value="uinboxform.lfm"/>
-        <EditorIndex Value="9"/>
-        <TopLine Value="37"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="103"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
         <Filename Value="unewcontactform.lfm"/>
         <EditorIndex Value="11"/>
-        <TopLine Value="42"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="13"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
         <Filename Value="uprofileform.lfm"/>
-        <EditorIndex Value="12"/>
-        <TopLine Value="69"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
         <Filename Value="uproglistform.lfm"/>
-        <EditorIndex Value="13"/>
-        <TopLine Value="41"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
         <Filename Value="uprogramarform.lfm"/>
-        <EditorIndex Value="14"/>
-        <TopLine Value="38"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
         <Filename Value="urootmenu.lfm"/>
-        <EditorIndex Value="15"/>
-        <TopLine Value="43"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
         <Filename Value="uscheduleform.lfm"/>
-        <EditorIndex Value="16"/>
-        <TopLine Value="67"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
         <Filename Value="utrashform.lfm"/>
-        <EditorIndex Value="17"/>
-        <TopLine Value="55"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
         <Filename Value="uusermenu.lfm"/>
-        <EditorIndex Value="18"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="90"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="test.pas"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="21"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
-      <Position>
-        <Filename Value="uuserreports.pas"/>
-        <Caret Line="338" Column="36" TopLine="330"/>
-      </Position>
-      <Position>
-        <Filename Value="uuserreports.pas"/>
-        <Caret Line="349" TopLine="332"/>
-      </Position>
-      <Position>
-        <Filename Value="uuserreports.pas"/>
-        <Caret Line="182" Column="41" TopLine="170"/>
-      </Position>
-      <Position>
-        <Filename Value="uuserreports.pas"/>
-        <Caret Line="349" TopLine="311"/>
-      </Position>
-      <Position>
-        <Filename Value="uuserreports.pas"/>
-        <Caret Line="182" Column="32" TopLine="170"/>
-      </Position>
-      <Position>
-        <Filename Value="uuserreports.pas"/>
-        <Caret Line="239" Column="21" TopLine="231"/>
-      </Position>
-      <Position>
-        <Filename Value="uuserreports.pas"/>
-        <Caret Line="178" Column="21" TopLine="171"/>
-      </Position>
       <Position>
         <Filename Value="uuserreports.pas"/>
         <Caret Line="243" Column="46" TopLine="231"/>
@@ -409,15 +390,7 @@
         <Caret Line="360" TopLine="343"/>
       </Position>
       <Position>
-        <Filename Value="uinboxform.pas"/>
-        <Caret TopLine="157"/>
-      </Position>
-      <Position>
         <Filename Value="umain.pas"/>
-      </Position>
-      <Position>
-        <Filename Value="uusermenu.lfm"/>
-        <Caret TopLine="90"/>
       </Position>
       <Position>
         <Filename Value="eddmail.lpr"/>
@@ -430,6 +403,42 @@
       <Position>
         <Filename Value="eddmail.lpr"/>
         <Caret Line="29" Column="5" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="eddmail.lpr"/>
+        <Caret Line="32" Column="5" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="eddmail.lpr"/>
+        <Caret Line="23" Column="5" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="eddmail.lpr"/>
+        <Caret Line="24" Column="3" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="eddmail.lpr"/>
+        <Caret Line="33" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="eddmail.lpr"/>
+        <Caret Line="21" Column="52" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="eddmail.lpr"/>
+        <Caret Line="33" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="urootmenu.pas"/>
+        <Caret Line="131" TopLine="116"/>
+      </Position>
+      <Position>
+        <Filename Value="urootmenu.pas"/>
+        <Caret Line="142" TopLine="127"/>
+      </Position>
+      <Position>
+        <Filename Value="eddmail.lpr"/>
+        <Caret Line="34" Column="30" TopLine="17"/>
       </Position>
     </JumpHistory>
     <RunParams>

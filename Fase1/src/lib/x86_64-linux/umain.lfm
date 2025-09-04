@@ -27,11 +27,6 @@ object Form1: TForm1
     Top = 64
     Width = 176
     TabOrder = 0
-<<<<<<< HEAD
-    Text = 'root'
-=======
-    Text = 'root@'
->>>>>>> 93f5b82 (Fase1)
     TextHint = 'usuario@edd.com'
   end
   object lblPass: TLabel
@@ -49,7 +44,6 @@ object Form1: TForm1
     EchoMode = emPassword
     PasswordChar = '*'
     TabOrder = 1
-    Text = 'edtPass'
     TextHint = '••••••'
   end
   object btnIngresar: TButton

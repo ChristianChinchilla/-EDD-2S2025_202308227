@@ -1,10 +1,10 @@
 object frmRootMenu: TfrmRootMenu
   Left = 278
-  Height = 249
+  Height = 294
   Top = 32
   Width = 362
   Caption = 'Root'
-  ClientHeight = 249
+  ClientHeight = 294
   ClientWidth = 362
   Position = poScreenCenter
   OnCreate = FormCreate
@@ -17,28 +17,28 @@ object frmRootMenu: TfrmRootMenu
     Caption = 'Root'
   end
   object Button1btnCargaMasiva: TButton
-    Left = 64
-    Height = 57
+    Left = 72
+    Height = 49
     Top = 56
-    Width = 187
+    Width = 168
     Caption = 'Carga Masiva'
     TabOrder = 0
     OnClick = btnCargaMasivaClick
   end
   object btnRepUsuarios: TButton
-    Left = 64
-    Height = 57
+    Left = 72
+    Height = 49
     Top = 112
-    Width = 187
+    Width = 168
     Caption = 'Reporte de Usuarios'
     TabOrder = 1
     OnClick = btnRepUsuariosClick
   end
   object btnRepRelaciones: TButton
-    Left = 64
-    Height = 57
+    Left = 72
+    Height = 49
     Top = 168
-    Width = 187
+    Width = 168
     Caption = 'Reporte de Relaciones'
     TabOrder = 2
     OnClick = btnRepRelacionesClick
@@ -51,6 +51,14 @@ object frmRootMenu: TfrmRootMenu
     Caption = 'Cerrar Sesión'
     TabOrder = 3
     OnClick = btnLogoutClick
+  end
+  object Button1: TButton
+    Left = 72
+    Height = 46
+    Top = 224
+    Width = 168
+    Caption = 'Button1'
+    TabOrder = 4
   end
   object OpenDialog1: TOpenDialog
     Filter = 'JSON|*.json|Todos|*.*'

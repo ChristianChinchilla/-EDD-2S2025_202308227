@@ -2,5 +2,4 @@
 <CONFIG>
   <Compiler Value="/usr/bin/fpc" Date="1625802185"/>
   <Params Value="-MObjFPC -Scghi -Cg -O1 -gw2 -godwarfsets -gl -l -vewnhibq -Fi/home/edd/edd-2s2025_202308227/Fase1/src/lib/x86_64-linux -Fu/home/edd/edd-2s2025_202308227/Fase1/src/ -Fu/usr/share/lazarus/4.2.0/lcl/units/x86_64-linux/gtk2 -Fu/usr/share/lazarus/4.2.0/lcl/units/x86_64-linux -Fu/usr/share/lazarus/4.2.0/components/freetype/lib/x86_64-linux -Fu/usr/share/lazarus/4.2.0/components/lazutils/lib/x86_64-linux -Fu/usr/share/lazarus/4.2.0/packager/units/x86_64-linux -FU/home/edd/edd-2s2025_202308227/Fase1/src/lib/x86_64-linux/ -FE/home/edd/edd-2s2025_202308227/Fase1/src/ -o/home/edd/edd-2s2025_202308227/Fase1/src/eddmail -dLCL -dLCLgtk2 eddmail.lpr"/>
-  <Complete Value="False"/>
 </CONFIG>

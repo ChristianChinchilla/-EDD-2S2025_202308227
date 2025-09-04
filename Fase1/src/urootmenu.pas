@@ -8,14 +8,20 @@ uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Dialogs;
 
 type
+
+  { TfrmRootMenu }
+
   TfrmRootMenu = class(TForm)
     btnCargaMasiva: TButton;
     btnRepUsuarios: TButton;
     btnRepRelaciones: TButton;
     btnLogout: TButton;
+    btnComunidades: TButton;
+    Button1btnCargaMasiva: TButton;
     lblTitle: TLabel;
     OpenDialog1: TOpenDialog;
     procedure btnCargaMasivaClick(Sender: TObject);
+    procedure btnComunidadesClick(Sender: TObject);
     procedure btnRepUsuariosClick(Sender: TObject);
     procedure btnRepRelacionesClick(Sender: TObject);
     procedure btnLogoutClick(Sender: TObject);
@@ -33,7 +39,7 @@ implementation
 
 {$R *.lfm}
 
-uses uData, uListaUsuarios, Process, FileUtil;
+uses uData, uListaUsuarios, Process, FileUtil, comunidadesMenu;
 
 procedure TfrmRootMenu.FormCreate(Sender: TObject);
 begin
@@ -51,6 +57,15 @@ begin
   except
     on E: Exception do ShowMessage('Error al cargar JSON: ' + E.Message);
   end;
+end;
+
+procedure TfrmRootMenu.btnComunidadesClick(Sender: TObject);
+begin
+  if comunidadesForm = nil then
+    Application.CreateForm(TcomunidadesForm, comunidadesForm);
+
+  comunidadesForm.Show;
+  comunidadesForm.BringToFront;
 end;
 
 function TfrmRootMenu.GetReportsDir: string;

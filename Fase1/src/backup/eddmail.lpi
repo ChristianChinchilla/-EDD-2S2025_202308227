@@ -149,6 +149,19 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uUserReports"/>
       </Unit>
+      <Unit>
+        <Filename Value="comunidadesmenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="comunidadesForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="comunidadesMenu"/>
+      </Unit>
+      <Unit>
+        <Filename Value="listadelistas.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ListaDeListas"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
