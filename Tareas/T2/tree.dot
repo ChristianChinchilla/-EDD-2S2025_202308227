@@ -1,0 +1,33 @@
+digraph BST {
+  node [shape=record, fontsize=10];
+  rankdir=TB;
+  n35 [label="{35|Chicky Egle of Germany|cegleofgermany0@paginegialle.it}"];
+  n22 [label="{22|Elane Antonik|eantonik2@army.mil}"];
+  n16 [label="{16|Thomasa Olphert|tolphert3@senate.gov}"];
+  n13 [label="{13|Tamas Hedney|thedney5@deliciousdays.com}"];
+  n1 [label="{1|Stanton Whiston|swhistona@amazon.de}"];
+  n14 [label="{14|Elwood Corwood|ecorwoode@dagondesign.com}"];
+  n19 [label="{19|Saxe Spencelayh|sspencelayh9@xrea.com}"];
+  n23 [label="{23|Kennedy Beedham|kbeedham8@jimdo.com}"];
+  n28 [label="{28|Enoch Flanders|eflandersc@alexa.com}"];
+  n30 [label="{30|Ramsay Dallin|rdallind@imageshack.us}"];
+  n60 [label="{60|Norine Sindle|nsindle1@wp.com}"];
+  n50 [label="{50|Linzy Kerne|lkerne4@globo.com}"];
+  n49 [label="{49|Carrissa Elwyn|celwyn6@uol.com.br}"];
+  n43 [label="{43|Lexine Dempsey|ldempsey7@pcworld.com}"];
+  n82 [label="{82|Lyndell Jeune|ljeuneb@meetup.com}"];
+  n35 -> n22 [label="L"];
+  n35 -> n60 [label="R"];
+  n22 -> n16 [label="L"];
+  n22 -> n23 [label="R"];
+  n16 -> n13 [label="L"];
+  n16 -> n19 [label="R"];
+  n13 -> n1 [label="L"];
+  n13 -> n14 [label="R"];
+  n23 -> n28 [label="R"];
+  n28 -> n30 [label="R"];
+  n60 -> n50 [label="L"];
+  n60 -> n82 [label="R"];
+  n50 -> n49 [label="L"];
+  n49 -> n43 [label="L"];
+}

@@ -1,0 +1,31 @@
+object FormMain: TFormMain
+  Left = 336
+  Height = 240
+  Top = 32
+  Width = 320
+  Caption = 'FormMain'
+  ClientHeight = 240
+  ClientWidth = 320
+  object btnLoadJson: TButton
+    Left = 16
+    Height = 64
+    Top = 88
+    Width = 128
+    Caption = 'Cargar JSON'
+    TabOrder = 0
+    OnClick = btnLoadJsonClick
+  end
+  object btnGraph: TButton
+    Left = 160
+    Height = 64
+    Top = 88
+    Width = 128
+    Caption = 'Generar Grafica'
+    TabOrder = 1
+    OnClick = btnGraphClick
+  end
+  object dlgOpen: TOpenDialog
+    Left = 178
+    Top = 21
+  end
+end
