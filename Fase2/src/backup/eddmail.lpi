@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <General>
+      <SessionStorage Value="InProjectDir"/>
+      <Title Value="eddmail"/>
+      <Scaled Value="True"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
+      <Icon Value="0"/>
+    </General>
+    <BuildModes>
+      <Item Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+    <RunParams>
+      <FormatVersion Value="2"/>
+    </RunParams>
+    <RequiredPackages>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+    </RequiredPackages>
+    <Units>
+      <Unit>
+        <Filename Value="eddmail.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="umain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uMain"/>
+      </Unit>
+      <Unit>
+        <Filename Value="udata.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uData"/>
+      </Unit>
+      <Unit>
+        <Filename Value="urootmenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmRootMenu"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uRootMenu"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ulistausuarios.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uListaUsuarios"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ulistacorreos.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uListaCorreos"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uinboxform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmInbox"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uInboxForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uusermenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmUserMenu"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uUserMenu"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ucomposeform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmCompose"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uComposeForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="utrashform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmTrash"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uTrashForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uscheduleform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmSchedule"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uScheduleForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uproglistform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmProgList"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uProgListForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ucontacts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmContacts"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uContacts"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uaddcontactform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmAddContact"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uAddContactForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unewcontactform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmNewContact"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uNewContactForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uprofileform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmProfile"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uProfileForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uuserreports.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uUserReports"/>
+      </Unit>
+      <Unit>
+        <Filename Value="comunidadesmenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="comunidadesForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="comunidadesMenu"/>
+      </Unit>
+      <Unit>
+        <Filename Value="listadelistas.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ListaDeListas"/>
+      </Unit>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <Target>
+      <Filename Value="eddmail"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf2Set"/>
+      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions>
+      <Item>
+        <Name Value="EAbort"/>
+      </Item>
+      <Item>
+        <Name Value="ECodetoolError"/>
+      </Item>
+      <Item>
+        <Name Value="EFOpenError"/>
+      </Item>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

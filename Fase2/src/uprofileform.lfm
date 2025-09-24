@@ -1,0 +1,86 @@
+object frmProfile: TfrmProfile
+  Left = 336
+  Height = 291
+  Top = 32
+  Width = 382
+  Caption = 'Actualizar Perfil'
+  ClientHeight = 291
+  ClientWidth = 382
+  Position = poScreenCenter
+  object lblNombre: TLabel
+    Left = 56
+    Height = 19
+    Top = 40
+    Width = 54
+    Caption = 'Nombre'
+  end
+  object lblUsuario: TLabel
+    Left = 56
+    Height = 19
+    Top = 88
+    Width = 51
+    Caption = 'Usuario'
+  end
+  object lblCorreo: TLabel
+    Left = 56
+    Height = 19
+    Top = 136
+    Width = 45
+    Caption = 'Correo'
+  end
+  object lblTelefono: TLabel
+    Left = 60
+    Height = 19
+    Top = 184
+    Width = 57
+    Caption = 'Telefono'
+  end
+  object edtNombre: TEdit
+    Left = 128
+    Height = 36
+    Top = 32
+    Width = 160
+    ReadOnly = True
+    TabOrder = 0
+  end
+  object edtUsuario: TEdit
+    Left = 128
+    Height = 36
+    Top = 80
+    Width = 160
+    TabOrder = 1
+  end
+  object edtCorreo: TEdit
+    Left = 128
+    Height = 36
+    Top = 128
+    Width = 160
+    ReadOnly = True
+    TabOrder = 2
+  end
+  object edtTelefono: TEdit
+    Left = 128
+    Height = 36
+    Top = 176
+    Width = 160
+    TabOrder = 3
+  end
+  object btnActualizar: TButton
+    Left = 144
+    Height = 32
+    Top = 232
+    Width = 88
+    Caption = 'Actualizar'
+    TabOrder = 4
+    OnClick = btnActualizarClick
+  end
+  object btnVolver: TButton
+    Left = 296
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Volver'
+    TabOrder = 5
+    OnClick = btnVolverClick
+  end
+end

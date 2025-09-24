@@ -1,0 +1,128 @@
+object frmInbox: TfrmInbox
+  Left = 200
+  Height = 520
+  Top = 120
+  Width = 820
+  Caption = 'Bandeja de Entrada'
+  ClientHeight = 520
+  ClientWidth = 820
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  object pnlToolbar: TPanel
+    Left = 0
+    Height = 40
+    Top = 0
+    Width = 820
+    Align = alTop
+    ClientHeight = 40
+    ClientWidth = 820
+    TabOrder = 0
+    object btnVolver: TButton
+      Left = 592
+      Height = 24
+      Top = 8
+      Width = 80
+      Caption = 'Volver'
+      TabOrder = 0
+    end
+    object btnOrdenAZ: TButton
+      Left = 8
+      Height = 24
+      Top = 8
+      Width = 100
+      Caption = 'A-Z (Asunto)'
+      TabOrder = 1
+      OnClick = btnOrdenAZClick
+    end
+    object lblNoLeidosTxt: TLabel
+      Left = 128
+      Height = 19
+      Top = 8
+      Width = 65
+      Caption = 'No leídos:'
+    end
+    object lblNoLeidos: TLabel
+      Left = 208
+      Height = 19
+      Top = 8
+      Width = 9
+      Caption = '0'
+    end
+    object btnEliminar: TButton
+      Left = 288
+      Height = 24
+      Top = 8
+      Width = 100
+      Caption = 'Eliminar'
+      TabOrder = 2
+    end
+  end
+  object pnlDetalle: TPanel
+    Left = 0
+    Height = 160
+    Top = 360
+    Width = 820
+    Align = alBottom
+    ClientHeight = 160
+    ClientWidth = 820
+    TabOrder = 2
+    object lblDRemit: TLabel
+      Left = 12
+      Height = 19
+      Top = 12
+      Width = 72
+      Caption = 'Remitente:'
+    end
+    object lblDAsunto: TLabel
+      Left = 12
+      Height = 19
+      Top = 36
+      Width = 49
+      Caption = 'Asunto:'
+    end
+    object lblDFecha: TLabel
+      Left = 12
+      Height = 19
+      Top = 60
+      Width = 43
+      Caption = 'Fecha:'
+    end
+    object lblRemitVal: TLabel
+      Left = 90
+      Height = 1
+      Top = 12
+      Width = 1
+    end
+    object lblAsuntoVal: TLabel
+      Left = 90
+      Height = 1
+      Top = 36
+      Width = 1
+    end
+    object lblFechaVal: TLabel
+      Left = 90
+      Height = 1
+      Top = 60
+      Width = 1
+    end
+    object memMensaje: TMemo
+      Left = 12
+      Height = 64
+      Top = 84
+      Width = 780
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+    end
+  end
+  object gridInbox: TStringGrid
+    Left = 0
+    Height = 320
+    Top = 40
+    Width = 820
+    Align = alClient
+    ColCount = 3
+    RowCount = 1
+    TabOrder = 1
+  end
+end

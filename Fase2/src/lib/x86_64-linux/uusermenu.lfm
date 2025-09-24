@@ -1,0 +1,107 @@
+object frmUserMenu: TfrmUserMenu
+  Left = 240
+  Height = 196
+  Top = 140
+  Width = 511
+  Caption = 'Menú de Usuario'
+  ClientHeight = 196
+  ClientWidth = 511
+  Position = poScreenCenter
+  object lblHola: TLabel
+    Left = 135
+    Height = 19
+    Top = 8
+    Width = 31
+    Caption = 'Hola'
+  end
+  object btnBandeja: TButton
+    Left = 16
+    Height = 28
+    Top = 48
+    Width = 150
+    Caption = 'Bandeja de Entrada'
+    TabOrder = 0
+    OnClick = btnBandejaClick
+  end
+  object btnEnviar: TButton
+    Left = 176
+    Height = 28
+    Top = 48
+    Width = 150
+    Caption = 'Enviar Correo'
+    TabOrder = 1
+    OnClick = btnEnviarClick
+  end
+  object btnPapelera: TButton
+    Left = 336
+    Height = 28
+    Top = 48
+    Width = 150
+    Caption = 'Papelera'
+    TabOrder = 2
+    OnClick = btnPapeleraClick
+  end
+  object btnProgramar: TButton
+    Left = 16
+    Height = 28
+    Top = 88
+    Width = 150
+    Caption = 'Programar Correo'
+    TabOrder = 3
+    OnClick = btnProgramarClick
+  end
+  object btnCerrarSesion: TButton
+    Left = 336
+    Height = 28
+    Top = 8
+    Width = 150
+    Caption = 'Cerrar Sesión'
+    TabOrder = 4
+    OnClick = btnCerrarSesionClick
+  end
+  object btnProgList: TButton
+    Left = 176
+    Height = 28
+    Top = 88
+    Width = 150
+    Caption = 'Correos Programados'
+    TabOrder = 5
+    OnClick = btnProgListClick
+  end
+  object btnNewContact: TButton
+    Left = 336
+    Height = 29
+    Top = 88
+    Width = 150
+    Caption = 'Agregar Contactos'
+    TabOrder = 6
+    OnClick = btnNewContactClick
+  end
+  object btnPerfil: TButton
+    Left = 176
+    Height = 25
+    Top = 128
+    Width = 150
+    Caption = 'Actualizar Perfil'
+    TabOrder = 7
+    OnClick = btnPerfilClick
+  end
+  object btnContactos: TButton
+    Left = 16
+    Height = 26
+    Top = 128
+    Width = 150
+    Caption = 'Contactos'
+    TabOrder = 8
+    OnClick = btnContactosClick
+  end
+  object btnGenerarReportes: TButton
+    Left = 336
+    Height = 24
+    Top = 128
+    Width = 150
+    Caption = 'Generar Reportes'
+    TabOrder = 9
+    OnClick = btnGenerarReportesClick
+  end
+end

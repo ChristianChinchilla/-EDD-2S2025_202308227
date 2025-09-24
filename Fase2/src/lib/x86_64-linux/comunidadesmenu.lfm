@@ -1,0 +1,116 @@
+object comunidadesForm: TcomunidadesForm
+  Left = 508
+  Height = 570
+  Top = 313
+  Width = 1100
+  Caption = 'Comunidades'
+  ClientHeight = 570
+  ClientWidth = 1100
+  OnCreate = FormCreate
+  object Label1: TLabel
+    Left = 408
+    Height = 51
+    Top = 24
+    Width = 292
+    Caption = 'Comunidades'
+    Font.Height = -43
+    Font.Name = 'Sans'
+    ParentFont = False
+  end
+  object nombreLabel: TLabel
+    Left = 176
+    Height = 33
+    Top = 123
+    Width = 117
+    Caption = 'Nombre:'
+    Font.Height = -27
+    Font.Name = 'Sans'
+    ParentFont = False
+  end
+  object comunidadLabel: TLabel
+    Left = 176
+    Height = 33
+    Top = 303
+    Width = 164
+    Caption = 'Comunidad:'
+    Font.Height = -27
+    Font.Name = 'Sans'
+    ParentFont = False
+  end
+  object correoLabel: TLabel
+    Left = 176
+    Height = 33
+    Top = 383
+    Width = 101
+    Caption = 'Correo:'
+    Font.Height = -27
+    Font.Name = 'Sans'
+    ParentFont = False
+  end
+  object nombreTextBox: TEdit
+    Left = 344
+    Height = 40
+    Top = 120
+    Width = 608
+    Font.Height = -19
+    Font.Name = 'Sans'
+    ParentFont = False
+    TabOrder = 0
+  end
+  object comunidadTextBox: TEdit
+    Left = 392
+    Height = 40
+    Top = 296
+    Width = 560
+    Font.Height = -19
+    Font.Name = 'Sans'
+    ParentFont = False
+    TabOrder = 1
+  end
+  object correoTextBox: TEdit
+    Left = 344
+    Height = 40
+    Top = 383
+    Width = 608
+    Font.Height = -19
+    Font.Name = 'Sans'
+    ParentFont = False
+    TabOrder = 2
+  end
+  object crearButton: TButton
+    Left = 480
+    Height = 49
+    Top = 200
+    Width = 144
+    Caption = 'Crear'
+    Font.Height = -24
+    Font.Name = 'Sans'
+    ParentFont = False
+    TabOrder = 3
+    OnClick = crearButtonClick
+  end
+  object addButton: TButton
+    Left = 480
+    Height = 49
+    Top = 472
+    Width = 144
+    Caption = 'Añadir'
+    Font.Height = -24
+    Font.Name = 'Sans'
+    ParentFont = False
+    TabOrder = 4
+    OnClick = addButtonClick
+  end
+  object reporteButton: TButton
+    Left = 752
+    Height = 48
+    Top = 496
+    Width = 315
+    Caption = 'Reporte de comunidades'
+    Font.Height = -24
+    Font.Name = 'Sans'
+    ParentFont = False
+    TabOrder = 5
+    OnClick = reporteButtonClick
+  end
+end
