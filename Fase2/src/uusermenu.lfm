@@ -104,7 +104,7 @@ object frmUserMenu: TfrmUserMenu
     TabOrder = 9
     OnClick = btnGenerarReportesClick
   end
-  object btnVer: TButton
+  object btnFavoritos: TButton
     Left = 336
     Height = 24
     Top = 160
@@ -112,7 +112,7 @@ object frmUserMenu: TfrmUserMenu
     Caption = 'Ver Favoritos'
     TabOrder = 10
   end
-  object Button1: TButton
+  object btnPublicar: TButton
     Left = 16
     Height = 32
     Top = 200
@@ -120,12 +120,13 @@ object frmUserMenu: TfrmUserMenu
     Caption = 'Publicar Mensaje En Comunidad'
     TabOrder = 11
   end
-  object Button2: TButton
+  object btnVer: TButton
     Left = 16
     Height = 32
     Top = 160
     Width = 310
     Caption = 'Ver Borradores De Mensaje'
     TabOrder = 12
+    OnClick = btnVerClick
   end
 end

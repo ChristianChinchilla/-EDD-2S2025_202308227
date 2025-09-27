@@ -56,6 +56,15 @@ object frmInbox: TfrmInbox
       Caption = 'Eliminar'
       TabOrder = 2
     end
+    object btnFavorito: TButton
+      Left = 408
+      Height = 24
+      Top = 8
+      Width = 99
+      Caption = 'Favorito'
+      TabOrder = 3
+      OnClick = btnFavoritoClick
+    end
   end
   object pnlDetalle: TPanel
     Left = 0
@@ -66,6 +75,7 @@ object frmInbox: TfrmInbox
     ClientHeight = 160
     ClientWidth = 820
     TabOrder = 2
+    OnClick = pnlDetalleClick
     object lblDRemit: TLabel
       Left = 12
       Height = 19

@@ -5,7 +5,7 @@ unit uUserMenu;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Dialogs; // <-- Dialogs para ShowMessage
+  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Dialogs;
 
 type
   { TfrmUserMenu }
@@ -13,16 +13,16 @@ type
     btnBandeja: TButton;
     btnEnviar: TButton;
     btnPapelera: TButton;
-    btnPerfil: TButton;        // Name=btnPerfil, Caption='Actualizar Perfil'
+    btnPerfil: TButton;
     btnProgramar: TButton;
     btnProgList: TButton;
     btnCerrarSesion: TButton;
-    btnNewContact: TButton;    // Name=btnNewContact, Caption='Nuevo Contacto'
+    btnNewContact: TButton;
     btnContactos: TButton;
-    btnGenerarReportes: TButton; // Name=btnGenerarReportes, Caption='Generar reportes'
-    btnVer: TButton;
-    Button1: TButton;
-    Button2: TButton;
+    btnGenerarReportes: TButton;
+    btnFavoritos: TButton;   // “Ver Favoritos” (otro botón)
+    btnPublicar: TButton;
+    btnVer: TButton;         // “Ver Borradores de Mensaje”
     lblHola: TLabel;
     tmrScheduler: TTimer;
     procedure btnBandejaClick(Sender: TObject);
@@ -35,6 +35,7 @@ type
     procedure btnContactosClick(Sender: TObject);
     procedure btnPerfilClick(Sender: TObject);
     procedure btnGenerarReportesClick(Sender: TObject);
+    procedure btnVerClick(Sender: TObject);      // ← abre borradores
     procedure FormCreate(Sender: TObject);
   private
     FEmailActual: string;
@@ -55,8 +56,8 @@ implementation
 uses
   uMain, uData, uInboxForm, uComposeForm, uTrashForm,
   uScheduleForm, uProgListForm, DateUtils, uListaCorreos,
-  uContacts, uNewContactForm, uProfileForm,
-  uUserReports;  // generador de reportes
+  uContacts, uNewContactForm, uProfileForm, uUserReports,
+  uDraftsForm;  // ← necesario para frmDrafts
 
 { TfrmUserMenu }
 
@@ -64,6 +65,8 @@ procedure TfrmUserMenu.FormCreate(Sender: TObject);
 begin
   Caption := 'Usuario estándar';
   lblHola.Caption := 'Hola';
+
+  // Timer para correos programados
   tmrScheduler := TTimer.Create(Self);
   tmrScheduler.Interval := 30000;
   tmrScheduler.Enabled  := True;
@@ -71,6 +74,10 @@ begin
 
   if Assigned(btnGenerarReportes) then
     btnGenerarReportes.Caption := 'Generar reportes';
+
+  // Asegura que el botón de borradores dispare el handler correcto
+  if Assigned(btnVer) then
+    btnVer.OnClick := @btnVerClick;
 end;
 
 procedure TfrmUserMenu.SetUser(const ANombre, AEmail: string);
@@ -142,7 +149,7 @@ begin
   if not Assigned(frmProfile) then
     Application.CreateForm(TfrmProfile, frmProfile);
   frmProfile.OpenForUser(FEmailActual);
-  Hide; // opcional
+  Hide;
 end;
 
 procedure TfrmUserMenu.btnNewContactClick(Sender: TObject);
@@ -150,10 +157,9 @@ begin
   if not Assigned(frmNewContact) then
     Application.CreateForm(TfrmNewContact, frmNewContact);
   frmNewContact.OpenForUser(FEmailActual);
-  Hide; // opcional
+  Hide;
 end;
 
-// === NUEVO: generar reportes del usuario ===
 procedure TfrmUserMenu.btnGenerarReportesClick(Sender: TObject);
 var
   outDir, _ : string;
@@ -167,6 +173,15 @@ begin
     '- contactos' + LineEnding + LineEnding +
     'Carpeta: ' + outDir
   );
+end;
+
+// === ABRIR BORRADORES ===
+procedure TfrmUserMenu.btnVerClick(Sender: TObject);
+begin
+  if not Assigned(frmDrafts) then
+    Application.CreateForm(TfrmDrafts, frmDrafts);
+  frmDrafts.OpenForUser(FEmailActual);
+  Hide;
 end;
 
 {=====================  AUTOMÁTICO  =====================}

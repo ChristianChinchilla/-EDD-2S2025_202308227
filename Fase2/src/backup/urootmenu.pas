@@ -16,6 +16,7 @@ type
     btnRepComunidades: TButton;      // <-- NUEVO: reporte de comunidades (BST)
     btnLogout: TButton;
     btnComunidades: TButton;
+    btnMensaje: TButton;
     Button1btnCargaMasiva: TButton;
     lblTitle: TLabel;
     OpenDialog1: TOpenDialog;

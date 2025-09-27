@@ -52,10 +52,10 @@ object frmCompose: TfrmCompose
     TabOrder = 2
   end
   object btnEnviar: TButton
-    Left = 232
+    Left = 128
     Height = 26
     Top = 216
-    Width = 100
+    Width = 136
     Anchors = [akLeft, akBottom]
     Caption = 'Enviar'
     TabOrder = 3
@@ -70,5 +70,14 @@ object frmCompose: TfrmCompose
     Caption = 'Volver'
     TabOrder = 4
     OnClick = btnVolverClick
+  end
+  object btnGuardarBorrador: TButton
+    Left = 288
+    Height = 28
+    Top = 214
+    Width = 132
+    Caption = 'Guardar Borrador'
+    TabOrder = 5
+    OnClick = btnGuardarBorradorClick
   end
 end

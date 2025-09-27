@@ -1,11 +1,11 @@
 object frmUserMenu: TfrmUserMenu
   Left = 240
-  Height = 196
+  Height = 286
   Top = 140
-  Width = 511
+  Width = 503
   Caption = 'Menú de Usuario'
-  ClientHeight = 196
-  ClientWidth = 511
+  ClientHeight = 286
+  ClientWidth = 503
   Position = poScreenCenter
   object lblHola: TLabel
     Left = 135
@@ -103,5 +103,31 @@ object frmUserMenu: TfrmUserMenu
     Caption = 'Generar Reportes'
     TabOrder = 9
     OnClick = btnGenerarReportesClick
+  end
+  object btnFavoritos: TButton
+    Left = 336
+    Height = 24
+    Top = 160
+    Width = 150
+    Caption = 'Ver Favoritos'
+    TabOrder = 10
+    OnClick = btnFavoritosClick
+  end
+  object btnPublicar: TButton
+    Left = 16
+    Height = 32
+    Top = 200
+    Width = 310
+    Caption = 'Publicar Mensaje En Comunidad'
+    TabOrder = 11
+  end
+  object btnVer: TButton
+    Left = 16
+    Height = 32
+    Top = 160
+    Width = 310
+    Caption = 'Ver Borradores De Mensaje'
+    TabOrder = 12
+    OnClick = btnVerClick
   end
 end

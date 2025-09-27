@@ -17,16 +17,16 @@ object frmRootMenu: TfrmRootMenu
     Caption = 'Root'
   end
   object Button1btnCargaMasiva: TButton
-    Left = 72
+    Left = 48
     Height = 49
-    Top = 56
+    Top = 59
     Width = 168
     Caption = 'Carga Masiva'
     TabOrder = 0
     OnClick = btnCargaMasivaClick
   end
   object btnRepUsuarios: TButton
-    Left = 256
+    Left = 240
     Height = 49
     Top = 120
     Width = 168
@@ -35,7 +35,7 @@ object frmRootMenu: TfrmRootMenu
     OnClick = btnRepUsuariosClick
   end
   object btnRepRelaciones: TButton
-    Left = 72
+    Left = 48
     Height = 49
     Top = 120
     Width = 168
@@ -53,8 +53,8 @@ object frmRootMenu: TfrmRootMenu
     OnClick = btnLogoutClick
   end
   object btnComunidades: TButton
-    Left = 256
-    Height = 46
+    Left = 240
+    Height = 47
     Top = 59
     Width = 168
     Caption = 'Comunidades'
@@ -62,9 +62,9 @@ object frmRootMenu: TfrmRootMenu
     OnClick = btnComunidadesClick
   end
   object btnMensaje: TButton
-    Left = 120
+    Left = 88
     Height = 57
-    Top = 176
+    Top = 192
     Width = 259
     Caption = 'Ver mensajes de Comunidad'
     TabOrder = 5

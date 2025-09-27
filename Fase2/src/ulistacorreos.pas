@@ -18,6 +18,9 @@ type
     asunto      : string;
     fecha       : string;
     mensaje     : string;
+    // NUEVO: estado de favorito persistente en el nodo
+    favorito    : Boolean;
+
     next, prev  : PCorreo;
   end;
 
@@ -50,7 +53,6 @@ type
 
 implementation
 
-{=== Utilidad local para desenlazar un nodo doblemente enlazado ===}
 procedure UnlinkNode(var Head, Tail: PCorreo; ACorreo: PCorreo);
 begin
   if ACorreo = nil then Exit;
@@ -65,8 +67,6 @@ begin
   else
     Tail := ACorreo^.prev;
 end;
-
-{ TListaCorreos }
 
 constructor TListaCorreos.Create;
 begin
@@ -112,6 +112,8 @@ begin
   n^.asunto       := AAsunto;
   n^.fecha        := AFecha;
   n^.mensaje      := AMsg;
+  n^.favorito     := False;  // <-- NUEVO: por defecto no favorito
+
   n^.next := nil;
   n^.prev := FTail;
 
@@ -140,7 +142,7 @@ begin
   if ACorreo = nil then Exit;
   UnlinkNode(FHead, FTail, ACorreo);
   if FCount > 0 then Dec(FCount);
-  Dispose(ACorreo);                // borrado definitivo
+  Dispose(ACorreo);
 end;
 
 procedure TListaCorreos.Detach(ACorreo: PCorreo);
@@ -148,7 +150,6 @@ begin
   if ACorreo = nil then Exit;
   UnlinkNode(FHead, FTail, ACorreo);
   if FCount > 0 then Dec(FCount);
-  // NO liberar aquí (lo hará quien corresponda)
 end;
 
 function TListaCorreos.NextId: LongInt;
@@ -184,14 +185,12 @@ begin
     s.LoadFromFile(ARuta);
     j := GetJSON(s.DataString);
     try
-      // Forma A: { "correos": [ {remitente, destinatario, ...}, ... ] }
       if (j.JSONType = jtObject) then
       begin
         root := TJSONObject(j);
 
         if root.Find('correos', arr) then
         begin
-          // Si el primer elemento ya tiene 'remitente', asumimos forma A
           if (arr.Count > 0) and (arr.Objects[0].Find('remitente') <> nil) then
           begin
             for i := 0 to arr.Count - 1 do
@@ -211,7 +210,6 @@ begin
             Exit;
           end;
 
-          // Forma B: { "correos": [ {usuario_id, bandeja_entrada:[ {...}, ... ]}, ... ] }
           for i := 0 to arr.Count - 1 do
           begin
             o := arr.Objects[i];
@@ -237,12 +235,9 @@ begin
             end;
           end;
 
-          Exit; // terminó forma B
+          Exit;
         end;
       end;
-
-      // Si llega aquí, el JSON no matcheó las formas soportadas.
-      // No se lanza excepción: simplemente deja la lista vacía.
     finally
       j.Free;
     end;
@@ -330,7 +325,7 @@ var
     WriteLn(f, S);
   end;
 
-  procedure WriteHeaderRow;   // fila superior (destinatarios)
+  procedure WriteHeaderRow;
   var j: Integer;
   begin
     W('  { rank=same;');
@@ -339,24 +334,21 @@ var
       W(Format(
         '    C%d [label="%s", shape=box, style=filled, fillcolor="lightblue", fontsize=10, width=2.6, height=0.6, fixedsize=true];',
         [j, StringReplace(dests[j], '"', '\"', [rfReplaceAll])]));
-    // alineación horizontal (Corner -> C0 -> C1 -> ...)
     if dests.Count > 0 then
       W('    Corner -> C0 [style=invis, weight=50];');
     for j := 0 to dests.Count-2 do
       W(Format('    C%d -> C%d [style=invis, weight=50];', [j, j+1]));
     W('  }');
 
-    // flechas entre cabeceras (como la maqueta)
     for j := 0 to dests.Count-2 do
       W(Format('  C%d -> C%d [dir=both, arrowsize=0.5];', [j, j+1]));
   end;
 
-  procedure WriteRow(i: Integer); // columna izquierda + celdas
+  procedure WriteRow(i: Integer);
   var
     j: Integer;
     rowId: string;
 
-    // Devuelve el ID del nodo de la celda (visible X_ o invisible P_)
     function CellId(ii, jj: Integer): string;
     begin
       if counts[ii][jj] > 0 then
@@ -368,13 +360,11 @@ var
   begin
     rowId := Format('R%d', [i]);
 
-    // remitente a la izquierda
     W('  { rank=same;');
     W(Format(
       '    %s [label="%s", shape=box, style=filled, fillcolor="lightgreen", fontsize=10, width=2.8, height=0.6, fixedsize=true];',
       [rowId, StringReplace(senders[i], '"', '\"', [rfReplaceAll])]));
 
-    // nodos de celdas (visibles en naranja si hay conteo; invisibles si no)
     for j := 0 to dests.Count-1 do
     begin
       if counts[i][j] > 0 then
@@ -387,7 +377,6 @@ var
           [i, j]));
     end;
 
-    // alineación horizontal dentro de la fila (de izquierda a derecha)
     if dests.Count > 0 then
       W(Format('    %s -> %s [style=invis, weight=50];', [rowId, CellId(i,0)]));
     for j := 0 to dests.Count-2 do
@@ -395,7 +384,6 @@ var
 
     W('  }');
 
-    // conexiones visibles: remitente ↔ celda y celda ↔ cabecera
     for j := 0 to dests.Count-1 do
       if counts[i][j] > 0 then
       begin
@@ -413,7 +401,6 @@ begin
     senders.Sorted := True;  senders.Duplicates := dupIgnore;
     dests.Sorted   := True;  dests.Duplicates   := dupIgnore;
 
-    // 1) coleccionar remitentes y destinatarios únicos
     cur := FHead;
     while cur <> nil do
     begin
@@ -422,7 +409,6 @@ begin
       cur := cur^.next;
     end;
 
-    // 2) matriz de conteos [remitente, destinatario]
     SetLength(counts, senders.Count, dests.Count);
     for i := 0 to senders.Count-1 do
       for j := 0 to dests.Count-1 do
@@ -438,7 +424,6 @@ begin
       cur := cur^.next;
     end;
 
-    // 3) emitir DOT
     AssignFile(f, ARuta); Rewrite(f);
     try
       W('digraph G {');
@@ -447,7 +432,6 @@ begin
 
       if (senders.Count = 0) or (dests.Count = 0) then
       begin
-        // caso vacío
         W('  Empty [label="Sin datos", shape=box, style=filled, fillcolor="gray90"];');
         W('}');
         Exit;
@@ -455,15 +439,12 @@ begin
 
       WriteHeaderRow;
 
-      // filas (remitentes)
       for i := 0 to senders.Count-1 do
         WriteRow(i);
 
-      // columna izquierda “encadenada” (remitentes con flechas dobles)
       for i := 0 to senders.Count-2 do
         W(Format('  R%d -> R%d [dir=both, arrowsize=0.5];', [i, i+1]));
 
-      // unir esquina con el primer remitente (detalle visual)
       W('  Corner -> R0 [dir=both, arrowsize=0.5];');
       W('}');
     finally

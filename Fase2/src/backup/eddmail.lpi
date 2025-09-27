@@ -162,6 +162,13 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="ListaDeListas"/>
       </Unit>
+      <Unit>
+        <Filename Value="udraftsform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmDrafts"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uDraftsForm"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

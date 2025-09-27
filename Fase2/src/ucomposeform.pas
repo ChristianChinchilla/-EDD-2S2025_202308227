@@ -12,73 +12,115 @@ type
   { TfrmCompose }
 
   TfrmCompose = class(TForm)
-    lblPara: TLabel;
-    lblAsunto: TLabel;
-    lblMensaje: TLabel;
+    btnEnviar: TButton;
+    btnGuardarBorrador: TButton;
     edtPara: TEdit;
     edtAsunto: TEdit;
     memMensaje: TMemo;
-    btnEnviar: TButton;
+    lblPara: TLabel;
+    lblAsunto: TLabel;
+    lblMensaje: TLabel;
     btnVolver: TButton;
-    procedure btnEnviarClick(Sender: TObject);
-    procedure btnVolverClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure btnEnviarClick(Sender: TObject);
+    procedure btnGuardarBorradorClick(Sender: TObject);
+    procedure btnVolverClick(Sender: TObject);
   private
     FRemitente: string;
-    function ValidarCampos(out ADest, AAsunto, AMsg: string): Boolean;
   public
     procedure OpenForUser(const AEmail: string);
+    procedure LoadFromDraft(const Dest, Asunto, Mensaje: string);
   end;
 
-var frmCompose: TfrmCompose;
+var
+  frmCompose: TfrmCompose;
 
 implementation
 
 {$R *.lfm}
 
-uses uUserMenu, uData, uListaCorreos, DateUtils;
+uses
+  uData, uListaCorreos, DateUtils, uUserMenu,
+  uDraftsForm;  // RefreshDraftsView
 
 procedure TfrmCompose.FormCreate(Sender: TObject);
-begin Caption := 'Enviar Correo' end;
+begin
+  Caption := 'Enviar correo';
+  btnGuardarBorrador.Caption := 'Guardar borrador';
+end;
 
 procedure TfrmCompose.OpenForUser(const AEmail: string);
 begin
   FRemitente := AEmail;
-  edtPara.Text := ''; edtAsunto.Text := ''; memMensaje.Lines.Clear;
+  edtPara.Text := '';
+  edtAsunto.Text := '';
+  memMensaje.Clear;
   Show;
 end;
 
-function TfrmCompose.ValidarCampos(out ADest, AAsunto, AMsg: string): Boolean;
+procedure TfrmCompose.LoadFromDraft(const Dest, Asunto, Mensaje: string);
 begin
-  ADest := Trim(edtPara.Text);
-  AAsunto := Trim(edtAsunto.Text);
-  AMsg := Trim(memMensaje.Text);
-
-  if ADest='' then begin ShowMessage('Ingresa el destinatario.'); Exit(False) end;
-  if not EsContacto(FRemitente, ADest) then begin
-    ShowMessage('No puedes enviar a "'+ADest+'". No está en tus contactos.');
-    Exit(False);
-  end;
-  if AAsunto='' then begin ShowMessage('Ingresa un asunto.'); Exit(False) end;
-  if AMsg='' then begin ShowMessage('Escribe un mensaje.'); Exit(False) end;
-
-  Result := True;
+  edtPara.Text := Dest;
+  edtAsunto.Text := Asunto;
+  memMensaje.Lines.Text := Mensaje;
 end;
 
 procedure TfrmCompose.btnEnviarClick(Sender: TObject);
-var dest, asunto, cuerpo: string; nuevoId: LongInt;
+var
+  para, asu, msg, fecha: string;
 begin
-  if not ValidarCampos(dest, asunto, cuerpo) then Exit;
+  para := Trim(edtPara.Text);
+  asu  := Trim(edtAsunto.Text);
+  msg  := Trim(memMensaje.Text);
 
-  nuevoId := GCorreos.NextId;
-  GCorreos.Add(nuevoId, FRemitente, dest, 'NL', '', asunto,
-               FormatDateTime('dd/mm/yyyy hh:nn', Now), cuerpo);
-  ShowMessage('Correo enviado a ' + dest + '.');
-  edtPara.Text:=''; edtAsunto.Text:=''; memMensaje.Lines.Clear;
+  if (para='') or (asu='') or (msg='') then
+  begin
+    ShowMessage('Completa destinatario, asunto y mensaje.');
+    Exit;
+  end;
+
+  // validar contacto
+  if not EsContacto(FRemitente, para) then
+  begin
+    ShowMessage('El destinatario no está en tus contactos.');
+    Exit;
+  end;
+
+  fecha := FormatDateTime('dd/mm/yyyy hh:nn', Now);
+  GCorreos.Add(GCorreos.NextId, FRemitente, para, 'NL', '', asu, fecha, msg);
+
+  ShowMessage('Correo enviado.');
+  Hide;
+  if Assigned(frmUserMenu) then frmUserMenu.Show;
+end;
+
+procedure TfrmCompose.btnGuardarBorradorClick(Sender: TObject);
+var
+  para, asu, msg, fecha: string;
+begin
+  para := Trim(edtPara.Text);
+  asu  := Trim(edtAsunto.Text);
+  msg  := memMensaje.Text;
+
+  if (para='') and (asu='') and (Trim(msg)='') then
+  begin
+    ShowMessage('No hay contenido para guardar.');
+    Exit;
+  end;
+
+  fecha := FormatDateTime('dd/mm/yyyy hh:nn', Now);
+  GDrafts.Add(FRemitente, para, asu, fecha, msg);
+  ShowMessage('Borrador guardado.');
+
+  // refrescar borradores (si está abierto o al abrirse)
+  RefreshDraftsView(FRemitente);
 end;
 
 procedure TfrmCompose.btnVolverClick(Sender: TObject);
-begin Hide; if Assigned(frmUserMenu) then frmUserMenu.Show end;
+begin
+  Hide;
+  if Assigned(frmUserMenu) then frmUserMenu.Show;
+end;
 
 end.
 
