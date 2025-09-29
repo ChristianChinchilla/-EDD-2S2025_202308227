@@ -75,6 +75,7 @@ object frmInbox: TfrmInbox
     ClientHeight = 160
     ClientWidth = 820
     TabOrder = 2
+    OnClick = pnlDetalleClick
     object lblDRemit: TLabel
       Left = 12
       Height = 19

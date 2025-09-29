@@ -20,14 +20,15 @@ type
     btnNewContact: TButton;
     btnContactos: TButton;
     btnGenerarReportes: TButton;
-    btnFavoritos: TButton;   // “Ver Favoritos” (otro botón)
+    btnFavoritos: TButton;   // Ver Favoritos
     btnPublicar: TButton;
-    btnVer: TButton;         // “Ver Borradores de Mensaje”
+    btnVer: TButton;         // Ver Borradores de Mensaje
     lblHola: TLabel;
     tmrScheduler: TTimer;
     procedure btnBandejaClick(Sender: TObject);
     procedure btnCerrarSesionClick(Sender: TObject);
     procedure btnEnviarClick(Sender: TObject);
+    procedure btnFavoritosClick(Sender: TObject);
     procedure btnPapeleraClick(Sender: TObject);
     procedure btnProgListClick(Sender: TObject);
     procedure btnProgramarClick(Sender: TObject);
@@ -35,7 +36,7 @@ type
     procedure btnContactosClick(Sender: TObject);
     procedure btnPerfilClick(Sender: TObject);
     procedure btnGenerarReportesClick(Sender: TObject);
-    procedure btnVerClick(Sender: TObject);      // ← abre borradores
+    procedure btnVerClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     FEmailActual: string;
@@ -57,7 +58,7 @@ uses
   uMain, uData, uInboxForm, uComposeForm, uTrashForm,
   uScheduleForm, uProgListForm, DateUtils, uListaCorreos,
   uContacts, uNewContactForm, uProfileForm, uUserReports,
-  uDraftsForm;  // ← necesario para frmDrafts
+  uDraftsForm, uFavoritesForm;
 
 { TfrmUserMenu }
 
@@ -75,7 +76,6 @@ begin
   if Assigned(btnGenerarReportes) then
     btnGenerarReportes.Caption := 'Generar reportes';
 
-  // Asegura que el botón de borradores dispare el handler correcto
   if Assigned(btnVer) then
     btnVer.OnClick := @btnVerClick;
 end;
@@ -100,6 +100,15 @@ begin
   if not Assigned(frmCompose) then
     Application.CreateForm(TfrmCompose, frmCompose);
   frmCompose.OpenForUser(FEmailActual);
+  Hide;
+end;
+
+procedure TfrmUserMenu.btnFavoritosClick(Sender: TObject);
+begin
+  if not Assigned(frmFavorites) then
+    Application.CreateForm(TfrmFavorites, frmFavorites);
+  // ← usar el email que ya guardamos en el menú
+  frmFavorites.OpenForUser(FEmailActual);
   Hide;
 end;
 
@@ -175,7 +184,6 @@ begin
   );
 end;
 
-// === ABRIR BORRADORES ===
 procedure TfrmUserMenu.btnVerClick(Sender: TObject);
 begin
   if not Assigned(frmDrafts) then

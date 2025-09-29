@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, uListaUsuarios, uListaCorreos;
 
 type
-  // ====== PILA (Papelera) ======
+  { ====== PILA (Papelera) ====== }
   PTrashNode = ^TTrashNode;
   TTrashNode = record
     Mail : PCorreo;
@@ -32,7 +32,7 @@ type
     function  Snapshot: TPCorreoArray;
   end;
 
-  // ====== COLA (Correos programados) ======
+  { ====== COLA (Correos programados) ====== }
   PSchedNode = ^TSchedNode;
   TSchedNode = record
     Mail: PCorreo;
@@ -46,38 +46,57 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Clear;              // no libera los PCorreo
+    procedure Clear;
     procedure Enqueue(AMail: PCorreo);
-    function  Dequeue: PCorreo;   // nil si vacío
+    function  Dequeue: PCorreo;
     function  Peek: PCorreo;
     function  Count: SizeInt;
     function  Snapshot: TPCorreoArray;
   end;
 
-  // ====== CONTACTOS POR USUARIO ======
+  { ====== CONTACTOS POR USUARIO ====== }
   TContacts = class
   private
-    FOwners: TStringList; // FOwners[i] = owner; FOwners.Objects[i] = TStringList de contactos
+    FOwners: TStringList;
     function IndexOfOwner(const Owner: string): Integer;
     function EnsureOwner(const Owner: string): TStringList;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure Add(const Owner, Email: string);           // agrega (ignora duplicados)
-    function  Has(const Owner, Email: string): Boolean;  // ¿Owner tiene a Email?
-    function  GetListCopy(const Owner: string): TStringList; // devuelve COPIA; el llamador debe Free
+    procedure Add(const Owner, Email: string);
+    function  Has(const Owner, Email: string): Boolean;
+    function  Remove(const Owner, Email: string): Boolean;     // <-- ya estaba marcado NUEVO
+    function  GetListCopy(const Owner: string): TStringList;
     function  Count(const Owner: string): Integer;
   end;
 
-  // ====== BORRADORES (BST) ======
+  { ====== FAVORITOS POR USUARIO (IDs de correos) ====== }
+  TFavorites = class
+  private
+    // Mapa: Owner -> TStringList (IDs de correos en texto)
+    FOwners: TStringList;
+    function IndexOfOwner(const Owner: string): Integer;
+    function EnsureOwner(const Owner: string): TStringList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Add   (const Owner: string; const MailId: LongInt);
+    function  Remove(const Owner: string; const MailId: LongInt): Boolean;
+    function  Has   (const Owner: string; const MailId: LongInt): Boolean;
+    function  GetIdListCopy(const Owner: string): TStringList; // devuelve copia (IDs como strings)
+    function  Count(const Owner: string): Integer;
+  end;
+
+  { ====== BORRADORES (BST) ====== }
   PDraft = ^TDraft;
   TDraft = record
     id          : LongInt;
     remitente   : string;
     destinatario: string;
     asunto      : string;
-    fecha       : string; // opcional
+    fecha       : string;
     mensaje     : string;
     left, right : PDraft;
   end;
@@ -88,10 +107,11 @@ type
     FAuto : LongInt;
     procedure ClearNode(N: PDraft);
     function  InsertNode(var R: PDraft; D: PDraft): PDraft;
-    function  Cmp(const A, B: PDraft): Integer; // orden por asunto, luego id
+    function  Cmp(const A, B: PDraft): Integer;
     procedure ToListPre (R: PDraft; L: TList);
     procedure ToListIn  (R: PDraft; L: TList);
     procedure ToListPost(R: PDraft; L: TList);
+    function  CountNode(R: PDraft): Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -100,6 +120,7 @@ type
     function  Add(const Rem, Dest, Asu, Fec, Msg: string): PDraft;
     procedure RemoveById(const AId: LongInt);
     function  FindById(const AId: LongInt): PDraft;
+    function  Count: Integer;
     procedure ListPre (L: TList);
     procedure ListIn  (L: TList);
     procedure ListPost(L: TList);
@@ -111,6 +132,7 @@ var
   GPapelera  : TTrashStack;
   GScheduled : TScheduledQueue;
   GContacts  : TContacts;
+  GFavorites : TFavorites;   // <-- NUEVO GLOBAL
   GDrafts    : TDraftBST;
 
 function EsContacto(const OwnerEmail, DestEmail: string): Boolean;
@@ -322,12 +344,27 @@ begin
   Result := L.IndexOf(Email) >= 0;
 end;
 
+function TContacts.Remove(const Owner, Email: string): Boolean;
+var idx, p: Integer; L: TStringList;
+begin
+  Result := False;
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then Exit(False);
+  L := TStringList(FOwners.Objects[idx]);
+  p := L.IndexOf(Email);
+  if p >= 0 then
+  begin
+    L.Delete(p);
+    Result := True;
+  end;
+end;
+
 function TContacts.GetListCopy(const Owner: string): TStringList;
 var idx: Integer; L: TStringList;
 begin
   Result := TStringList.Create;
   idx := IndexOfOwner(Owner);
-  if idx < 0 then Exit;
+  if idx < 0 then Exit; // vacía
   L := TStringList(FOwners.Objects[idx]);
   Result.Assign(L);
 end;
@@ -341,11 +378,108 @@ begin
   Result := L.Count;
 end;
 
-{ ======================= Helpers globales ==================== }
-
 function EsContacto(const OwnerEmail, DestEmail: string): Boolean;
 begin
   Result := (GContacts <> nil) and GContacts.Has(OwnerEmail, DestEmail);
+end;
+
+{ ========================= TFavorites ========================= }
+
+constructor TFavorites.Create;
+begin
+  inherited Create;
+  FOwners := TStringList.Create;
+  FOwners.Sorted := True;
+  FOwners.Duplicates := dupIgnore;
+end;
+
+destructor TFavorites.Destroy;
+begin
+  Clear;
+  FOwners.Free;
+  inherited Destroy;
+end;
+
+procedure TFavorites.Clear;
+var
+  i: Integer; L: TStringList;
+begin
+  for i := 0 to FOwners.Count-1 do
+  begin
+    L := TStringList(FOwners.Objects[i]);
+    L.Free;
+  end;
+  FOwners.Clear;
+end;
+
+function TFavorites.IndexOfOwner(const Owner: string): Integer;
+begin
+  Result := FOwners.IndexOf(Owner);
+end;
+
+function TFavorites.EnsureOwner(const Owner: string): TStringList;
+var idx: Integer;
+begin
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then
+  begin
+    Result := TStringList.Create;
+    Result.Sorted := True;
+    Result.Duplicates := dupIgnore; // evita IDs duplicados
+    FOwners.AddObject(Owner, Result);
+  end
+  else
+    Result := TStringList(FOwners.Objects[idx]);
+end;
+
+procedure TFavorites.Add(const Owner: string; const MailId: LongInt);
+var L: TStringList;
+begin
+  L := EnsureOwner(Owner);
+  L.Add(IntToStr(MailId));
+end;
+
+function TFavorites.Remove(const Owner: string; const MailId: LongInt): Boolean;
+var idx, p: Integer; L: TStringList;
+begin
+  Result := False;
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then Exit(False);
+  L := TStringList(FOwners.Objects[idx]);
+  p := L.IndexOf(IntToStr(MailId));
+  if p >= 0 then
+  begin
+    L.Delete(p);
+    Result := True;
+  end;
+end;
+
+function TFavorites.Has(const Owner: string; const MailId: LongInt): Boolean;
+var idx: Integer; L: TStringList;
+begin
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then Exit(False);
+  L := TStringList(FOwners.Objects[idx]);
+  Result := L.IndexOf(IntToStr(MailId)) >= 0;
+end;
+
+function TFavorites.GetIdListCopy(const Owner: string): TStringList;
+var idx: Integer; L: TStringList;
+begin
+  Result := TStringList.Create;
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then Exit; // vacía
+  L := TStringList(FOwners.Objects[idx]);
+  Result.Assign(L);
+end;
+
+function TFavorites.Count(const Owner: string): Integer;
+var idx: Integer; L: TStringList;
+begin
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then Exit(0);
+  L := TStringList(FOwners.Objects[idx]);
+  Result := L.Count;
 end;
 
 { ========================= TDraftBST ========================= }
@@ -415,24 +549,25 @@ begin
 end;
 
 function TDraftBST.FindById(const AId: LongInt): PDraft;
+type
+  PDraftArray = array of PDraft;
 var
   cur: PDraft;
-  stk: array of PDraft; // <-- declarada aquí
+  stk: PDraftArray;
 begin
-  cur := FRoot; Result := nil;
-  SetLength(stk, 0);   // <-- inicializada aquí
-
-  // DFS iterativo (BST está ordenado por asunto; buscamos por id)
+  Result := nil;
+  cur := FRoot;
+  SetLength(stk,0);
   while (cur<>nil) or (Length(stk)>0) do
   begin
     while cur<>nil do
     begin
-      SetLength(stk, Length(stk)+1);
+      SetLength(stk,Length(stk)+1);
       stk[High(stk)] := cur;
       cur := cur^.left;
     end;
     cur := stk[High(stk)];
-    SetLength(stk, High(stk));
+    SetLength(stk,High(stk));
     if cur^.id = AId then Exit(cur);
     cur := cur^.right;
   end;
@@ -446,27 +581,17 @@ procedure TDraftBST.RemoveById(const AId: LongInt);
     if R^.id = Id then
     begin
       if (R^.left=nil) and (R^.right=nil) then
-      begin
-        tmp := R; R := nil; Exit(tmp);
-      end
+      begin tmp := R; R := nil; Exit(tmp); end
       else if (R^.left=nil) then
-      begin
-        tmp := R; R := R^.right; Exit(tmp);
-      end
+      begin tmp := R; R := R^.right; Exit(tmp); end
       else if (R^.right=nil) then
-      begin
-        tmp := R; R := R^.left; Exit(tmp);
-      end
+      begin tmp := R; R := R^.left;  Exit(tmp); end
       else
       begin
         parent := R; succ := R^.right;
         while succ^.left<>nil do begin parent := succ; succ := succ^.left end;
-        R^.id := succ^.id;
-        R^.remitente := succ^.remitente;
-        R^.destinatario := succ^.destinatario;
-        R^.asunto := succ^.asunto;
-        R^.fecha := succ^.fecha;
-        R^.mensaje := succ^.mensaje;
+        R^.id:=succ^.id; R^.remitente:=succ^.remitente; R^.destinatario:=succ^.destinatario;
+        R^.asunto:=succ^.asunto; R^.fecha:=succ^.fecha; R^.mensaje:=succ^.mensaje;
         if parent^.left = succ then parent^.left := succ^.right
         else parent^.right := succ^.right;
         Exit(succ);
@@ -508,6 +633,17 @@ begin
   L.Add(R);
 end;
 
+function TDraftBST.CountNode(R: PDraft): Integer;
+begin
+  if R=nil then Exit(0);
+  Result := 1 + CountNode(R^.left) + CountNode(R^.right);
+end;
+
+function TDraftBST.Count: Integer;
+begin
+  Result := CountNode(FRoot);
+end;
+
 procedure TDraftBST.ListPre (L: TList);  begin L.Clear; ToListPre (FRoot, L) end;
 procedure TDraftBST.ListIn  (L: TList);  begin L.Clear; ToListIn  (FRoot, L) end;
 procedure TDraftBST.ListPost(L: TList);  begin L.Clear; ToListPost(FRoot, L) end;
@@ -520,6 +656,7 @@ initialization
   GPapelera  := TTrashStack.Create;
   GScheduled := TScheduledQueue.Create;
   GContacts  := TContacts.Create;
+  GFavorites := TFavorites.Create;  // <-- NUEVO
   GDrafts    := TDraftBST.Create;
 
 finalization
@@ -528,6 +665,7 @@ finalization
   GPapelera.Free;
   GScheduled.Free;
   GContacts.Free;
+  GFavorites.Free;                // <-- NUEVO
   GDrafts.Free;
 end.
 

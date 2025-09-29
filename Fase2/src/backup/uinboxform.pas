@@ -9,6 +9,9 @@ uses
   LCLType;
 
 type
+
+  { TfrmInbox }
+
   TfrmInbox = class(TForm)
     btnFavorito: TButton;
     lblFechaVal: TLabel;
@@ -34,6 +37,7 @@ type
     procedure btnEliminarClick(Sender: TObject);
     procedure gridInboxSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure gridInboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure pnlDetalleClick(Sender: TObject);
   private
     FEmailActual : string;
     FInboxRows   : array of Pointer; // PCorreo
@@ -176,6 +180,11 @@ procedure TfrmInbox.gridInboxKeyDown(Sender: TObject; var Key: Word; Shift: TShi
 begin
   if FLoading then Exit;
   if Key = VK_DELETE then btnEliminarClick(Sender);
+end;
+
+procedure TfrmInbox.pnlDetalleClick(Sender: TObject);
+begin
+
 end;
 
 procedure TfrmInbox.btnEliminarClick(Sender: TObject);

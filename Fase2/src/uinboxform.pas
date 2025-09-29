@@ -44,12 +44,17 @@ type
     FSortAZ      : Boolean;
     FSelectedRow : Integer;
     FLoading     : Boolean;
+
     procedure SetupGrid;
     procedure FillInbox(const FiltroAsunto: string = '');
     procedure UpdateNoLeidos;
     procedure ShowDetailForRow(ARow: Integer);
     function  WithStars(const S: string): string;
+
+    // --- FAVORITOS ---
+    function  IsFavForCurrent(P: Pointer): Boolean;
     procedure UpdateFavButtonCaptionForRow(ARow: Integer);
+    procedure PaintFavForRow(ARow: Integer);
   public
     procedure OpenForUser(const AEmail: string);
   end;
@@ -61,7 +66,8 @@ implementation
 
 {$R *.lfm}
 
-uses uUserMenu, uData, uListaCorreos;
+uses
+  uUserMenu, uData, uListaCorreos;
 
 type
   PCorreoList = specialize TFPGList<PCorreo>;
@@ -76,21 +82,44 @@ begin
   Result := '★ ' + S;
 end;
 
+// ====== FAVORITOS helpers ======
+
+function TfrmInbox.IsFavForCurrent(P: Pointer): Boolean;
+var C: PCorreo;
+begin
+  C := PCorreo(P);
+  Result := (C <> nil) and GFavorites.Has(FEmailActual, C^.id);
+end;
+
 procedure TfrmInbox.UpdateFavButtonCaptionForRow(ARow: Integer);
-var
-  P: PCorreo;
+var P: PCorreo;
 begin
   if (ARow <= 0) or (ARow > Length(FInboxRows)) then
   begin
     btnFavorito.Caption := 'Favorito';
     Exit;
   end;
+
   P := PCorreo(FInboxRows[ARow-1]);
-  if (P <> nil) and P^.favorito then
+  if IsFavForCurrent(P) then
     btnFavorito.Caption := 'Quitar favorito'
   else
     btnFavorito.Caption := 'Favorito';
 end;
+
+procedure TfrmInbox.PaintFavForRow(ARow: Integer);
+var P: PCorreo;
+begin
+  if (ARow <= 0) or (ARow > Length(FInboxRows)) then Exit;
+  P := PCorreo(FInboxRows[ARow-1]); if P=nil then Exit;
+
+  if IsFavForCurrent(P) then
+    gridInbox.Cells[1, ARow] := WithStars(P^.asunto)
+  else
+    gridInbox.Cells[1, ARow] := P^.asunto;
+end;
+
+// ====== /FAVORITOS ======
 
 procedure TfrmInbox.SetupGrid;
 begin
@@ -132,14 +161,14 @@ begin
   if (FSelectedRow<=0) or (FSelectedRow>Length(FInboxRows)) then Exit;
   P := PCorreo(FInboxRows[FSelectedRow-1]); if P=nil then Exit;
 
-  // Alternar en el DATO y repintar
-  P^.favorito := not P^.favorito;
-
-  if P^.favorito then
-    gridInbox.Cells[1, FSelectedRow] := WithStars(P^.asunto)
+  // Alternar favorito EN EL REPOSITORIO GLOBAL
+  if IsFavForCurrent(P) then
+    GFavorites.Remove(FEmailActual, P^.id)
   else
-    gridInbox.Cells[1, FSelectedRow] := P^.asunto;
+    GFavorites.Add(FEmailActual, P^.id);
 
+  // Repintar fila + caption botón
+  PaintFavForRow(FSelectedRow);
   UpdateFavButtonCaptionForRow(FSelectedRow);
 end;
 
@@ -184,7 +213,6 @@ end;
 
 procedure TfrmInbox.pnlDetalleClick(Sender: TObject);
 begin
-
 end;
 
 procedure TfrmInbox.btnEliminarClick(Sender: TObject);
@@ -195,6 +223,10 @@ begin
   P := PCorreo(FInboxRows[FSelectedRow-1]); if P=nil then Exit;
   if MessageDlg('Confirmar','¿Enviar este correo a la Papelera?',mtConfirmation,[mbYes,mbNo],0)=mrYes then
   begin
+    // (Opcional) mantener consistencia: si era favorito, quitarlo
+    if IsFavForCurrent(P) then
+      GFavorites.Remove(FEmailActual, P^.id);
+
     GPapelera.Push(P);
     GCorreos.Detach(P);
     FillInbox;
@@ -235,10 +267,13 @@ begin
       for i:=0 to L.Count-1 do
       begin
         gridInbox.Cells[0,i+1] := L[i]^.estado;
-        if L[i]^.favorito then
+
+        // Mostrar estrella si este correo está en favoritos del usuario actual
+        if GFavorites.Has(FEmailActual, L[i]^.id) then
           gridInbox.Cells[1,i+1] := WithStars(L[i]^.asunto)
         else
           gridInbox.Cells[1,i+1] := L[i]^.asunto;
+
         gridInbox.Cells[2,i+1] := L[i]^.remitente;
         FInboxRows[i] := L[i];
       end;

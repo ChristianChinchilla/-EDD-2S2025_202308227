@@ -66,7 +66,26 @@ type
     procedure Clear;
     procedure Add(const Owner, Email: string);
     function  Has(const Owner, Email: string): Boolean;
+    function  Remove(const Owner, Email: string): Boolean;
     function  GetListCopy(const Owner: string): TStringList;
+    function  Count(const Owner: string): Integer;
+  end;
+
+  { ====== FAVORITOS POR USUARIO (IDs de correos) ====== }
+  TFavorites = class
+  private
+    // Mapa: Owner -> TStringList (IDs de correos en texto)
+    FOwners: TStringList;
+    function IndexOfOwner(const Owner: string): Integer;
+    function EnsureOwner(const Owner: string): TStringList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Add   (const Owner: string; const MailId: LongInt);
+    function  Remove(const Owner: string; const MailId: LongInt): Boolean;
+    function  Has   (const Owner: string; const MailId: LongInt): Boolean;
+    function  GetIdListCopy(const Owner: string): TStringList; // copia (IDs como strings)
     function  Count(const Owner: string): Integer;
   end;
 
@@ -113,9 +132,11 @@ var
   GPapelera  : TTrashStack;
   GScheduled : TScheduledQueue;
   GContacts  : TContacts;
+  GFavorites : TFavorites;
   GDrafts    : TDraftBST;
 
 function EsContacto(const OwnerEmail, DestEmail: string): Boolean;
+function GetMailById(AId: LongInt): PCorreo;  // <-- HELPER NUEVO
 
 implementation
 
@@ -324,6 +345,21 @@ begin
   Result := L.IndexOf(Email) >= 0;
 end;
 
+function TContacts.Remove(const Owner, Email: string): Boolean;
+var idx, p: Integer; L: TStringList;
+begin
+  Result := False;
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then Exit(False);
+  L := TStringList(FOwners.Objects[idx]);
+  p := L.IndexOf(Email);
+  if p >= 0 then
+  begin
+    L.Delete(p);
+    Result := True;
+  end;
+end;
+
 function TContacts.GetListCopy(const Owner: string): TStringList;
 var idx: Integer; L: TStringList;
 begin
@@ -346,6 +382,105 @@ end;
 function EsContacto(const OwnerEmail, DestEmail: string): Boolean;
 begin
   Result := (GContacts <> nil) and GContacts.Has(OwnerEmail, DestEmail);
+end;
+
+{ ========================= TFavorites ========================= }
+
+constructor TFavorites.Create;
+begin
+  inherited Create;
+  FOwners := TStringList.Create;
+  FOwners.Sorted := True;
+  FOwners.Duplicates := dupIgnore;
+end;
+
+destructor TFavorites.Destroy;
+begin
+  Clear;
+  FOwners.Free;
+  inherited Destroy;
+end;
+
+procedure TFavorites.Clear;
+var
+  i: Integer; L: TStringList;
+begin
+  for i := 0 to FOwners.Count-1 do
+  begin
+    L := TStringList(FOwners.Objects[i]);
+    L.Free;
+  end;
+  FOwners.Clear;
+end;
+
+function TFavorites.IndexOfOwner(const Owner: string): Integer;
+begin
+  Result := FOwners.IndexOf(Owner);
+end;
+
+function TFavorites.EnsureOwner(const Owner: string): TStringList;
+var idx: Integer;
+begin
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then
+  begin
+    Result := TStringList.Create;
+    Result.Sorted := True;
+    Result.Duplicates := dupIgnore; // evita IDs duplicados
+    FOwners.AddObject(Owner, Result);
+  end
+  else
+    Result := TStringList(FOwners.Objects[idx]);
+end;
+
+procedure TFavorites.Add(const Owner: string; const MailId: LongInt);
+var L: TStringList;
+begin
+  L := EnsureOwner(Owner);
+  L.Add(IntToStr(MailId));
+end;
+
+function TFavorites.Remove(const Owner: string; const MailId: LongInt): Boolean;
+var idx, p: Integer; L: TStringList;
+begin
+  Result := False;
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then Exit(False);
+  L := TStringList(FOwners.Objects[idx]);
+  p := L.IndexOf(IntToStr(MailId));
+  if p >= 0 then
+  begin
+    L.Delete(p);
+    Result := True;
+  end;
+end;
+
+function TFavorites.Has(const Owner: string; const MailId: LongInt): Boolean;
+var idx: Integer; L: TStringList;
+begin
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then Exit(False);
+  L := TStringList(FOwners.Objects[idx]);
+  Result := L.IndexOf(IntToStr(MailId)) >= 0;
+end;
+
+function TFavorites.GetIdListCopy(const Owner: string): TStringList;
+var idx: Integer; L: TStringList;
+begin
+  Result := TStringList.Create;
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then Exit; // vacía
+  L := TStringList(FOwners.Objects[idx]);
+  Result.Assign(L);
+end;
+
+function TFavorites.Count(const Owner: string): Integer;
+var idx: Integer; L: TStringList;
+begin
+  idx := IndexOfOwner(Owner);
+  if idx < 0 then Exit(0);
+  L := TStringList(FOwners.Objects[idx]);
+  Result := L.Count;
 end;
 
 { ========================= TDraftBST ========================= }
@@ -514,6 +649,21 @@ procedure TDraftBST.ListPre (L: TList);  begin L.Clear; ToListPre (FRoot, L) end
 procedure TDraftBST.ListIn  (L: TList);  begin L.Clear; ToListIn  (FRoot, L) end;
 procedure TDraftBST.ListPost(L: TList);  begin L.Clear; ToListPost(FRoot, L) end;
 
+{ ===================== Helpers públicos ====================== }
+
+function GetMailById(AId: LongInt): PCorreo;
+var cur: PCorreo;
+begin
+  Result := nil;
+  if GCorreos = nil then Exit;
+  cur := GCorreos.First;
+  while cur <> nil do
+  begin
+    if cur^.id = AId then Exit(cur);
+    cur := cur^.next;
+  end;
+end;
+
 { ==================== Init / Final =========================== }
 
 initialization
@@ -522,6 +672,7 @@ initialization
   GPapelera  := TTrashStack.Create;
   GScheduled := TScheduledQueue.Create;
   GContacts  := TContacts.Create;
+  GFavorites := TFavorites.Create;
   GDrafts    := TDraftBST.Create;
 
 finalization
@@ -530,6 +681,7 @@ finalization
   GPapelera.Free;
   GScheduled.Free;
   GContacts.Free;
+  GFavorites.Free;
   GDrafts.Free;
 end.
 

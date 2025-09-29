@@ -28,6 +28,7 @@ type
     procedure btnBandejaClick(Sender: TObject);
     procedure btnCerrarSesionClick(Sender: TObject);
     procedure btnEnviarClick(Sender: TObject);
+    procedure btnFavoritosClick(Sender: TObject);
     procedure btnPapeleraClick(Sender: TObject);
     procedure btnProgListClick(Sender: TObject);
     procedure btnProgramarClick(Sender: TObject);
@@ -57,7 +58,7 @@ uses
   uMain, uData, uInboxForm, uComposeForm, uTrashForm,
   uScheduleForm, uProgListForm, DateUtils, uListaCorreos,
   uContacts, uNewContactForm, uProfileForm, uUserReports,
-  uDraftsForm;  // ← necesario para frmDrafts
+  uDraftsForm, uFavoritesForm;  // ← necesario para frmDrafts
 
 { TfrmUserMenu }
 
@@ -101,6 +102,13 @@ begin
     Application.CreateForm(TfrmCompose, frmCompose);
   frmCompose.OpenForUser(FEmailActual);
   Hide;
+end;
+
+procedure TfrmUserMenu.btnFavoritosClick(Sender: TObject);
+begin
+  if not Assigned(frmFavorites) then
+    Application.CreateForm(TfrmFavorites, frmFavorites);
+  frmFavorites.OpenForUser(LoggedUserEmail); // usa tu variable/email actual
 end;
 
 procedure TfrmUserMenu.btnBandejaClick(Sender: TObject);

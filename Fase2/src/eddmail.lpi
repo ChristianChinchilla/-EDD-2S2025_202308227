@@ -166,8 +166,16 @@
         <Filename Value="udraftsform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmDrafts"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uDraftsForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ufavoritesform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmFavorites"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uFavoritesForm"/>
       </Unit>
     </Units>
   </ProjectOptions>

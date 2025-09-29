@@ -8,7 +8,7 @@ uses
   Interfaces, Forms, uMain, uData, uRootMenu, uListaUsuarios, uListaCorreos,
   uUserMenu, uInboxForm, uComposeForm, uTrashForm, uScheduleForm, uProgListForm,
   uContacts, uNewContactForm, uProfileForm, uUserReports, comunidadesMenu,
-  ListaDeListas, uDraftsForm;
+  ListaDeListas, uDraftsForm, uFavoritesForm;
 
 {$R *.res}
 
@@ -31,6 +31,7 @@ begin
   Application.CreateForm(TfrmProfile, frmProfile);
   Application.CreateForm(TcomunidadesForm, comunidadesForm);
   Application.CreateForm(TfrmDrafts, frmdrafts);
+  Application.CreateForm(TfrmFavorites, frmFavorites);
   Application.Run;
 end.
 

@@ -1,66 +1,67 @@
 object frmInbox: TfrmInbox
   Left = 200
-  Height = 520
+  Height = 726
   Top = 120
-  Width = 820
+  Width = 1145
   Caption = 'Bandeja de Entrada'
-  ClientHeight = 520
-  ClientWidth = 820
+  ClientHeight = 726
+  ClientWidth = 1145
+  DesignTimePPI = 134
   Position = poScreenCenter
   OnCreate = FormCreate
   object pnlToolbar: TPanel
     Left = 0
-    Height = 40
+    Height = 56
     Top = 0
-    Width = 820
+    Width = 1145
     Align = alTop
-    ClientHeight = 40
-    ClientWidth = 820
+    ClientHeight = 56
+    ClientWidth = 1145
     TabOrder = 0
     object btnVolver: TButton
-      Left = 592
-      Height = 24
-      Top = 8
-      Width = 80
+      Left = 826
+      Height = 34
+      Top = 11
+      Width = 112
       Caption = 'Volver'
       TabOrder = 0
     end
     object btnOrdenAZ: TButton
-      Left = 8
-      Height = 24
-      Top = 8
-      Width = 100
+      Left = 11
+      Height = 34
+      Top = 11
+      Width = 140
       Caption = 'A-Z (Asunto)'
       TabOrder = 1
       OnClick = btnOrdenAZClick
     end
     object lblNoLeidosTxt: TLabel
-      Left = 128
-      Height = 19
-      Top = 8
-      Width = 65
+      Left = 179
+      Height = 26
+      Top = 11
+      Width = 86
       Caption = 'No leídos:'
     end
     object lblNoLeidos: TLabel
-      Left = 208
-      Height = 19
-      Top = 8
-      Width = 9
+      Left = 290
+      Height = 26
+      Top = 11
+      Width = 11
       Caption = '0'
     end
     object btnEliminar: TButton
-      Left = 288
-      Height = 24
-      Top = 8
-      Width = 100
+      Left = 402
+      Height = 34
+      Top = 11
+      Width = 140
       Caption = 'Eliminar'
       TabOrder = 2
     end
     object btnFavorito: TButton
-      Left = 408
-      Height = 24
-      Top = 8
-      Width = 99
+      Left = 570
+      Height = 34
+      Top = 11
+      Width = 138
       Caption = 'Favorito'
       TabOrder = 3
       OnClick = btnFavoritoClick
@@ -68,58 +69,58 @@ object frmInbox: TfrmInbox
   end
   object pnlDetalle: TPanel
     Left = 0
-    Height = 160
-    Top = 360
-    Width = 820
+    Height = 223
+    Top = 503
+    Width = 1145
     Align = alBottom
-    ClientHeight = 160
-    ClientWidth = 820
+    ClientHeight = 223
+    ClientWidth = 1145
     TabOrder = 2
     OnClick = pnlDetalleClick
     object lblDRemit: TLabel
-      Left = 12
-      Height = 19
-      Top = 12
-      Width = 72
+      Left = 17
+      Height = 26
+      Top = 17
+      Width = 95
       Caption = 'Remitente:'
     end
     object lblDAsunto: TLabel
-      Left = 12
-      Height = 19
-      Top = 36
-      Width = 49
+      Left = 17
+      Height = 26
+      Top = 50
+      Width = 68
       Caption = 'Asunto:'
     end
     object lblDFecha: TLabel
-      Left = 12
-      Height = 19
-      Top = 60
-      Width = 43
+      Left = 17
+      Height = 26
+      Top = 84
+      Width = 56
       Caption = 'Fecha:'
     end
     object lblRemitVal: TLabel
-      Left = 90
+      Left = 126
       Height = 1
-      Top = 12
+      Top = 17
       Width = 1
     end
     object lblAsuntoVal: TLabel
-      Left = 90
+      Left = 126
       Height = 1
-      Top = 36
+      Top = 50
       Width = 1
     end
     object lblFechaVal: TLabel
-      Left = 90
+      Left = 126
       Height = 1
-      Top = 60
+      Top = 84
       Width = 1
     end
     object memMensaje: TMemo
-      Left = 12
-      Height = 64
-      Top = 84
-      Width = 780
+      Left = 17
+      Height = 89
+      Top = 117
+      Width = 1089
       Anchors = [akTop, akLeft, akRight, akBottom]
       ScrollBars = ssAutoBoth
       TabOrder = 0
@@ -127,9 +128,9 @@ object frmInbox: TfrmInbox
   end
   object gridInbox: TStringGrid
     Left = 0
-    Height = 320
-    Top = 40
-    Width = 820
+    Height = 447
+    Top = 56
+    Width = 1145
     Align = alClient
     ColCount = 3
     RowCount = 1
