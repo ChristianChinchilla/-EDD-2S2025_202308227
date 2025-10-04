@@ -1,0 +1,8 @@
+digraph G {
+  rankdir=TB;
+  graph [fontname="Helvetica"]; node [shape=plaintext, fontname="Helvetica"];
+  labelloc="t"; label="Reporte de Papelera";
+  subgraph cluster0 { label="Pila"; style="rounded"; color="lightcoral";
+  Empty [label="(papelera vacía)"];
+  }
+}

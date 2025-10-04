@@ -13,18 +13,19 @@ type
     btnCargaMasiva: TButton;
     btnRepUsuarios: TButton;
     btnRepRelaciones: TButton;
-    btnRepComunidades: TButton;      // <-- NUEVO: reporte de comunidades (BST)
+    btnRepComunidades: TButton;      // Reporte de comunidades (BST)
     btnLogout: TButton;
     btnComunidades: TButton;
-    btnMensaje: TButton;
+    btnMensaje: TButton;             // Ver mensajes de comunidad
     Button1btnCargaMasiva: TButton;
     lblTitle: TLabel;
     OpenDialog1: TOpenDialog;
     procedure btnCargaMasivaClick(Sender: TObject);
     procedure btnComunidadesClick(Sender: TObject);
+    procedure btnMensajeClick(Sender: TObject);         // <-- abre uCommunityMessagesForm
     procedure btnRepUsuariosClick(Sender: TObject);
     procedure btnRepRelacionesClick(Sender: TObject);
-    procedure btnRepComunidadesClick(Sender: TObject); // <-- NUEVO
+    procedure btnRepComunidadesClick(Sender: TObject);  // <-- usa CommunityReport
     procedure btnLogoutClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -47,7 +48,8 @@ uses
   // App
   uData, uListaUsuarios, uListaCorreos,
   Process, FileUtil,
-  comunidadesMenu, ListaDeListas; // para listaComunidades / TListaDeListas
+  comunidadesMenu, ListaDeListas,      // abrir form de comunidades (opcional)
+  uCommunityMessagesForm;              // <-- formulario de ver mensajes
 
 procedure TfrmRootMenu.FormCreate(Sender: TObject);
 begin
@@ -101,6 +103,15 @@ begin
     Application.CreateForm(TcomunidadesForm, comunidadesForm);
   comunidadesForm.Show;
   comunidadesForm.BringToFront;
+end;
+
+procedure TfrmRootMenu.btnMensajeClick(Sender: TObject);
+begin
+  // Abre el formulario simple para ver mensajes por comunidad
+  if frmCommunityMessages = nil then
+    Application.CreateForm(TfrmCommunityMessages, frmCommunityMessages);
+  frmCommunityMessages.Open;          // carga comunidades + muestra mensajes
+  frmCommunityMessages.BringToFront;
 end;
 
 function TfrmRootMenu.GetReportsDir: string;
@@ -170,19 +181,22 @@ begin
                 '(Instala graphviz para crear el .png)');
 end;
 
-// NUEVO: Reporte de Comunidades (BST del grupo)
+// === Reporte de Comunidades usando el BST (uData.CommunityReport) ===
 procedure TfrmRootMenu.btnRepComunidadesClick(Sender: TObject);
+var
+  dir, dot: string;
 begin
-  // Asegura tener una lista de comunidades lista para graficar
-  if listaComunidades = nil then
-  begin
-    New(listaComunidades);
-    listaComunidades^ := TListaDeListas.Create;
-  end;
+  // Carpeta propia para este reporte
+  dir := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) +
+         'Reportes' + DirectorySeparator + 'Reporte-Comunidades' + DirectorySeparator;
+  ForceDirectories(dir);
 
-  // Genera DOT + SVG en Reportes/Reporte-Comunidades/ y abre el SVG
-  listaComunidades^.graph();
-  ShowMessage('Reporte de Comunidades generado en "Reportes/Reporte-Comunidades/".');
+  dot := dir + 'reporte_comunidades.dot';
+
+  // Genera el .dot (y si tu TBSTree crea .svg, saldrá al lado)
+  CommunityReport(dot);
+
+  ShowMessage('Reporte de Comunidades generado en: ' + LineEnding + dot);
 end;
 
 procedure TfrmRootMenu.btnLogoutClick(Sender: TObject);

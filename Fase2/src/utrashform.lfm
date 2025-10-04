@@ -1,74 +1,76 @@
 object frmTrash: TfrmTrash
   Left = 220
-  Height = 520
+  Height = 726
   Top = 130
-  Width = 820
+  Width = 1145
   Caption = 'Papelera'
-  ClientHeight = 520
-  ClientWidth = 820
+  ClientHeight = 726
+  ClientWidth = 1145
+  DesignTimePPI = 134
+  Position = poScreenCenter
   object pnlToolbar: TPanel
     Left = 0
-    Height = 40
+    Height = 56
     Top = 0
-    Width = 820
+    Width = 1145
     Align = alTop
-    ClientHeight = 40
-    ClientWidth = 820
+    ClientHeight = 56
+    ClientWidth = 1145
     TabOrder = 0
     object btnVolver: TButton
-      Left = 8
-      Height = 24
-      Top = 8
-      Width = 80
+      Left = 11
+      Height = 34
+      Top = 11
+      Width = 112
       Caption = 'Volver'
       TabOrder = 0
       OnClick = btnVolverClick
     end
     object edtBuscar: TEdit
-      Left = 96
-      Height = 36
+      Left = 134
+      Height = 43
       Top = 0
-      Width = 240
+      Width = 335
       TabOrder = 1
     end
     object btnBuscar: TButton
-      Left = 346
-      Height = 24
-      Top = 8
-      Width = 80
+      Left = 483
+      Height = 34
+      Top = 11
+      Width = 112
       Caption = 'Buscar'
       TabOrder = 2
       OnClick = btnBuscarClick
     end
     object btnEliminar: TButton
-      Left = 432
-      Height = 24
-      Top = 8
-      Width = 90
+      Left = 603
+      Height = 34
+      Top = 11
+      Width = 126
       Caption = 'Eliminar'
       TabOrder = 3
       OnClick = btnEliminarClick
     end
     object lblCountTxt: TLabel
-      Left = 540
-      Height = 19
-      Top = 12
-      Width = 83
+      Left = 754
+      Height = 26
+      Top = 17
+      Width = 106
       Caption = 'En Papelera:'
     end
     object lblCount: TLabel
-      Left = 624
-      Height = 19
-      Top = 12
-      Width = 9
+      Left = 871
+      Height = 26
+      Top = 17
+      Width = 11
       Caption = '0'
     end
   end
   object gridTrash: TStringGrid
     Left = 0
-    Height = 480
-    Top = 40
-    Width = 820
+    Height = 670
+    Top = 56
+    Width = 1145
     Align = alClient
     ColCount = 3
     RowCount = 1

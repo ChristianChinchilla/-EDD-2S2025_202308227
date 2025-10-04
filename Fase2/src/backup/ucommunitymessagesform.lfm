@@ -1,0 +1,45 @@
+object frmCommunityMessages: TfrmCommunityMessages
+  Left = 557
+  Height = 726
+  Top = 40
+  Width = 976
+  Caption = 'frmCommunityMessages'
+  ClientHeight = 726
+  ClientWidth = 976
+  DesignTimePPI = 134
+  Position = poScreenCenter
+  object ComboBox1: TComboBox
+    Left = 256
+    Height = 43
+    Top = 119
+    Width = 460
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 0
+  end
+  object Label1: TLabel
+    Left = 152
+    Height = 26
+    Top = 128
+    Width = 57
+    Caption = 'Label1'
+  end
+  object ListBox1: TListBox
+    Left = 152
+    Height = 344
+    Top = 192
+    Width = 672
+    ItemHeight = 0
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object Button1: TButton
+    Left = 408
+    Height = 56
+    Top = 568
+    Width = 137
+    Caption = 'Volver'
+    TabOrder = 2
+    OnClick = Button1Click
+  end
+end

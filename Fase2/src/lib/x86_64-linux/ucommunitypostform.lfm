@@ -1,0 +1,77 @@
+object frmCommunityPost: TfrmCommunityPost
+  Left = 503
+  Height = 532
+  Top = 40
+  Width = 689
+  Caption = 'frmCommunityPost'
+  ClientHeight = 532
+  ClientWidth = 689
+  DesignTimePPI = 134
+  Position = poScreenCenter
+  object Panel1: TPanel
+    Left = 0
+    Height = 112
+    Top = 0
+    Width = 689
+    Align = alTop
+    ClientHeight = 112
+    ClientWidth = 689
+    TabOrder = 0
+    object lblTitle: TLabel
+      Left = 272
+      Height = 26
+      Top = 40
+      Width = 149
+      Caption = 'Publicar Mensaje'
+    end
+  end
+  object lblComunidad: TLabel
+    Left = 136
+    Height = 26
+    Top = 120
+    Width = 106
+    Caption = 'Comunidad:'
+  end
+  object lblMensaje: TLabel
+    Left = 128
+    Height = 26
+    Top = 232
+    Width = 78
+    Caption = 'Mensaje:'
+  end
+  object edtComunidad: TEdit
+    Left = 136
+    Height = 43
+    Top = 152
+    Width = 448
+    TabOrder = 1
+  end
+  object memMensaje: TMemo
+    Left = 136
+    Height = 118
+    Top = 264
+    Width = 448
+    Lines.Strings = (
+      'memMensaje'
+    )
+    TabOrder = 2
+  end
+  object btnPublicar: TButton
+    Left = 288
+    Height = 43
+    Top = 408
+    Width = 128
+    Caption = 'Publicar'
+    TabOrder = 3
+    OnClick = btnPublicarClick
+  end
+  object btnVolver: TButton
+    Left = 288
+    Height = 43
+    Top = 456
+    Width = 128
+    Caption = 'Volver'
+    TabOrder = 4
+    OnClick = btnVolverClick
+  end
+end

@@ -21,7 +21,7 @@ type
     btnContactos: TButton;
     btnGenerarReportes: TButton;
     btnFavoritos: TButton;   // Ver Favoritos
-    btnPublicar: TButton;
+    btnPublicar: TButton;    // Publicar en comunidad
     btnVer: TButton;         // Ver Borradores de Mensaje
     lblHola: TLabel;
     tmrScheduler: TTimer;
@@ -36,6 +36,7 @@ type
     procedure btnContactosClick(Sender: TObject);
     procedure btnPerfilClick(Sender: TObject);
     procedure btnGenerarReportesClick(Sender: TObject);
+    procedure btnPublicarClick(Sender: TObject);
     procedure btnVerClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -58,7 +59,7 @@ uses
   uMain, uData, uInboxForm, uComposeForm, uTrashForm,
   uScheduleForm, uProgListForm, DateUtils, uListaCorreos,
   uContacts, uNewContactForm, uProfileForm, uUserReports,
-  uDraftsForm, uFavoritesForm;
+  uDraftsForm, uFavoritesForm, uCommunityPostForm; // << NUEVO
 
 { TfrmUserMenu }
 
@@ -107,7 +108,6 @@ procedure TfrmUserMenu.btnFavoritosClick(Sender: TObject);
 begin
   if not Assigned(frmFavorites) then
     Application.CreateForm(TfrmFavorites, frmFavorites);
-  // ← usar el email que ya guardamos en el menú
   frmFavorites.OpenForUser(FEmailActual);
   Hide;
 end;
@@ -182,6 +182,14 @@ begin
     '- contactos' + LineEnding + LineEnding +
     'Carpeta: ' + outDir
   );
+end;
+
+procedure TfrmUserMenu.btnPublicarClick(Sender: TObject);
+begin
+  if not Assigned(frmCommunityPost) then
+    Application.CreateForm(TfrmCommunityPost, frmCommunityPost);
+  frmCommunityPost.OpenForUser(FEmailActual);
+  Hide;
 end;
 
 procedure TfrmUserMenu.btnVerClick(Sender: TObject);

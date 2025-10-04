@@ -5,7 +5,7 @@ unit uData;
 interface
 
 uses
-  Classes, SysUtils, uListaUsuarios, uListaCorreos;
+  Classes, SysUtils, uListaUsuarios, uListaCorreos, BST_Comunidades;
 
 type
   { ====== PILA (Papelera) ====== }
@@ -74,8 +74,7 @@ type
   { ====== FAVORITOS POR USUARIO (IDs de correos) ====== }
   TFavorites = class
   private
-    // Mapa: Owner -> TStringList (IDs de correos en texto)
-    FOwners: TStringList;
+    FOwners: TStringList; // Owner -> TStringList de IDs (texto)
     function IndexOfOwner(const Owner: string): Integer;
     function EnsureOwner(const Owner: string): TStringList;
   public
@@ -127,21 +126,28 @@ type
   end;
 
 var
-  GUsuarios  : TListaUsuarios;
-  GCorreos   : TListaCorreos;
-  GPapelera  : TTrashStack;
-  GScheduled : TScheduledQueue;
-  GContacts  : TContacts;
-  GFavorites : TFavorites;
-  GDrafts    : TDraftBST;
+  GUsuarios       : TListaUsuarios;
+  GCorreos        : TListaCorreos;
+  GPapelera       : TTrashStack;
+  GScheduled      : TScheduledQueue;
+  GContacts       : TContacts;
+  GFavorites      : TFavorites;
+  GDrafts         : TDraftBST;
+  GCommunitiesBST : TBSTree;     // <<--- Árbol BST de comunidades
 
 function EsContacto(const OwnerEmail, DestEmail: string): Boolean;
-function GetMailById(AId: LongInt): PCorreo;  // <-- HELPER NUEVO
+function GetMailById(AId: LongInt): PCorreo;  // helper para buscar correo por ID
+
+// ===== API de Comunidades (BST) expuesta a la UI =====
+procedure CommunityEnsure(const AName: string);
+function  CommunityExists(const AName: string): Boolean;
+procedure CommunityPost(const AName, AAuthorEmail, AText: string; const ADateISO: string = '');
+function  CommunityListMessages(const AName: string): TArrayOfMensajes;
+procedure CommunityReport(const ADotPath: string = 'reporte_comunidades.dot');
 
 implementation
 
 { ======================== TTrashStack ======================== }
-
 constructor TTrashStack.Create;
 begin
   inherited Create;
@@ -210,7 +216,6 @@ begin
 end;
 
 { ====================== TScheduledQueue ====================== }
-
 constructor TScheduledQueue.Create;
 begin
   inherited Create;
@@ -281,7 +286,6 @@ begin
 end;
 
 { ========================= TContacts ========================= }
-
 constructor TContacts.Create;
 begin
   inherited Create;
@@ -298,8 +302,7 @@ begin
 end;
 
 procedure TContacts.Clear;
-var
-  i: Integer; L: TStringList;
+var i: Integer; L: TStringList;
 begin
   for i := 0 to FOwners.Count-1 do
   begin
@@ -385,7 +388,6 @@ begin
 end;
 
 { ========================= TFavorites ========================= }
-
 constructor TFavorites.Create;
 begin
   inherited Create;
@@ -402,8 +404,7 @@ begin
 end;
 
 procedure TFavorites.Clear;
-var
-  i: Integer; L: TStringList;
+var i: Integer; L: TStringList;
 begin
   for i := 0 to FOwners.Count-1 do
   begin
@@ -484,7 +485,6 @@ begin
 end;
 
 { ========================= TDraftBST ========================= }
-
 constructor TDraftBST.Create;
 begin
   inherited Create;
@@ -664,16 +664,62 @@ begin
   end;
 end;
 
+{ ---------- Comunidad (BST) ---------- }
+procedure CommunityEnsure(const AName: string);
+begin
+  if (GCommunitiesBST = nil) or (Trim(AName)='') then Exit;
+  if GCommunitiesBST.Search(AName) = nil then
+    GCommunitiesBST.CrearComunidad(AName);
+end;
+
+function CommunityExists(const AName: string): Boolean;
+begin
+  Result := (GCommunitiesBST <> nil) and (GCommunitiesBST.Search(Trim(AName)) <> nil);
+end;
+
+procedure CommunityPost(const AName, AAuthorEmail, AText: string; const ADateISO: string);
+var
+  msg : TMensajeComunidad;
+  dt  : TDateTime;
+begin
+  if (Trim(AName)='') or (Trim(AText)='') or (GCommunitiesBST = nil) then Exit;
+  if not CommunityExists(AName) then Exit;
+
+  // Si algún día quieres parsear ADateISO, hazlo aquí; por ahora usamos Now.
+  dt := Now;
+
+  msg := TMensajeComunidad.Create(AAuthorEmail, AText, dt);
+  GCommunitiesBST.Insert(AName, msg);
+end;
+
+function CommunityListMessages(const AName: string): TArrayOfMensajes;
+var
+  node: TBSTNode;
+begin
+  SetLength(Result, 0);
+  if (GCommunitiesBST = nil) then Exit;
+  node := GCommunitiesBST.Search(Trim(AName));
+  if node <> nil then
+    Result := node.GetMensajes;
+end;
+
+procedure CommunityReport(const ADotPath: string);
+begin
+  if (GCommunitiesBST <> nil) then
+    GCommunitiesBST.GenerarReporte(ADotPath);
+end;
+
 { ==================== Init / Final =========================== }
 
 initialization
-  GUsuarios  := TListaUsuarios.Create;
-  GCorreos   := TListaCorreos.Create;
-  GPapelera  := TTrashStack.Create;
-  GScheduled := TScheduledQueue.Create;
-  GContacts  := TContacts.Create;
-  GFavorites := TFavorites.Create;
-  GDrafts    := TDraftBST.Create;
+  GUsuarios       := TListaUsuarios.Create;
+  GCorreos        := TListaCorreos.Create;
+  GPapelera       := TTrashStack.Create;
+  GScheduled      := TScheduledQueue.Create;
+  GContacts       := TContacts.Create;
+  GFavorites      := TFavorites.Create;
+  GDrafts         := TDraftBST.Create;
+  GCommunitiesBST := TBSTree.Create;     // <<--- BST
 
 finalization
   GUsuarios.Free;
@@ -683,5 +729,6 @@ finalization
   GContacts.Free;
   GFavorites.Free;
   GDrafts.Free;
+  GCommunitiesBST.Free;                  // <<--- BST
 end.
 

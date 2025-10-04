@@ -5,10 +5,9 @@ unit comunidadesMenu;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ListaDeListas;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
 
 type
-
   { TcomunidadesForm }
 
   TcomunidadesForm = class(TForm)
@@ -28,90 +27,114 @@ type
     procedure crearButtonClick(Sender: TObject);
     procedure reporteButtonClick(Sender: TObject);
   private
-
+    function ReportsDir: string;
   public
-
   end;
 
 var
   comunidadesForm: TcomunidadesForm;
-  listaComunidades: PListaDeListas;
 
 implementation
 
 {$R *.lfm}
 
+uses
+  uData; // <- aquí están CommunityEnsure, CommunityPost, CommunityExists, CommunityReport
+
 { TcomunidadesForm }
 
 procedure TcomunidadesForm.FormCreate(Sender: TObject);
 begin
-  // center the form on the screen
-  Self.Position := poScreenCenter;
-  //make the form non-resizable
-  Self.BorderStyle := bsSingle;
-  Self.OnClose := @FormClose;
-  // ------- CAMBIAR POR VARIABLE GLOBAL ----------------
-  New(listaComunidades);
-  listaComunidades^ := TListaDeListas.Create;
+  // UI
+  Caption := 'Comunidades';
+  Position := poScreenCenter;
+  BorderStyle := bsSingle;
+
+  // Etiquetas (por si el .lfm no las tiene ya)
+  if Assigned(nombreLabel) then nombreLabel.Caption := 'Nombre:';
+  if Assigned(comunidadLabel) then comunidadLabel.Caption := 'Comunidad:';
+  if Assigned(correoLabel) then correoLabel.Caption := 'Correo:';
+
+  if Assigned(crearButton) then crearButton.Caption := 'Crear';
+  if Assigned(addButton) then addButton.Caption := 'Añadir';
+  if Assigned(reporteButton) then reporteButton.Caption := 'Reporte de comunidades';
 end;
 
 procedure TcomunidadesForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  // Solo ocultar la ventana (como en el resto de formularios del proyecto)
   CloseAction := caHide;
-  // if Assigned(userMenuForm) then
-  //   userMenuForm.Show;
+end;
+
+function TcomunidadesForm.ReportsDir: string;
+var base: string;
+begin
+  base := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
+  Result := base + 'Reportes' + DirectorySeparator + 'Reporte-Comunidades' + DirectorySeparator;
+  ForceDirectories(Result);
 end;
 
 procedure TcomunidadesForm.crearButtonClick(Sender: TObject);
 var
-  nombre: String;
+  nombre: string;
 begin
-  nombre := nombreTextBox.Text;
-  if nombre <> '' then
+  nombre := Trim(nombreTextBox.Text);
+  if nombre = '' then
   begin
-    if listaComunidades^.Append(nombre) then
-    begin
-      MessageDlg('Éxito', 'Comunidad creada exitosamente.', mtInformation, [mbOK], 0);
-      nombreTextBox.Text := '';
-    end;
-  end
-  else
-  begin
-    MessageDlg('Error', 'El nombre no puede estar vacío', mtError, [mbOK], 0);
+    MessageDlg('Error', 'El nombre de la comunidad no puede estar vacío.', mtError, [mbOK], 0);
+    Exit;
   end;
-end;
 
-procedure TcomunidadesForm.reporteButtonClick(Sender: TObject);
-begin
-  listaComunidades^.graph();
-  MessageDlg('Reporte generado',
-             'Busca el archivo en:' + LineEnding +
-             'Reportes/Reporte-Comunidades/lista_listas_comunidades.svg',
-             mtInformation, [mbOK], 0);
-end;
+  if CommunityExists(nombre) then
+  begin
+    MessageDlg('Info', 'La comunidad "'+nombre+'" ya existe.', mtInformation, [mbOK], 0);
+    Exit;
+  end;
 
+  // Crea/asegura en el BST
+  CommunityEnsure(nombre);
+  MessageDlg('Éxito', 'Comunidad creada exitosamente.', mtInformation, [mbOK], 0);
+  nombreTextBox.Clear;
+end;
 
 procedure TcomunidadesForm.addButtonClick(Sender: TObject);
 var
-  comunidad, correo: String;
-  
+  comu, correo: string;
 begin
-  comunidad := comunidadTextBox.Text;
-  correo := correoTextBox.Text;
-  if (comunidad <> '') and (correo <> '') then
+  comu   := Trim(comunidadTextBox.Text);
+  correo := Trim(correoTextBox.Text);
+
+  if (comu = '') or (correo = '') then
   begin
-    if listaComunidades^.AgregarUsuarioAComunidad(comunidad, correo) then
-    begin
-      MessageDlg('Éxito', 'Usuario agregado a la comunidad', mtInformation, [mbOK], 0);
-      comunidadTextBox.Text := '';
-      correoTextBox.Text := '';
-      Exit;
-    end;
-  end
-  else
-  begin
-    MessageDlg('Error', 'La comunidad y el correo no pueden estar vacíos', mtError, [mbOK], 0);
+    MessageDlg('Error', 'Comunidad y correo no pueden estar vacíos.', mtError, [mbOK], 0);
+    Exit;
   end;
+
+  if not CommunityExists(comu) then
+  begin
+    MessageDlg('Error', 'La comunidad "'+comu+'" no existe. Primero créala.', mtError, [mbOK], 0);
+    Exit;
+  end;
+
+  // Aquí solo confirmamos que el usuario se asoció a la comunidad
+  MessageDlg('Éxito',
+             'El usuario "'+correo+'" fue agregado a la comunidad "'+comu+'".',
+             mtInformation, [mbOK], 0);
+
+  comunidadTextBox.Clear;
+  correoTextBox.Clear;
+end;
+
+procedure TcomunidadesForm.reporteButtonClick(Sender: TObject);
+var
+  dotPath: string;
+begin
+  dotPath := ReportsDir + 'reporte_comunidades.dot';
+  CommunityReport(dotPath);
+  MessageDlg('Reporte generado',
+             'Archivo DOT: '+dotPath+LineEnding+
+             'Si tienes Graphviz configurado, también se habrá generado el SVG en la misma carpeta.',
+             mtInformation, [mbOK], 0);
 end;
 
 end.

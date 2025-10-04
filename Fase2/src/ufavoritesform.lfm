@@ -8,6 +8,7 @@ object frmFavorites: TfrmFavorites
   ClientWidth = 856
   DesignTimePPI = 134
   Position = poScreenCenter
+  LCLVersion = '4.2.0.0'
   object lvFavs: TListView
     Left = 24
     Height = 512
@@ -87,6 +88,7 @@ object frmFavorites: TfrmFavorites
     Width = 129
     Caption = 'Eliminar'
     TabOrder = 2
+    OnClick = btnEliminarClick
   end
   object btnVolver: TButton
     Left = 724

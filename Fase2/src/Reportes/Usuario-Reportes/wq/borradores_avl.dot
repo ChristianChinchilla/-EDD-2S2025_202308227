@@ -1,0 +1,5 @@
+digraph G {
+  graph [fontname="Helvetica"]; node [shape=box, style="rounded,filled", fillcolor="lightyellow", fontname="Helvetica"];
+  label="Árbol AVL - borradores (wq)"; labelloc=t; fontsize=20;
+  Empty [label="(sin borradores)"];
+}

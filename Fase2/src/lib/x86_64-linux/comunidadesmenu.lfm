@@ -1,113 +1,114 @@
 object comunidadesForm: TcomunidadesForm
   Left = 508
-  Height = 570
+  Height = 796
   Top = 313
-  Width = 1100
+  Width = 1535
   Caption = 'Comunidades'
-  ClientHeight = 570
-  ClientWidth = 1100
+  ClientHeight = 796
+  ClientWidth = 1535
+  DesignTimePPI = 134
   OnCreate = FormCreate
   object Label1: TLabel
-    Left = 408
-    Height = 51
-    Top = 24
-    Width = 292
+    Left = 570
+    Height = 83
+    Top = 34
+    Width = 390
     Caption = 'Comunidades'
-    Font.Height = -43
+    Font.Height = -60
     Font.Name = 'Sans'
     ParentFont = False
   end
   object nombreLabel: TLabel
-    Left = 176
-    Height = 33
-    Top = 123
-    Width = 117
+    Left = 246
+    Height = 53
+    Top = 172
+    Width = 157
     Caption = 'Nombre:'
-    Font.Height = -27
+    Font.Height = -38
     Font.Name = 'Sans'
     ParentFont = False
   end
   object comunidadLabel: TLabel
-    Left = 176
-    Height = 33
-    Top = 303
-    Width = 164
+    Left = 246
+    Height = 53
+    Top = 423
+    Width = 216
     Caption = 'Comunidad:'
-    Font.Height = -27
+    Font.Height = -38
     Font.Name = 'Sans'
     ParentFont = False
   end
   object correoLabel: TLabel
-    Left = 176
-    Height = 33
-    Top = 383
-    Width = 101
+    Left = 246
+    Height = 53
+    Top = 535
+    Width = 132
     Caption = 'Correo:'
-    Font.Height = -27
+    Font.Height = -38
     Font.Name = 'Sans'
     ParentFont = False
   end
   object nombreTextBox: TEdit
-    Left = 344
-    Height = 40
-    Top = 120
-    Width = 608
-    Font.Height = -19
+    Left = 480
+    Height = 54
+    Top = 168
+    Width = 849
+    Font.Height = -27
     Font.Name = 'Sans'
     ParentFont = False
     TabOrder = 0
   end
   object comunidadTextBox: TEdit
-    Left = 392
-    Height = 40
-    Top = 296
-    Width = 560
-    Font.Height = -19
+    Left = 547
+    Height = 54
+    Top = 413
+    Width = 782
+    Font.Height = -27
     Font.Name = 'Sans'
     ParentFont = False
     TabOrder = 1
   end
   object correoTextBox: TEdit
-    Left = 344
-    Height = 40
-    Top = 383
-    Width = 608
-    Font.Height = -19
+    Left = 480
+    Height = 54
+    Top = 535
+    Width = 849
+    Font.Height = -27
     Font.Name = 'Sans'
     ParentFont = False
     TabOrder = 2
   end
   object crearButton: TButton
-    Left = 480
-    Height = 49
-    Top = 200
-    Width = 144
+    Left = 670
+    Height = 68
+    Top = 279
+    Width = 201
     Caption = 'Crear'
-    Font.Height = -24
+    Font.Height = -34
     Font.Name = 'Sans'
     ParentFont = False
     TabOrder = 3
     OnClick = crearButtonClick
   end
   object addButton: TButton
-    Left = 480
-    Height = 49
-    Top = 472
-    Width = 144
+    Left = 670
+    Height = 68
+    Top = 659
+    Width = 201
     Caption = 'Añadir'
-    Font.Height = -24
+    Font.Height = -34
     Font.Name = 'Sans'
     ParentFont = False
     TabOrder = 4
     OnClick = addButtonClick
   end
   object reporteButton: TButton
-    Left = 752
-    Height = 48
-    Top = 496
-    Width = 315
+    Left = 1050
+    Height = 67
+    Top = 692
+    Width = 440
     Caption = 'Reporte de comunidades'
-    Font.Height = -24
+    Font.Height = -34
     Font.Name = 'Sans'
     ParentFont = False
     TabOrder = 5

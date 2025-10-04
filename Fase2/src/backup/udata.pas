@@ -5,7 +5,7 @@ unit uData;
 interface
 
 uses
-  Classes, SysUtils, uListaUsuarios, uListaCorreos;
+  Classes, SysUtils, uListaUsuarios, uListaCorreos, BST_Comunidades;
 
 type
   { ====== PILA (Papelera) ====== }
@@ -66,7 +66,7 @@ type
     procedure Clear;
     procedure Add(const Owner, Email: string);
     function  Has(const Owner, Email: string): Boolean;
-    function  Remove(const Owner, Email: string): Boolean;     // <-- ya estaba marcado NUEVO
+    function  Remove(const Owner, Email: string): Boolean;
     function  GetListCopy(const Owner: string): TStringList;
     function  Count(const Owner: string): Integer;
   end;
@@ -74,8 +74,7 @@ type
   { ====== FAVORITOS POR USUARIO (IDs de correos) ====== }
   TFavorites = class
   private
-    // Mapa: Owner -> TStringList (IDs de correos en texto)
-    FOwners: TStringList;
+    FOwners: TStringList; // Owner -> TStringList de IDs (texto)
     function IndexOfOwner(const Owner: string): Integer;
     function EnsureOwner(const Owner: string): TStringList;
   public
@@ -85,7 +84,7 @@ type
     procedure Add   (const Owner: string; const MailId: LongInt);
     function  Remove(const Owner: string; const MailId: LongInt): Boolean;
     function  Has   (const Owner: string; const MailId: LongInt): Boolean;
-    function  GetIdListCopy(const Owner: string): TStringList; // devuelve copia (IDs como strings)
+    function  GetIdListCopy(const Owner: string): TStringList; // copia (IDs como strings)
     function  Count(const Owner: string): Integer;
   end;
 
@@ -127,20 +126,28 @@ type
   end;
 
 var
-  GUsuarios  : TListaUsuarios;
-  GCorreos   : TListaCorreos;
-  GPapelera  : TTrashStack;
-  GScheduled : TScheduledQueue;
-  GContacts  : TContacts;
-  GFavorites : TFavorites;   // <-- NUEVO GLOBAL
-  GDrafts    : TDraftBST;
+  GUsuarios       : TListaUsuarios;
+  GCorreos        : TListaCorreos;
+  GPapelera       : TTrashStack;
+  GScheduled      : TScheduledQueue;
+  GContacts       : TContacts;
+  GFavorites      : TFavorites;
+  GDrafts         : TDraftBST;
+  GCommunitiesBST : TBSTree;     // <<--- Árbol BST de comunidades
 
 function EsContacto(const OwnerEmail, DestEmail: string): Boolean;
+function GetMailById(AId: LongInt): PCorreo;  // helper para buscar correo por ID
+
+// ===== API de Comunidades (BST) expuesta a la UI =====
+procedure CommunityEnsure(const AName: string);
+function  CommunityExists(const AName: string): Boolean;
+procedure CommunityPost(const AName, AAuthorEmail, AText, ADateISO: string = '');
+function  CommunityListMessages(const AName: string): TArrayOfMensajes;
+procedure CommunityReport(const ADotPath: string = 'reporte_comunidades.dot');
 
 implementation
 
 { ======================== TTrashStack ======================== }
-
 constructor TTrashStack.Create;
 begin
   inherited Create;
@@ -209,7 +216,6 @@ begin
 end;
 
 { ====================== TScheduledQueue ====================== }
-
 constructor TScheduledQueue.Create;
 begin
   inherited Create;
@@ -280,7 +286,6 @@ begin
 end;
 
 { ========================= TContacts ========================= }
-
 constructor TContacts.Create;
 begin
   inherited Create;
@@ -297,8 +302,7 @@ begin
 end;
 
 procedure TContacts.Clear;
-var
-  i: Integer; L: TStringList;
+var i: Integer; L: TStringList;
 begin
   for i := 0 to FOwners.Count-1 do
   begin
@@ -384,7 +388,6 @@ begin
 end;
 
 { ========================= TFavorites ========================= }
-
 constructor TFavorites.Create;
 begin
   inherited Create;
@@ -401,8 +404,7 @@ begin
 end;
 
 procedure TFavorites.Clear;
-var
-  i: Integer; L: TStringList;
+var i: Integer; L: TStringList;
 begin
   for i := 0 to FOwners.Count-1 do
   begin
@@ -483,7 +485,6 @@ begin
 end;
 
 { ========================= TDraftBST ========================= }
-
 constructor TDraftBST.Create;
 begin
   inherited Create;
@@ -648,16 +649,79 @@ procedure TDraftBST.ListPre (L: TList);  begin L.Clear; ToListPre (FRoot, L) end
 procedure TDraftBST.ListIn  (L: TList);  begin L.Clear; ToListIn  (FRoot, L) end;
 procedure TDraftBST.ListPost(L: TList);  begin L.Clear; ToListPost(FRoot, L) end;
 
+{ ===================== Helpers públicos ====================== }
+
+function GetMailById(AId: LongInt): PCorreo;
+var cur: PCorreo;
+begin
+  Result := nil;
+  if GCorreos = nil then Exit;
+  cur := GCorreos.First;
+  while cur <> nil do
+  begin
+    if cur^.id = AId then Exit(cur);
+    cur := cur^.next;
+  end;
+end;
+
+// ---------- Comunidad (BST) ----------
+procedure CommunityEnsure(const AName: string);
+begin
+  if (GCommunitiesBST = nil) or (Trim(AName)='') then Exit;
+  if GCommunitiesBST.Search(AName) = nil then
+    GCommunitiesBST.CrearComunidad(AName);
+end;
+
+function CommunityExists(const AName: string): Boolean;
+begin
+  Result := (GCommunitiesBST <> nil) and (GCommunitiesBST.Search(Trim(AName)) <> nil);
+end;
+
+procedure CommunityPost(const AName, AAuthorEmail, AText, ADateISO: string);
+var
+  msg : TMensajeComunidad;
+  dt  : TDateTime;
+begin
+  if (Trim(AName)='') or (Trim(AText)='') or (GCommunitiesBST = nil) then Exit;
+
+  // Debe existir
+  if not CommunityExists(AName) then Exit;
+
+  // Fecha: usa Now (simple y robusto)
+  dt := Now;
+
+  msg := TMensajeComunidad.Create(AAuthorEmail, AText, dt);
+  GCommunitiesBST.Insert(AName, msg);
+end;
+
+function CommunityListMessages(const AName: string): TArrayOfMensajes;
+var
+  node: TBSTNode;
+begin
+  SetLength(Result, 0);
+  if (GCommunitiesBST = nil) then Exit;
+  node := GCommunitiesBST.Search(Trim(AName));
+  if node <> nil then
+    Result := node.GetMensajes;
+end;
+
+procedure CommunityReport(const ADotPath: string);
+begin
+  if (GCommunitiesBST <> nil) then
+    GCommunitiesBST.GenerarReporte(ADotPath);
+end;
+
 { ==================== Init / Final =========================== }
 
 initialization
-  GUsuarios  := TListaUsuarios.Create;
-  GCorreos   := TListaCorreos.Create;
-  GPapelera  := TTrashStack.Create;
-  GScheduled := TScheduledQueue.Create;
-  GContacts  := TContacts.Create;
-  GFavorites := TFavorites.Create;  // <-- NUEVO
-  GDrafts    := TDraftBST.Create;
+  GUsuarios       := TListaUsuarios.Create;
+  GCorreos        := TListaCorreos.Create;
+  GPapelera       := TTrashStack.Create;
+  GScheduled      := TScheduledQueue.Create;
+  GContacts       := TContacts.Create;
+  GFavorites      := TFavorites.Create;
+  GDrafts         := TDraftBST.Create;
+  GCommunitiesBST := TBSTree.Create;     // <<--- BST
 
 finalization
   GUsuarios.Free;
@@ -665,7 +729,8 @@ finalization
   GPapelera.Free;
   GScheduled.Free;
   GContacts.Free;
-  GFavorites.Free;                // <-- NUEVO
+  GFavorites.Free;
   GDrafts.Free;
+  GCommunitiesBST.Free;                  // <<--- BST
 end.
 

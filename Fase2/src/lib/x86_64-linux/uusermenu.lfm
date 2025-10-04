@@ -121,6 +121,7 @@ object frmUserMenu: TfrmUserMenu
     Width = 433
     Caption = 'Publicar Mensaje En Comunidad'
     TabOrder = 11
+    OnClick = btnPublicarClick
   end
   object btnVer: TButton
     Left = 22

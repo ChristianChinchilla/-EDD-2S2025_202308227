@@ -166,8 +166,36 @@
         <Filename Value="udraftsform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmDrafts"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uDraftsForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ufavoritesform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmFavorites"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uFavoritesForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ucommunitypostform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmCommunityPost"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uCommunityPostForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../../../IPG EDD/EDD_GRUPO11/Fase2/src/bst/BST_Comunidades.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ucommunitymessagesform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmCommunityMessages"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uCommunityMessagesForm"/>
       </Unit>
     </Units>
   </ProjectOptions>
@@ -178,6 +206,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="../../../../IPG EDD/EDD_GRUPO11/Fase2/src/bst"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
