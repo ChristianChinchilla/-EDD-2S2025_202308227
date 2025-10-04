@@ -1,6 +1,0 @@
-digraph G {
-  node [shape=record, style="rounded,filled", fillcolor="lightgreen", fontname="Helvetica"];
-  graph [fontname="Helvetica"];
-  label="Árbol B (orden 3) - favoritos (s)"; labelloc=t; fontsize=20;
-  Empty [label="(sin favoritos)"];
-}

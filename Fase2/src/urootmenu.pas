@@ -22,10 +22,10 @@ type
     OpenDialog1: TOpenDialog;
     procedure btnCargaMasivaClick(Sender: TObject);
     procedure btnComunidadesClick(Sender: TObject);
-    procedure btnMensajeClick(Sender: TObject);         // <-- abre uCommunityMessagesForm
+    procedure btnMensajeClick(Sender: TObject);         // abre visor de mensajes
     procedure btnRepUsuariosClick(Sender: TObject);
     procedure btnRepRelacionesClick(Sender: TObject);
-    procedure btnRepComunidadesClick(Sender: TObject);  // <-- usa CommunityReport
+    procedure btnRepComunidadesClick(Sender: TObject);  // usa CommunityReport
     procedure btnLogoutClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -48,8 +48,8 @@ uses
   // App
   uData, uListaUsuarios, uListaCorreos,
   Process, FileUtil,
-  comunidadesMenu, ListaDeListas,      // abrir form de comunidades (opcional)
-  uCommunityMessagesForm;              // <-- formulario de ver mensajes
+  comunidadesMenu,               // formulario para crear comunidades (grupo)
+  uCommunityMessagesForm;        // <-- usa TfrmCommunityMessages y frmCommunityMessages
 
 procedure TfrmRootMenu.FormCreate(Sender: TObject);
 begin
@@ -107,10 +107,10 @@ end;
 
 procedure TfrmRootMenu.btnMensajeClick(Sender: TObject);
 begin
-  // Abre el formulario simple para ver mensajes por comunidad
+  // Abrir el formulario para ver mensajes por comunidad
   if frmCommunityMessages = nil then
     Application.CreateForm(TfrmCommunityMessages, frmCommunityMessages);
-  frmCommunityMessages.Open;          // carga comunidades + muestra mensajes
+  frmCommunityMessages.Open;      // carga comunidades y muestra los mensajes de la seleccionada
   frmCommunityMessages.BringToFront;
 end;
 
@@ -181,19 +181,15 @@ begin
                 '(Instala graphviz para crear el .png)');
 end;
 
-// === Reporte de Comunidades usando el BST (uData.CommunityReport) ===
 procedure TfrmRootMenu.btnRepComunidadesClick(Sender: TObject);
 var
   dir, dot: string;
 begin
-  // Carpeta propia para este reporte
   dir := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) +
          'Reportes' + DirectorySeparator + 'Reporte-Comunidades' + DirectorySeparator;
   ForceDirectories(dir);
 
   dot := dir + 'reporte_comunidades.dot';
-
-  // Genera el .dot (y si tu TBSTree crea .svg, saldrá al lado)
   CommunityReport(dot);
 
   ShowMessage('Reporte de Comunidades generado en: ' + LineEnding + dot);

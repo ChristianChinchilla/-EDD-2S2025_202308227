@@ -194,6 +194,7 @@
         <Filename Value="ucommunitymessagesform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmCommunityMessages"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uCommunityMessagesForm"/>
       </Unit>

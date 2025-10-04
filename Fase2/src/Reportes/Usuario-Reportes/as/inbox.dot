@@ -1,9 +1,0 @@
-digraph G {
-  rankdir=LR;
-  graph [fontname="Helvetica"]; node [shape=plaintext, fontname="Helvetica"];
-  labelloc="t"; label="Reporte de Correos Recibidos";
-  subgraph cluster0 { label="Lista Doblemente Enlazada"; style="rounded"; color="gray70";
-  edge [dir="both"];
-  Empty [label="(sin correos)"];
-  }
-}
