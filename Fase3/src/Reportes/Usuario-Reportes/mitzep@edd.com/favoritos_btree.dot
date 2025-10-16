@@ -1,0 +1,8 @@
+digraph G {
+  graph [fontname="Helvetica"];
+  node  [shape=record, style="rounded,filled", fillcolor="lightgreen", fontname="Helvetica"];
+  label="Árbol B (Orden 5) - Correos Favoritos (mitzep@edd.com)"; labelloc=t; fontsize=20;
+  root [label="|{ID: 4\lRemitente: bfox@edd.com\lAsunto: Entrega de documentación\lFecha: (sin fecha)\lMensaje: Te adjunto el documento actualizado del sistema.\l}|{ID: 5\lRemitente: bfox@edd.com\lAsunto: Integración de dependencias\lFecha: (sin fecha)\lMensaje: Debemos actualizar los paquetes antes del despliegue.\l}|{ID: 6\lRemitente: jcorbet@edd.com\lAsunto: Solicitud de revisión\lFecha: (sin fecha)\lMensaje: ¿Podrías revisar los permisos en el servidor de staging?\l}|{ID: 7\lRemitente: smejia@edd.com\lAsunto: Actualización del kernel 6.5\lFecha: (sin fecha)\lMensaje: Se liberó la nueva versión del kernel con parches de seguridad.\l}|"];
+  c0 [label="|{ID: 8\lRemitente: jcorbet@edd.com\lAsunto: Reporte técnico\lFecha: (sin fecha)\lMensaje: El informe de rendimiento ya está disponible.\l}|"];
+  root -> c0;
+}

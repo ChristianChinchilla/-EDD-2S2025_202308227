@@ -1,0 +1,135 @@
+object frmUserMenu: TfrmUserMenu
+  Left = 240
+  Height = 399
+  Top = 140
+  Width = 702
+  Caption = 'Menú de Usuario'
+  ClientHeight = 399
+  ClientWidth = 702
+  DesignTimePPI = 134
+  Position = poScreenCenter
+  object lblHola: TLabel
+    Left = 188
+    Height = 26
+    Top = 11
+    Width = 40
+    Caption = 'Hola'
+  end
+  object btnBandeja: TButton
+    Left = 22
+    Height = 39
+    Top = 67
+    Width = 209
+    Caption = 'Bandeja de Entrada'
+    TabOrder = 0
+    OnClick = btnBandejaClick
+  end
+  object btnEnviar: TButton
+    Left = 246
+    Height = 39
+    Top = 67
+    Width = 209
+    Caption = 'Enviar Correo'
+    TabOrder = 1
+    OnClick = btnEnviarClick
+  end
+  object btnPapelera: TButton
+    Left = 469
+    Height = 39
+    Top = 67
+    Width = 209
+    Caption = 'Papelera'
+    TabOrder = 2
+    OnClick = btnPapeleraClick
+  end
+  object btnProgramar: TButton
+    Left = 22
+    Height = 39
+    Top = 123
+    Width = 209
+    Caption = 'Programar Correo'
+    TabOrder = 3
+    OnClick = btnProgramarClick
+  end
+  object btnCerrarSesion: TButton
+    Left = 469
+    Height = 39
+    Top = 11
+    Width = 209
+    Caption = 'Cerrar Sesión'
+    TabOrder = 4
+    OnClick = btnCerrarSesionClick
+  end
+  object btnProgList: TButton
+    Left = 246
+    Height = 39
+    Top = 123
+    Width = 209
+    Caption = 'Correos Programados'
+    TabOrder = 5
+    OnClick = btnProgListClick
+  end
+  object btnNewContact: TButton
+    Left = 469
+    Height = 40
+    Top = 123
+    Width = 209
+    Caption = 'Agregar Contactos'
+    TabOrder = 6
+    OnClick = btnNewContactClick
+  end
+  object btnPerfil: TButton
+    Left = 246
+    Height = 35
+    Top = 179
+    Width = 209
+    Caption = 'Actualizar Perfil'
+    TabOrder = 7
+    OnClick = btnPerfilClick
+  end
+  object btnContactos: TButton
+    Left = 22
+    Height = 36
+    Top = 179
+    Width = 209
+    Caption = 'Contactos'
+    TabOrder = 8
+    OnClick = btnContactosClick
+  end
+  object btnGenerarReportes: TButton
+    Left = 469
+    Height = 34
+    Top = 179
+    Width = 209
+    Caption = 'Generar Reportes'
+    TabOrder = 9
+    OnClick = btnGenerarReportesClick
+  end
+  object btnFavoritos: TButton
+    Left = 469
+    Height = 34
+    Top = 223
+    Width = 209
+    Caption = 'Ver Favoritos'
+    TabOrder = 10
+    OnClick = btnFavoritosClick
+  end
+  object btnPublicar: TButton
+    Left = 22
+    Height = 45
+    Top = 279
+    Width = 433
+    Caption = 'Publicar Mensaje En Comunidad'
+    TabOrder = 11
+    OnClick = btnPublicarClick
+  end
+  object btnVer: TButton
+    Left = 22
+    Height = 45
+    Top = 223
+    Width = 433
+    Caption = 'Ver Borradores De Mensaje'
+    TabOrder = 12
+    OnClick = btnVerClick
+  end
+end

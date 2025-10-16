@@ -1,0 +1,36 @@
+object frmCommunityMessages: TfrmCommunityMessages
+  Left = 557
+  Height = 726
+  Top = 40
+  Width = 976
+  Caption = 'frmCommunityMessages'
+  ClientHeight = 726
+  ClientWidth = 976
+  DesignTimePPI = 134
+  Position = poScreenCenter
+  object lblComunidades: TLabel
+    Left = 152
+    Height = 26
+    Top = 128
+    Width = 125
+    Caption = 'Comunidades:'
+  end
+  object ListBox1: TListBox
+    Left = 152
+    Height = 344
+    Top = 192
+    Width = 672
+    ItemHeight = 0
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object Button1: TButton
+    Left = 408
+    Height = 56
+    Top = 568
+    Width = 137
+    Caption = 'Volver'
+    TabOrder = 1
+    OnClick = Button1Click
+  end
+end

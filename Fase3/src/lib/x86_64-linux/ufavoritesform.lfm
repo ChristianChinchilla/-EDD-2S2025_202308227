@@ -1,0 +1,102 @@
+object frmFavorites: TfrmFavorites
+  Left = 503
+  Height = 711
+  Top = 40
+  Width = 856
+  Caption = 'Favoritos'
+  ClientHeight = 711
+  ClientWidth = 856
+  DesignTimePPI = 134
+  Position = poScreenCenter
+  LCLVersion = '4.2.0.0'
+  object lvFavs: TListView
+    Left = 24
+    Height = 512
+    Top = 104
+    Width = 416
+    Columns = <>
+    HideSelection = False
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 0
+    ViewStyle = vsReport
+  end
+  object lblTotal: TLabel
+    Left = 216
+    Height = 26
+    Top = 56
+    Width = 11
+    Caption = '0'
+  end
+  object Label1: TLabel
+    Left = 480
+    Height = 26
+    Top = 112
+    Width = 95
+    Caption = 'Remitente:'
+  end
+  object lblRemitVal: TLabel
+    Left = 592
+    Height = 26
+    Top = 112
+    Width = 98
+    Caption = 'lblRemitVal'
+  end
+  object Label2: TLabel
+    Left = 483
+    Height = 26
+    Top = 160
+    Width = 68
+    Caption = 'Asunto:'
+  end
+  object lblAsuntoVal: TLabel
+    Left = 592
+    Height = 26
+    Top = 160
+    Width = 110
+    Caption = 'lblAsuntoVal'
+  end
+  object Label4: TLabel
+    Left = 480
+    Height = 26
+    Top = 208
+    Width = 56
+    Caption = 'Fecha:'
+  end
+  object lblFechaVAl: TLabel
+    Left = 592
+    Height = 26
+    Top = 208
+    Width = 99
+    Caption = 'lblFechaVAl'
+  end
+  object memMensaje: TMemo
+    Left = 480
+    Height = 352
+    Top = 264
+    Width = 352
+    Lines.Strings = (
+      'memMensaje'
+    )
+    ReadOnly = True
+    TabOrder = 1
+  end
+  object btnEliminar: TButton
+    Left = 703
+    Height = 48
+    Top = 632
+    Width = 129
+    Caption = 'Eliminar'
+    TabOrder = 2
+    OnClick = btnEliminarClick
+  end
+  object btnVolver: TButton
+    Left = 724
+    Height = 48
+    Top = 8
+    Width = 108
+    Caption = 'Volver'
+    TabOrder = 3
+    OnClick = btnVolverClick
+  end
+end
