@@ -1,0 +1,16 @@
+digraph G {
+  rankdir=TB;
+  graph [fontname="Helvetica", nodesep="0.35", ranksep="0.5"];
+  node [shape=box, style="rounded,filled", fillcolor="lightyellow", fontname="Helvetica"];
+  labelloc="t";
+  label="Árbol AVL - Borradores (todos los remitentes)";
+  n1 [label="ID: 1\lRemitente: mitzep@edd.com\lAsunto: HOla\lFecha: 11-10-2025 10:17\lMensaje: hola\l"];
+  n2 [label="ID: 2\lRemitente: mitzep@edd.com\lAsunto: HOlaxcasdaasda\lFecha: 11-10-2025 10:17\lMensaje: holaasda\l"];
+  n3 [label="ID: 3\lRemitente: mitzep@edd.com\lAsunto: HOlaxcasdaasda\lFecha: 11-10-2025 10:17\lMensaje: holaasda\l"];
+  n4 [label="ID: 4\lRemitente: mitzep@edd.com\lAsunto: HOlaxcasdaasda\lFecha: 11-10-2025 10:17\lMensaje: holaasda\l"];
+  n5 [label="ID: 5\lRemitente: mitzep@edd.com\lAsunto: HOlaxcasdaasda\lFecha: 11-10-2025 10:17\lMensaje: holaasda\l"];
+  n1 -> n2;
+  n2 -> n3;
+  n3 -> n4;
+  n4 -> n5;
+}

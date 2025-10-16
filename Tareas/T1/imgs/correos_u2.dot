@@ -1,0 +1,8 @@
+digraph G { rankdir=LR; node [shape=record, style=filled, fillcolor=lightblue];
+labelloc="t"; label="Correos de Marcos Itzep (mitzep@edd.com)";
+n0 [label="Id:201 | Resumen semanal | 2025-08-21"];
+n0 -> n1 [dir=both];
+n1 [label="Id:202 | Actualización de seguridad | 2025-08-19"];
+n1 -> n2 [dir=both];
+n2 [label="Id:203 | Invitación a webinar | 2025-08-20"];
+}

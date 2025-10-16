@@ -1,0 +1,30 @@
+digraph ComunidadesBST {
+  rankdir=TB;
+  node  [fontname="Helvetica"];
+  edge  [arrowsize=0.7];
+  graph [nodesep=0.5, ranksep=0.6, splines=true];
+  labelloc="t"; label="Reporte de comunidades (Árbol BST)";
+  n1 [shape=none, label=<
+    <table border="1" cellborder="0" cellspacing="0" cellpadding="6" bgcolor="#FFEED5">
+      <tr><td><b>Libros</b></td></tr>
+      <tr><td>Fecha de creación: 11-10-2025</td></tr>
+      <tr><td>Mensajes publicados: 0</td></tr>
+    </table>
+  >];
+  n2 [shape=none, label=<
+    <table border="1" cellborder="0" cellspacing="0" cellpadding="6" bgcolor="#FFEED5">
+      <tr><td><b>Lectura</b></td></tr>
+      <tr><td>Fecha de creación: 11-10-2025</td></tr>
+      <tr><td>Mensajes publicados: 1</td></tr>
+    </table>
+  >];
+  n3 [shape=none, label=<
+    <table border="1" cellborder="0" cellspacing="0" cellpadding="6" bgcolor="#FFEED5">
+      <tr><td><b>Naturaleza</b></td></tr>
+      <tr><td>Fecha de creación: 11-10-2025</td></tr>
+      <tr><td>Mensajes publicados: 2</td></tr>
+    </table>
+  >];
+  n1 -> n2;
+  n1 -> n3;
+}

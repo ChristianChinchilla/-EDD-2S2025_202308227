@@ -1,0 +1,15 @@
+digraph G {
+  rankdir=TB;
+  graph [fontname="Helvetica", nodesep="0.35", ranksep="0.5"];
+  node [shape=box, style="rounded,filled", fillcolor="lightgoldenrod1", fontname="Helvetica"];
+  labelloc="t"; label="Árbol AVL - Borradores (mitzep@edd.com)";
+  u1 [label="ID: 1\lAsunto: HOla\lFecha: 11-10-2025 10:17\lMensaje: hola\l"];
+  u2 [label="ID: 2\lAsunto: HOlaxcasdaasda\lFecha: 11-10-2025 10:17\lMensaje: holaasda\l"];
+  u3 [label="ID: 3\lAsunto: HOlaxcasdaasda\lFecha: 11-10-2025 10:17\lMensaje: holaasda\l"];
+  u4 [label="ID: 4\lAsunto: HOlaxcasdaasda\lFecha: 11-10-2025 10:17\lMensaje: holaasda\l"];
+  u5 [label="ID: 5\lAsunto: HOlaxcasdaasda\lFecha: 11-10-2025 10:17\lMensaje: holaasda\l"];
+  u1 -> u2;
+  u2 -> u3;
+  u3 -> u4;
+  u4 -> u5;
+}

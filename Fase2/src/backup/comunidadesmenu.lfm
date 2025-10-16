@@ -7,6 +7,7 @@ object comunidadesForm: TcomunidadesForm
   ClientHeight = 796
   ClientWidth = 1535
   DesignTimePPI = 134
+  LCLVersion = '4.2.0.0'
   OnCreate = FormCreate
   object Label1: TLabel
     Left = 570

@@ -28,6 +28,7 @@ type
     procedure reporteButtonClick(Sender: TObject);
   private
     function ReportsDir: string;
+    procedure RunDot(const DotFile, PngFile: string);
   public
   end;
 
@@ -39,7 +40,9 @@ implementation
 {$R *.lfm}
 
 uses
-  uData; // <- aquí están CommunityEnsure, CommunityPost, CommunityExists, CommunityReport
+  uData,      // <- aquí están CommunityEnsure, CommunityPost, CommunityExists, CommunityReport
+  Process,    // para ejecutar Graphviz (dot)
+  FileUtil;   // ForceDirectories
 
 { TcomunidadesForm }
 
@@ -67,11 +70,41 @@ begin
 end;
 
 function TcomunidadesForm.ReportsDir: string;
-var base: string;
+var
+  base: string;
 begin
   base := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
-  Result := base + 'Reportes' + DirectorySeparator + 'Reporte-Comunidades' + DirectorySeparator;
+  // Carpeta exacta solicitada:
+  Result := base + 'Reportes' + DirectorySeparator + 'Reporte Comunidad BST' + DirectorySeparator;
   ForceDirectories(Result);
+end;
+
+procedure TcomunidadesForm.RunDot(const DotFile, PngFile: string);
+var
+  P  : TProcess;
+  Exe: string;
+begin
+  Exe := FindDefaultExecutablePath('dot');
+  if Exe = '' then Exe := 'dot'; // por si ya está en PATH
+
+  P := TProcess.Create(nil);
+  try
+    P.Executable := Exe;
+    P.Parameters.Add('-Tpng');
+    P.Parameters.Add(DotFile);
+    P.Parameters.Add('-o');
+    P.Parameters.Add(PngFile);
+    P.Options := [poNoConsole, poWaitOnExit];
+    try
+      P.Execute;
+    except
+      on E: Exception do
+        MessageDlg('Graphviz', 'No se pudo ejecutar dot. Se generó solo el .dot.' + LineEnding +
+                   'Error: ' + E.Message, mtWarning, [mbOK], 0);
+    end;
+  finally
+    P.Free;
+  end;
 end;
 
 procedure TcomunidadesForm.crearButtonClick(Sender: TObject);
@@ -127,14 +160,27 @@ end;
 
 procedure TcomunidadesForm.reporteButtonClick(Sender: TObject);
 var
-  dotPath: string;
+  dir, dotPath, pngPath: string;
 begin
-  dotPath := ReportsDir + 'reporte_comunidades.dot';
+  dir     := ReportsDir;
+  dotPath := dir + 'reporte_comunidades.dot';
+  pngPath := dir + 'reporte_comunidades.png';
+
+  // Genera el DOT (tu uData debe hacerlo con: nombre arriba, fecha creación, mensajes publicados)
   CommunityReport(dotPath);
-  MessageDlg('Reporte generado',
-             'Archivo DOT: '+dotPath+LineEnding+
-             'Si tienes Graphviz configurado, también se habrá generado el SVG en la misma carpeta.',
-             mtInformation, [mbOK], 0);
+
+  // Intenta generar PNG también
+  RunDot(dotPath, pngPath);
+
+  if FileExists(pngPath) then
+    MessageDlg('Reporte generado',
+               'Se generó el reporte de Comunidades (BST):' + LineEnding +
+               pngPath, mtInformation, [mbOK], 0)
+  else
+    MessageDlg('Reporte generado',
+               'Se generó el archivo DOT: ' + dotPath + LineEnding +
+               '(Instala Graphviz para crear también el PNG).',
+               mtInformation, [mbOK], 0);
 end;
 
 end.

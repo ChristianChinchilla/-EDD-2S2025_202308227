@@ -8,6 +8,7 @@ object frmRootMenu: TfrmRootMenu
   ClientWidth = 639
   DesignTimePPI = 134
   Position = poScreenCenter
+  LCLVersion = '4.2.0.0'
   OnCreate = FormCreate
   object lblTitle: TLabel
     Left = 313

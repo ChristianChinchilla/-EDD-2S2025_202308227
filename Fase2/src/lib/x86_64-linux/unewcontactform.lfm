@@ -8,6 +8,7 @@ object frmNewContact: TfrmNewContact
   ClientWidth = 671
   DesignTimePPI = 134
   Position = poScreenCenter
+  LCLVersion = '4.2.0.0'
   object pnlCard: TPanel
     Left = 11
     Height = 246

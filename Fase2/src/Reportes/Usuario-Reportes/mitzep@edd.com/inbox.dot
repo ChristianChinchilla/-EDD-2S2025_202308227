@@ -1,0 +1,35 @@
+digraph G {
+  rankdir=LR;
+  graph [fontname="Helvetica"]; node [shape=plaintext, fontname="Helvetica"];
+  labelloc="t"; label="Reporte de Correos Recibidos";
+  subgraph cluster0 { label="Lista Doblemente Enlazada"; style="rounded"; color="gray70";
+  edge [dir="both"];
+  n1 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 3</td></tr><tr><td><b>Remitente:</b> bfox@edd.com</td></tr><tr><td><b>Estado:</b> L</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Reporte de incidencias</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> Encontré algunos errores en el módulo de autenticación.</td></tr></table>>];
+  n2 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 4</td></tr><tr><td><b>Remitente:</b> bfox@edd.com</td></tr><tr><td><b>Estado:</b> L</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Entrega de documentación</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> Te adjunto el documento actualizado del sistema.</td></tr></table>>];
+  n3 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 5</td></tr><tr><td><b>Remitente:</b> bfox@edd.com</td></tr><tr><td><b>Estado:</b> L</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Integración de dependencias</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> Debemos actualizar los paquetes antes del despliegue.</td></tr></table>>];
+  n4 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 6</td></tr><tr><td><b>Remitente:</b> jcorbet@edd.com</td></tr><tr><td><b>Estado:</b> L</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Solicitud de revisión</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> ¿Podrías revisar los permisos en el servidor de staging?</td></tr></table>>];
+  n5 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 7</td></tr><tr><td><b>Remitente:</b> smejia@edd.com</td></tr><tr><td><b>Estado:</b> L</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Actualización del kernel 6.5</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> Se liberó la nueva versión del kernel con parches de seguridad.</td></tr></table>>];
+  n6 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 8</td></tr><tr><td><b>Remitente:</b> jcorbet@edd.com</td></tr><tr><td><b>Estado:</b> L</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Reporte técnico</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> El informe de rendimiento ya está disponible.</td></tr></table>>];
+  n7 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 9</td></tr><tr><td><b>Remitente:</b> smejia@edd.com</td></tr><tr><td><b>Estado:</b> NL</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Revisión del diseño</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> Adjunto el nuevo prototipo del módulo de configuración.</td></tr></table>>];
+  n8 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 10</td></tr><tr><td><b>Remitente:</b> bfox@edd.com</td></tr><tr><td><b>Estado:</b> NL</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Documentación técnica</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> Se completó la documentación del módulo principal.</td></tr></table>>];
+  n9 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 13</td></tr><tr><td><b>Remitente:</b> bfox@edd.com</td></tr><tr><td><b>Estado:</b> NL</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Entrega de informe</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> Te envío el informe técnico solicitado la semana pasada.</td></tr></table>>];
+  n10 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 14</td></tr><tr><td><b>Remitente:</b> smejia@edd.com</td></tr><tr><td><b>Estado:</b> NL</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Re: Entrega de informe</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> Recibido, muchas gracias. Lo revisaré hoy mismo.</td></tr></table>>];
+  n11 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 26</td></tr><tr><td><b>Remitente:</b> smejia@edd.com</td></tr><tr><td><b>Estado:</b> NL</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Propuesta de integración</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> Te envío una idea para integrar el nuevo módulo de seguridad.</td></tr></table>>];
+  n12 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 27</td></tr><tr><td><b>Remitente:</b> smejia@edd.com</td></tr><tr><td><b>Estado:</b> NL</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Consulta sobre arquitectura</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> ¿Podrías revisar el diseño del microservicio que propusimos?</td></tr></table>>];
+  n13 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 28</td></tr><tr><td><b>Remitente:</b> bfox@edd.com</td></tr><tr><td><b>Estado:</b> NL</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Automatización de despliegue</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> Agregué un script para CI/CD, necesito tu aprobación.</td></tr></table>>];
+  n14 [label=<<table border="0" cellborder="1" cellspacing="0" bgcolor="#fff7cc"><tr><td><b>ID:</b> 29</td></tr><tr><td><b>Remitente:</b> smejia@edd.com</td></tr><tr><td><b>Estado:</b> NL</td></tr><tr><td><b>Programado:</b> No</td></tr><tr><td><b>Asunto:</b> Revisión de contrato</td></tr><tr><td><b>Fecha:</b> </td></tr><tr><td><b>Mensaje:</b> Por favor revisa la cláusula de confidencialidad antes de enviar al cliente.</td></tr></table>>];
+  n1 -> n2;
+  n2 -> n3;
+  n3 -> n4;
+  n4 -> n5;
+  n5 -> n6;
+  n6 -> n7;
+  n7 -> n8;
+  n8 -> n9;
+  n9 -> n10;
+  n10 -> n11;
+  n11 -> n12;
+  n12 -> n13;
+  n13 -> n14;
+  }
+}

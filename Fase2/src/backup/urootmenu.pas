@@ -25,7 +25,7 @@ type
     procedure btnMensajeClick(Sender: TObject);         // abre visor de mensajes
     procedure btnRepUsuariosClick(Sender: TObject);
     procedure btnRepRelacionesClick(Sender: TObject);
-    procedure btnRepComunidadesClick(Sender: TObject);  // usa CommunityReport
+    procedure btnRepComunidadesClick(Sender: TObject);  // Genera BST en Root-Reportes
     procedure btnLogoutClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -49,7 +49,7 @@ uses
   uData, uListaUsuarios, uListaCorreos,
   Process, FileUtil,
   comunidadesMenu,               // formulario para crear comunidades (grupo)
-  uCommunityMessagesForm;        // <<--- Asegúrate que la CLASE sea TfrmCommunityMessages
+  uCommunityMessagesForm;        // <-- usa TfrmCommunityMessages y frmCommunityMessages
 
 procedure TfrmRootMenu.FormCreate(Sender: TObject);
 begin
@@ -183,16 +183,26 @@ end;
 
 procedure TfrmRootMenu.btnRepComunidadesClick(Sender: TObject);
 var
-  dir, dot: string;
+  dir, dot, png: string;
 begin
-  dir := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) +
-         'Reportes' + DirectorySeparator + 'Reporte-Comunidades' + DirectorySeparator;
-  ForceDirectories(dir);
+  // *** AQUÍ ES EL CAMBIO ***
+  // Guardar los archivos dentro de Reportes/Root-Reportes/
+  dir := GetReportsDir;
+  dot := dir + 'comunidades_bst.dot';
+  png := dir + 'comunidades_bst.png';
 
-  dot := dir + 'reporte_comunidades.dot';
+  // Genera el DOT con la función global de uData
+  // (esta función debe escribir: nombre arriba, fecha de creación y mensajes publicados)
   CommunityReport(dot);
 
-  ShowMessage('Reporte de Comunidades generado en: ' + LineEnding + dot);
+  // Intentar generar PNG con Graphviz
+  RunDot(dot, png);
+
+  if FileExists(png) then
+    ShowMessage('Reporte de Comunidades (BST) generado en:' + LineEnding + png)
+  else
+    ShowMessage('Se generó el archivo DOT en:' + LineEnding + dot + LineEnding +
+                '(instala Graphviz para crear también el PNG)');
 end;
 
 procedure TfrmRootMenu.btnLogoutClick(Sender: TObject);
