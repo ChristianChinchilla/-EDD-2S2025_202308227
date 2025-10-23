@@ -198,6 +198,30 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uCommunityMessagesForm"/>
       </Unit>
+      <Unit>
+        <Filename Value="ulogcontrolform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmLogControl"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uLogControlForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ulogcontrolform.lfm"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ulzwcompressor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uLZWCompressor"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uprivadosform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form2"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uPrivadosForm"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

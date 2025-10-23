@@ -13,11 +13,11 @@ type
     btnCargaMasiva: TButton;
     btnRepUsuarios: TButton;
     btnRepRelaciones: TButton;
-    btnRepComunidades: TButton;      // Reporte de comunidades (BST)
+    btnRepComunidades: TButton;
     btnLogout: TButton;
     btnComunidades: TButton;
-    btnMensaje: TButton;             // Ver mensajes de comunidad
-    Button1btnCargaMasiva: TButton;
+    btnMensaje: TButton;
+    btnLogueo: TButton;       // botón para Control de Logueo
     lblTitle: TLabel;
     OpenDialog1: TOpenDialog;
     procedure btnCargaMasivaClick(Sender: TObject);
@@ -25,8 +25,9 @@ type
     procedure btnMensajeClick(Sender: TObject);
     procedure btnRepUsuariosClick(Sender: TObject);
     procedure btnRepRelacionesClick(Sender: TObject);
-    procedure btnRepComunidadesClick(Sender: TObject);  // -> Root-Reportes
+    procedure btnRepComunidadesClick(Sender: TObject);
     procedure btnLogoutClick(Sender: TObject);
+    procedure btnLogueoClick(Sender: TObject);  // abre el form de logueo
     procedure FormCreate(Sender: TObject);
   private
     function  GetReportsDir: string;
@@ -46,8 +47,8 @@ uses
   fpjson, jsonparser,
   uData, uListaUsuarios, uListaCorreos,
   Process, FileUtil,
-  comunidadesMenu,
-  uCommunityMessagesForm;
+  comunidadesMenu, uCommunityMessagesForm,
+  uLogControlForm;  // <<--- para frmLoginLog + LogRegistrarSalida
 
 procedure TfrmRootMenu.FormCreate(Sender: TObject);
 begin
@@ -66,18 +67,25 @@ begin
     if (j=nil) or (j.JSONType<>jtObject) then raise Exception.Create('El JSON debe tener un objeto raíz.');
     root := TJSONObject(j); nUsers := 0; nMails := 0;
 
-    if root.Find('usuarios')<>nil then begin
+    if root.Find('usuarios')<>nil then
+    begin
       GUsuarios.LoadFromJSON(OpenDialog1.FileName);
-      nUsers := GUsuarios.Count; ShowMessage(Format('Usuarios cargados: %d', [nUsers])); Exit;
+      nUsers := GUsuarios.Count;
+      ShowMessage(Format('Usuarios cargados: %d', [nUsers]));
+      Exit;
     end;
 
-    if root.Find('correos')<>nil then begin
+    if root.Find('correos')<>nil then
+    begin
       nMails := LoadCorreosFromJSON(OpenDialog1.FileName);
-      ShowMessage(Format('Correos cargados: %d', [nMails])); Exit;
+      ShowMessage(Format('Correos cargados: %d', [nMails]));
+      Exit;
     end;
 
     raise Exception.Create('JSON no reconocido. Se esperaba "usuarios" o "correos".');
-  except on E: Exception do ShowMessage('Error al cargar JSON: ' + E.Message); end;
+  except
+    on E: Exception do ShowMessage('Error al cargar JSON: ' + E.Message);
+  end;
 end;
 
 procedure TfrmRootMenu.btnComunidadesClick(Sender: TObject);
@@ -93,7 +101,8 @@ begin
 end;
 
 function TfrmRootMenu.GetReportsDir: string;
-var base: string;
+var
+  base: string;
 begin
   base := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
   Result := IncludeTrailingPathDelimiter(base + 'Reportes' + DirectorySeparator + 'Root-Reportes');
@@ -101,7 +110,8 @@ begin
 end;
 
 procedure TfrmRootMenu.RunDot(const dotFile, pngFile: string);
-var p: TProcess; exe: string;
+var
+  p: TProcess; exe: string;
 begin
   exe := FindDefaultExecutablePath('dot'); if exe='' then exe := 'dot';
   p := TProcess.Create(nil);
@@ -110,7 +120,9 @@ begin
     p.Parameters.Add('-Tpng'); p.Parameters.Add(dotFile);
     p.Parameters.Add('-o');    p.Parameters.Add(pngFile);
     p.Options := [poNoConsole, poWaitOnExit];
-    try p.Execute; except
+    try
+      p.Execute;
+    except
       on E: Exception do
         ShowMessage('No se pudo ejecutar Graphviz (dot). Se generó solo el .dot.'+LineEnding+'Error: '+E.Message);
     end;
@@ -120,34 +132,38 @@ begin
 end;
 
 procedure TfrmRootMenu.btnRepUsuariosClick(Sender: TObject);
-var dir, dot, png: string;
+var
+  dir, dot, png: string;
 begin
   dir := GetReportsDir; dot := dir+'usuarios.dot'; png := dir+'usuarios.png';
   GUsuarios.ExportToDOT(dot); RunDot(dot, png);
-  if FileExists(png) then ShowMessage('Reporte generado:'+LineEnding+dot+LineEnding+png)
-  else ShowMessage('Reporte .dot generado: '+dot+LineEnding+'(Instala graphviz para crear también el .png)');
+  if FileExists(png) then
+    ShowMessage('Reporte generado:'+LineEnding+dot+LineEnding+png)
+  else
+    ShowMessage('Reporte .dot generado: '+dot+LineEnding+'(Instala graphviz para crear también el .png)');
 end;
 
 procedure TfrmRootMenu.btnRepRelacionesClick(Sender: TObject);
-var dir, dot, png: string;
+var
+  dir, dot, png: string;
 begin
   dir := GetReportsDir; dot := dir+'relaciones.dot'; png := dir+'relaciones.png';
   GCorreos.ExportRelacionesMatrizDOT(dot); RunDot(dot, png);
-  if FileExists(png) then ShowMessage('Reporte de Relaciones (matriz) generado: '+png)
-  else ShowMessage('Se generó relaciones.dot: '+dot+LineEnding+'(Instala graphviz para crear el .png)');
+  if FileExists(png) then
+    ShowMessage('Reporte de Relaciones (matriz) generado: '+png)
+  else
+    ShowMessage('Se generó relaciones.dot: '+dot+LineEnding+'(Instala graphviz para crear el .png)');
 end;
 
 procedure TfrmRootMenu.btnRepComunidadesClick(Sender: TObject);
-var dir, dot, png: string;
+var
+  dir, dot, png: string;
 begin
   dir := GetReportsDir;
   dot := dir + 'comunidades_bst.dot';
   png := dir + 'comunidades_bst.png';
-
-  // uData debe delegar en TBSTree.GenerarReporte para evitar los nodos “n2”
   CommunityReport(dot);
   RunDot(dot, png);
-
   if FileExists(png) then
     ShowMessage('Reporte de Comunidades (BST) generado en:' + LineEnding + png)
   else
@@ -157,22 +173,42 @@ end;
 
 procedure TfrmRootMenu.btnLogoutClick(Sender: TObject);
 begin
-  Application.MainForm.Show; Hide;
+  // ---- LOG SALIDA ROOT ----
+  LogRegistrarSalida('root@edd.com', Now);
+
+  Application.MainForm.Show;
+  Hide;
+end;
+
+// Abrir Control de Logueo (form creado por código)
+procedure TfrmRootMenu.btnLogueoClick(Sender: TObject);
+begin
+  if not Assigned(frmLoginLog) then
+    frmLoginLog := TfrmLoginLog.Create(Application);
+  frmLoginLog.Open;  // refresca la grilla y muestra
 end;
 
 function TfrmRootMenu.LoadCorreosFromJSON(const AFile: string): Integer;
-var j: TJSONData; root: TJSONObject; arr: TJSONArray; i,id: Integer; o: TJSONObject;
-    remitente, destinatario, estado, asunto, mensaje, programado, fecha: string;
+var
+  j: TJSONData;
+  root: TJSONObject;
+  arr: TJSONArray;
+  i, id: Integer;
+  o: TJSONObject;
+  remitente, destinatario, estado, asunto, mensaje, programado, fecha: string;
 begin
   Result := 0;
   j := GetJSON(TFileStream.Create(AFile, fmOpenRead or fmShareDenyWrite), True);
   try
-    if (j=nil) or (j.JSONType<>jtObject) then raise Exception.Create('El JSON de correos debe tener objeto raíz.');
+    if (j=nil) or (j.JSONType<>jtObject) then
+      raise Exception.Create('El JSON de correos debe tener objeto raíz.');
     root := TJSONObject(j);
-    if root.Find('correos')=nil then raise Exception.Create('No se encontró la clave "correos".');
+    if root.Find('correos')=nil then
+      raise Exception.Create('No se encontró la clave "correos".');
 
     arr := root.Arrays['correos'];
-    for i := 0 to arr.Count-1 do begin
+    for i := 0 to arr.Count-1 do
+    begin
       o := arr.Objects[i];
       id := o.Get('id',0);
       remitente    := o.Get('remitente','');
@@ -182,6 +218,7 @@ begin
       mensaje      := o.Get('mensaje','');
       programado   := o.Get('programado','');
       fecha        := o.Get('fecha','');
+
       if id<=0 then id := GCorreos.NextId;
       GCorreos.Add(id, remitente, destinatario, estado, programado, asunto, fecha, mensaje);
       Inc(Result);
@@ -192,4 +229,4 @@ begin
 end;
 
 end.
-
+ro

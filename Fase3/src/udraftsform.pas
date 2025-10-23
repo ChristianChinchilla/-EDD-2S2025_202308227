@@ -16,6 +16,8 @@ type
     Button3: TButton;   // Post-Orden
     Button4: TButton;   // Enviar
     Button5: TButton;   // Volver
+    btnEliminar: TButton;  // << NUEVO: Eliminar borrador
+    lblDestinatario: TLabel;
     Panel1: TPanel;
 
     // Lista + detalle
@@ -38,6 +40,7 @@ type
     procedure Button3Click(Sender: TObject);  // Post
     procedure Button4Click(Sender: TObject);  // Enviar
     procedure Button5Click(Sender: TObject);  // Volver
+    procedure btnEliminarClick(Sender: TObject); // << NUEVO
     procedure lstDraftsClick(Sender: TObject);
     procedure Memo1Change(Sender: TObject);
   private
@@ -66,7 +69,7 @@ implementation
 {$R *.lfm}
 
 uses
-  uUserMenu, uData, uListaCorreos; // <- EsContacto
+  uUserMenu, uData, uListaCorreos; // <- EsContacto, GDrafts, GPapelera, GCorreos
 
 type
   PDraft = ^TDraft;
@@ -98,6 +101,17 @@ begin
   Button3.Caption := 'Post-Orden';
   Button4.Caption := 'Enviar';
   Button5.Caption := 'Volver';
+
+  // << NUEVO: botón eliminar
+  if not Assigned(btnEliminar) then
+    btnEliminar := TButton.Create(Self);
+  btnEliminar.Parent   := Panel1;
+  btnEliminar.Caption  := 'Eliminar';
+  btnEliminar.Left     := Button4.Left + Button4.Width + 12; // a la derecha de "Enviar"
+  btnEliminar.Top      := Button4.Top;
+  btnEliminar.Height   := Button4.Height;
+  btnEliminar.Width    := 90;
+  btnEliminar.OnClick  := @btnEliminarClick;
 
   // Estado
   FView       := TList.Create;
@@ -165,7 +179,7 @@ begin
   id := GCorreos.NextId;
   GCorreos.Add(
     id,
-    D^.remitente,           // remitente = usuario actual (o el que tenga el borrador)
+    D^.remitente,           // remitente
     D^.destinatario,        // destinatario del borrador
     'NL',                   // estado normal
     '',                     // programado vacío
@@ -187,6 +201,47 @@ procedure TfrmDrafts.Button5Click(Sender: TObject);
 begin
   Hide;
   if Assigned(frmUserMenu) then frmUserMenu.Show;
+end;
+
+procedure TfrmDrafts.btnEliminarClick(Sender: TObject);
+var
+  D : PDraft;
+  M : PCorreo;
+begin
+  if (FSelIndex<0) or (FSelIndex>=FView.Count) then
+  begin
+    ShowMessage('Selecciona un borrador primero.');
+    Exit;
+  end;
+
+  D := PDraft(FView[FSelIndex]); if D=nil then Exit;
+
+  if MessageDlg('Eliminar borrador',
+                '¿Deseas eliminar este borrador? Se enviará a la papelera.',
+                mtConfirmation, [mbYes, mbNo], 0) <> mrYes then Exit;
+
+  // 1) Enviar a la papelera como correo marcado BOR
+  New(M);
+  M^.id           := GCorreos.NextId;
+  if Trim(D^.remitente) <> '' then
+    M^.remitente  := D^.remitente
+  else
+    M^.remitente  := FOwnerEmail;
+  M^.destinatario := D^.destinatario;
+  M^.estado       := 'BOR';                      // <- identificador de borrador eliminado
+  M^.programado   := '';
+  M^.asunto       := D^.asunto;
+  M^.fecha        := D^.fecha;                   // puedes usar Now si prefieres marca de eliminación
+  M^.mensaje      := D^.mensaje;
+  M^.next         := nil;
+  GPapelera.Push(M);
+
+  // 2) Eliminar del BST de borradores
+  GDrafts.RemoveById(D^.id);
+
+  // 3) Refrescar UI
+  ClearDetail;
+  RebuildView;
 end;
 
 procedure TfrmDrafts.lstDraftsClick(Sender: TObject);

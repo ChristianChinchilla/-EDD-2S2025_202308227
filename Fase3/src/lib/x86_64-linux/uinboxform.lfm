@@ -19,7 +19,7 @@ object frmInbox: TfrmInbox
     ClientWidth = 1145
     TabOrder = 0
     object btnVolver: TButton
-      Left = 826
+      Left = 992
       Height = 34
       Top = 11
       Width = 112
@@ -58,7 +58,7 @@ object frmInbox: TfrmInbox
       TabOrder = 2
     end
     object btnFavorito: TButton
-      Left = 570
+      Left = 592
       Height = 34
       Top = 11
       Width = 138
@@ -124,6 +124,15 @@ object frmInbox: TfrmInbox
       Anchors = [akTop, akLeft, akRight, akBottom]
       ScrollBars = ssAutoBoth
       TabOrder = 0
+    end
+    object btnDescargar: TButton
+      Left = 977
+      Height = 46
+      Top = 72
+      Width = 129
+      Caption = 'Descargar'
+      TabOrder = 1
+      OnClick = btnDescargarClick
     end
   end
   object gridInbox: TStringGrid

@@ -45,7 +45,7 @@ procedure TfrmNewContact.FormCreate(Sender: TObject);
 begin
   Caption := 'Agregar Contacto';
   lblTitle.Caption  := 'Agregar/Eliminar Contacto';
-  lblCorreo.Caption := 'Correo o nombre';
+  lblCorreo.Caption := 'Correo o nombre'; // <-- aclaración
   btnAgregar.Caption := 'Agregar';
   btnEliminar.Caption := 'Eliminar';
   btnVolver.Caption  := 'Volver';
@@ -60,6 +60,8 @@ begin
     Result := Copy(Result, 1, p-1);
 end;
 
+// Para eliminar: si es correo, devuelve el correo;
+// si es nombre, busca en contactos del owner por local-part y devuelve el correo.
 function TfrmNewContact.ResolveInputToEmailForOwner(const Input: string): string;
 var
   L: TStringList;
@@ -79,7 +81,7 @@ begin
     for i := 0 to L.Count-1 do
       if SameText(LocalPart(L[i]), needle) then
         Exit(L[i]);
-
+  finally
     L.Free;
   end;
 end;

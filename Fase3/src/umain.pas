@@ -5,7 +5,7 @@ unit uMain;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, Dialogs;  // << Dialogs por ShowMessage
+  Classes, SysUtils, Forms, Controls, StdCtrls, Dialogs;  // Dialogs por ShowMessage
 
 type
 
@@ -37,7 +37,8 @@ implementation
 {$R *.lfm}
 
 uses
-  uData, uListaUsuarios, uUserMenu, uRootMenu;
+  uData, uListaUsuarios, uUserMenu, uRootMenu,
+  uLogControlForm; // <<--- AÑADIDO: para LogRegistrarEntrada/Salida
 
 { TForm1 }
 
@@ -57,10 +58,9 @@ end;
 
 function TForm1.EsRootLogin(const Email, Pass: string): Boolean;
 begin
-  // Root ahora es root@edd.com con contraseña root123
+  // Root: root@edd.com / root123
   Result := SameText(Trim(Email), 'root@edd.com') and (Trim(Pass) = 'root123');
 end;
-
 
 procedure TForm1.IrMenuRoot;
 begin
@@ -96,6 +96,8 @@ begin
   // ROOT
   if EsRootLogin(email, pass) then
   begin
+    // ---- LOG ENTRADA ROOT ----
+    LogRegistrarEntrada('root@edd.com', Now);
     IrMenuRoot;
     Exit;
   end;
@@ -108,6 +110,10 @@ begin
     Exit;
   end;
 
+  // (Si más adelante implementas password por usuario, valida aquí)
+  // ---- LOG ENTRADA USUARIO ----
+  LogRegistrarEntrada(P^.email, Now);
+
   IrMenuUsuario(P^.nombre, P^.email);
 end;
 
@@ -115,7 +121,6 @@ procedure TForm1.btnCrearClick(Sender: TObject);
 var
   email, pass, nombre: string;
   nuevo: PUsuario;
-  cur  : PUsuario;
   maxId, nextId: LongInt;
 begin
   email := Trim(edtEmail.Text);
@@ -136,29 +141,16 @@ begin
       Exit;
     end;
 
-    // Si ya existe el root, simplemente entra al menú root
     if GUsuarios.FindByEmail(email) <> nil then
     begin
       ShowMessage('El usuario root ya existe. Ingresando como root...');
+      // ---- LOG ENTRADA ROOT ----
+      LogRegistrarEntrada('root@edd.com', Now);
       IrMenuRoot;
       Exit;
     end;
 
-    // Crear root (nombre “Root”)
-    maxId := 0;
-    cur := GUsuarios.FindByEmail(''); // recorrer con un puntero manual
-    cur := GUsuarios.FindByEmail('!@#'); // truco para iniciar vacío, ignorado
-    // Recorremos la lista para hallar el máximo id actual
-    cur := GUsuarios.FindByEmail(''); // no devuelve, solo asegura tipo; haremos recorrido manual:
-    cur := nil;                       // (evita warnings). Vamos a recorrer usando la API Add/Find.
-    // Como no tenemos un iterador público, escaneamos con un truco:
-    // – añadimos temporalmente 0 usuarios? No. Recorremos replicando el patrón de tus otras unidades:
-    //   copiamos la lógica local: FHead es privado, así que hacemos un escaneo simple:
-    //   volvemos a calcular el id por “intento” (si esto te molesta, crea un NextId en TListaUsuarios).
-    //   Para no depender de FHead usaremos un barrido con EmailById: si te incomoda, déjalo en 1.
-    //   (Más simple) -> si no te importa el id exacto: usa 1 para root y listo.
-    nextId := 1;
-
+    nextId := 1; // root = 1
     nuevo := GUsuarios.Add(nextId, 'Root', email);
     if nuevo = nil then
     begin
@@ -167,6 +159,8 @@ begin
     end;
 
     ShowMessage('Cuenta root creada. Ingresando...');
+    // ---- LOG ENTRADA ROOT ----
+    LogRegistrarEntrada('root@edd.com', Now);
     IrMenuRoot;
     Exit;
   end;
@@ -179,15 +173,13 @@ begin
     Exit;
   end;
 
-  // Nombre por defecto: parte antes de @ con Mayúscula inicial
+  // Nombre por defecto: parte antes de @
   nombre := email;
   if Pos('@', email) > 1 then
     nombre := Copy(email, 1, Pos('@', email)-1);
   if nombre <> '' then
     nombre := UpperCase(Copy(nombre,1,1)) + Copy(nombre,2,Length(nombre));
 
-  // Generar un id simple (máx + 1). Como TListaUsuarios no expone iterador,
-  // si no tienes NextId, usa 2 para no chocar con root=1. (Puedes mejorar luego).
   maxId := 1; // asume root=1
   nextId := maxId + 1;
 
@@ -199,9 +191,12 @@ begin
   end;
 
   ShowMessage('Cuenta creada para: ' + nombre);
+
+  // ---- LOG ENTRADA NUEVO USUARIO ----
+  LogRegistrarEntrada(nuevo^.email, Now);
+
   IrMenuUsuario(nuevo^.nombre, nuevo^.email);
 end;
-
 
 end.
 

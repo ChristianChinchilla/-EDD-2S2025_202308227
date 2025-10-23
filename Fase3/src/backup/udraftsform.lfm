@@ -1,120 +1,134 @@
 object frmDrafts: TfrmDrafts
   Left = 336
-  Height = 302
+  Height = 422
   Top = 32
-  Width = 549
+  Width = 766
   Caption = 'frmDrafts'
-  ClientHeight = 302
-  ClientWidth = 549
+  ClientHeight = 422
+  ClientWidth = 766
+  DesignTimePPI = 134
   Position = poScreenCenter
   object Panel1: TPanel
     Left = 0
-    Height = 70
+    Height = 98
     Top = 0
-    Width = 549
+    Width = 766
     Align = alTop
-    ClientHeight = 70
-    ClientWidth = 549
+    ClientHeight = 98
+    ClientWidth = 766
     TabOrder = 0
     object Button1: TButton
-      Left = 8
-      Height = 33
-      Top = 11
-      Width = 83
+      Left = 11
+      Height = 46
+      Top = 0
+      Width = 116
       Caption = 'Pre-Orden'
       TabOrder = 0
+      OnClick = Button1Click
     end
     object Button2: TButton
-      Left = 104
-      Height = 33
-      Top = 11
-      Width = 80
+      Left = 10
+      Height = 46
+      Top = 48
+      Width = 117
       Caption = 'In-Orden'
       TabOrder = 1
+      OnClick = Button2Click
     end
     object Button3: TButton
-      Left = 200
-      Height = 33
-      Top = 11
-      Width = 83
+      Left = 144
+      Height = 46
+      Top = 0
+      Width = 116
       Caption = 'Post-Orden'
       TabOrder = 2
+      OnClick = Button3Click
     end
     object Button4: TButton
-      Left = 304
-      Height = 33
-      Top = 11
-      Width = 75
+      Left = 368
+      Height = 46
+      Top = 19
+      Width = 105
       Caption = 'Enviar'
       TabOrder = 3
+      OnClick = Button4Click
     end
     object Button5: TButton
-      Left = 464
-      Height = 25
-      Top = 8
-      Width = 75
+      Left = 648
+      Height = 35
+      Top = 11
+      Width = 105
       Caption = 'Volver'
       TabOrder = 4
       OnClick = Button5Click
     end
+    object btnEliminar: TButton
+      Left = 496
+      Height = 45
+      Top = 20
+      Width = 100
+      Caption = 'Eliminar'
+      TabOrder = 5
+      OnClick = btnEliminarClick
+    end
   end
   object lstDrafts: TListBox
-    Left = 16
-    Height = 216
-    Top = 80
-    Width = 120
+    Left = 22
+    Height = 302
+    Top = 112
+    Width = 168
     ItemHeight = 0
     TabOrder = 1
     TopIndex = -1
     OnClick = lstDraftsClick
   end
   object lblDestinatario: TLabel
-    Left = 152
-    Height = 19
-    Top = 80
-    Width = 85
+    Left = 212
+    Height = 26
+    Top = 112
+    Width = 113
     Caption = 'Destinatario:'
   end
   object lblAsunto: TLabel
-    Left = 152
-    Height = 19
-    Top = 112
-    Width = 49
+    Left = 212
+    Height = 26
+    Top = 156
+    Width = 68
     Caption = 'Asunto:'
   end
   object lblFecha: TLabel
-    Left = 152
-    Height = 19
-    Top = 144
-    Width = 43
+    Left = 212
+    Height = 26
+    Top = 201
+    Width = 56
     Caption = 'Fecha:'
   end
   object Memo1: TMemo
-    Left = 152
-    Height = 124
-    Top = 168
-    Width = 384
+    Left = 212
+    Height = 173
+    Top = 234
+    Width = 536
     Lines.Strings = (
       'Memo1'
     )
     TabOrder = 2
   end
   object lblRemitVal: TLabel
-    Left = 248
-    Height = 1
-    Top = 80
-    Width = 1
-  end
-  object lblAsuntoVal: TLabel
-    Left = 248
+    Left = 346
     Height = 1
     Top = 112
     Width = 1
   end
-  object lblFechaVal: TLabel
-    Left = 248
+  object lblAsuntoVal: TLabel
+    Left = 346
     Height = 1
-    Top = 141
+    Top = 156
+    Width = 1
+  end
+  object lblFechaVal: TLabel
+    Left = 346
+    Height = 1
+    Top = 197
     Width = 1
   end
 end

@@ -14,6 +14,7 @@ type
 
   TfrmInbox = class(TForm)
     btnFavorito: TButton;
+    btnDescargar: TButton;
     lblFechaVal: TLabel;
     lblAsuntoVal: TLabel;
     lblRemitVal: TLabel;
@@ -29,6 +30,7 @@ type
     lblDFecha: TLabel;
     memMensaje: TMemo;
     btnEliminar: TButton;
+    procedure btnDescargarClick(Sender: TObject);  // <---- NUEVO
     procedure btnFavoritoClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnVolverClick(Sender: TObject);
@@ -44,12 +46,17 @@ type
     FSortAZ      : Boolean;
     FSelectedRow : Integer;
     FLoading     : Boolean;
+
     procedure SetupGrid;
     procedure FillInbox(const FiltroAsunto: string = '');
     procedure UpdateNoLeidos;
     procedure ShowDetailForRow(ARow: Integer);
     function  WithStars(const S: string): string;
+
+    // --- FAVORITOS ---
+    function  IsFavForCurrent(P: Pointer): Boolean;
     procedure UpdateFavButtonCaptionForRow(ARow: Integer);
+    procedure PaintFavForRow(ARow: Integer);
   public
     procedure OpenForUser(const AEmail: string);
   end;
@@ -61,7 +68,8 @@ implementation
 
 {$R *.lfm}
 
-uses uUserMenu, uData, uListaCorreos;
+uses
+  uUserMenu, uData, uListaCorreos, uLZWCompressor; // <---- NUEVO
 
 type
   PCorreoList = specialize TFPGList<PCorreo>;
@@ -76,21 +84,44 @@ begin
   Result := '★ ' + S;
 end;
 
+// ====== FAVORITOS helpers ======
+
+function TfrmInbox.IsFavForCurrent(P: Pointer): Boolean;
+var C: PCorreo;
+begin
+  C := PCorreo(P);
+  Result := (C <> nil) and GFavorites.Has(FEmailActual, C^.id);
+end;
+
 procedure TfrmInbox.UpdateFavButtonCaptionForRow(ARow: Integer);
-var
-  P: PCorreo;
+var P: PCorreo;
 begin
   if (ARow <= 0) or (ARow > Length(FInboxRows)) then
   begin
     btnFavorito.Caption := 'Favorito';
     Exit;
   end;
+
   P := PCorreo(FInboxRows[ARow-1]);
-  if (P <> nil) and P^.favorito then
+  if IsFavForCurrent(P) then
     btnFavorito.Caption := 'Quitar favorito'
   else
     btnFavorito.Caption := 'Favorito';
 end;
+
+procedure TfrmInbox.PaintFavForRow(ARow: Integer);
+var P: PCorreo;
+begin
+  if (ARow <= 0) or (ARow > Length(FInboxRows)) then Exit;
+  P := PCorreo(FInboxRows[ARow-1]); if P=nil then Exit;
+
+  if IsFavForCurrent(P) then
+    gridInbox.Cells[1, ARow] := WithStars(P^.asunto)
+  else
+    gridInbox.Cells[1, ARow] := P^.asunto;
+end;
+
+// ====== /FAVORITOS ======
 
 procedure TfrmInbox.SetupGrid;
 begin
@@ -117,10 +148,67 @@ begin
   btnVolver.OnClick   := @btnVolverClick;
   btnOrdenAZ.OnClick  := @btnOrdenAZClick;
   btnEliminar.OnClick := @btnEliminarClick;
+  btnDescargar.OnClick := @btnDescargarClick;  // <---- NUEVO
   btnFavorito.Caption := 'Favorito';
 
   FSortAZ := False; FSelectedRow := -1; FLoading := False;
 end;
+
+// ====== DESCARGAR CORREO (NUEVO) ======
+
+procedure TfrmInbox.btnDescargarClick(Sender: TObject);
+var
+  P: PCorreo;
+  compressed, msg: string;
+  sd: TSaveDialog;
+  origSize, compSize: Integer;
+begin
+  if (FSelectedRow <= 0) or (FSelectedRow > Length(FInboxRows)) then
+  begin
+    ShowMessage('Selecciona un correo primero.');
+    Exit;
+  end;
+
+  P := PCorreo(FInboxRows[FSelectedRow - 1]);
+  if P = nil then Exit;
+
+  msg := Trim(P^.mensaje);
+  if msg = '' then
+  begin
+    ShowMessage('El correo no contiene mensaje para descargar.');
+    Exit;
+  end;
+
+  compressed := LZWCompress(msg);
+  origSize := Length(msg);
+  compSize := Length(compressed);
+
+  sd := TSaveDialog.Create(Self);
+  try
+    sd.Title := 'Guardar mensaje comprimido';
+    sd.Filter := 'Archivo de texto|*.txt';
+    sd.DefaultExt := 'txt';
+    sd.FileName := 'correo_' + StringReplace(P^.asunto, ' ', '_', [rfReplaceAll]) + '.txt';
+
+    if sd.Execute then
+    begin
+      with TStringList.Create do
+      try
+        Text := compressed;
+        SaveToFile(sd.FileName);
+      finally
+        Free;
+      end;
+
+      MessageDlg(Format('Mensaje descargado correctamente.%sTamaño original: %d bytes%sTamaño comprimido: %d bytes',
+        [LineEnding, origSize, LineEnding, compSize]), mtInformation, [mbOK], 0);
+    end;
+  finally
+    sd.Free;
+  end;
+end;
+
+// ======================================
 
 procedure TfrmInbox.btnFavoritoClick(Sender: TObject);
 var
@@ -132,14 +220,12 @@ begin
   if (FSelectedRow<=0) or (FSelectedRow>Length(FInboxRows)) then Exit;
   P := PCorreo(FInboxRows[FSelectedRow-1]); if P=nil then Exit;
 
-  // Alternar en el DATO y repintar
-  P^.favorito := not P^.favorito;
-
-  if P^.favorito then
-    gridInbox.Cells[1, FSelectedRow] := WithStars(P^.asunto)
+  if IsFavForCurrent(P) then
+    GFavorites.Remove(FEmailActual, P^.id)
   else
-    gridInbox.Cells[1, FSelectedRow] := P^.asunto;
+    GFavorites.Add(FEmailActual, P^.id);
 
+  PaintFavForRow(FSelectedRow);
   UpdateFavButtonCaptionForRow(FSelectedRow);
 end;
 
@@ -152,17 +238,17 @@ end;
 procedure TfrmInbox.btnVolverClick(Sender: TObject);
 begin
   Hide;
-  if Assigned(frmUserMenu) then frmUserMenu.Show
+  if Assigned(frmUserMenu) then frmUserMenu.Show;
 end;
 
 procedure TfrmInbox.btnOrdenAZClick(Sender: TObject);
 begin
-  FSortAZ := not FSortAZ; FillInbox
+  FSortAZ := not FSortAZ; FillInbox;
 end;
 
 procedure TfrmInbox.gridInboxDblClick(Sender: TObject);
 begin
-  if gridInbox.Row>0 then ShowDetailForRow(gridInbox.Row)
+  if gridInbox.Row>0 then ShowDetailForRow(gridInbox.Row);
 end;
 
 procedure TfrmInbox.gridInboxSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
@@ -184,7 +270,6 @@ end;
 
 procedure TfrmInbox.pnlDetalleClick(Sender: TObject);
 begin
-
 end;
 
 procedure TfrmInbox.btnEliminarClick(Sender: TObject);
@@ -195,6 +280,9 @@ begin
   P := PCorreo(FInboxRows[FSelectedRow-1]); if P=nil then Exit;
   if MessageDlg('Confirmar','¿Enviar este correo a la Papelera?',mtConfirmation,[mbYes,mbNo],0)=mrYes then
   begin
+    if IsFavForCurrent(P) then
+      GFavorites.Remove(FEmailActual, P^.id);
+
     GPapelera.Push(P);
     GCorreos.Detach(P);
     FillInbox;
@@ -235,10 +323,12 @@ begin
       for i:=0 to L.Count-1 do
       begin
         gridInbox.Cells[0,i+1] := L[i]^.estado;
-        if L[i]^.favorito then
+
+        if GFavorites.Has(FEmailActual, L[i]^.id) then
           gridInbox.Cells[1,i+1] := WithStars(L[i]^.asunto)
         else
           gridInbox.Cells[1,i+1] := L[i]^.asunto;
+
         gridInbox.Cells[2,i+1] := L[i]^.remitente;
         FInboxRows[i] := L[i];
       end;
@@ -247,7 +337,7 @@ begin
       memMensaje.Clear; FSelectedRow := -1; UpdateNoLeidos;
       btnFavorito.Caption := 'Favorito';
     finally
-      L.Free
+      L.Free;
     end;
   finally
     gridInbox.EndUpdate; gridInbox.OnSelectCell := @gridInboxSelectCell; FLoading := False;
@@ -272,7 +362,7 @@ begin
   P := PCorreo(FInboxRows[ARow-1]); if P=nil then Exit;
 
   lblRemitVal.Caption := P^.remitente;
-  lblAsuntoVal.Caption := P^.asunto; // detalle sin estrellas
+  lblAsuntoVal.Caption := P^.asunto;
   lblFechaVal.Caption  := P^.fecha;
   memMensaje.Lines.Text := P^.mensaje;
 
@@ -280,7 +370,7 @@ begin
   begin
     P^.estado:='L';
     gridInbox.Cells[0,ARow]:='L';
-    UpdateNoLeidos
+    UpdateNoLeidos;
   end;
 
   FSelectedRow := ARow;

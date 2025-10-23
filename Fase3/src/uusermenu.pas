@@ -20,9 +20,10 @@ type
     btnNewContact: TButton;
     btnContactos: TButton;
     btnGenerarReportes: TButton;
-    btnFavoritos: TButton;   // Ver Favoritos
-    btnPublicar: TButton;    // Publicar en comunidad
-    btnVer: TButton;         // Ver Borradores de Mensaje
+    btnFavoritos: TButton;
+    btnPublicar: TButton;
+    btnVer: TButton;
+    btnPrivados: TButton;
     lblHola: TLabel;
     tmrScheduler: TTimer;
     procedure btnBandejaClick(Sender: TObject);
@@ -30,6 +31,7 @@ type
     procedure btnEnviarClick(Sender: TObject);
     procedure btnFavoritosClick(Sender: TObject);
     procedure btnPapeleraClick(Sender: TObject);
+    procedure btnPrivadosClick(Sender: TObject);
     procedure btnProgListClick(Sender: TObject);
     procedure btnProgramarClick(Sender: TObject);
     procedure btnNewContactClick(Sender: TObject);
@@ -59,7 +61,8 @@ uses
   uMain, uData, uInboxForm, uComposeForm, uTrashForm,
   uScheduleForm, uProgListForm, DateUtils, uListaCorreos,
   uContacts, uNewContactForm, uProfileForm, uUserReports,
-  uDraftsForm, uFavoritesForm, uCommunityPostForm; // << NUEVO
+  uDraftsForm, uFavoritesForm, uCommunityPostForm,
+  uLogControlForm, uPrivadosForm;
 
 { TfrmUserMenu }
 
@@ -92,6 +95,12 @@ end;
 
 procedure TfrmUserMenu.btnCerrarSesionClick(Sender: TObject);
 begin
+  // Registrar salida (si está el módulo de control de logueo)
+  if Trim(FEmailActual) <> '' then
+    {$IF declared(LogRegistrarSalida) }
+    LogRegistrarSalida(FEmailActual, Now);
+    {$IFEND}
+
   Form1.Show;
   Hide;
 end;
@@ -125,6 +134,14 @@ begin
   if not Assigned(frmTrash) then
     Application.CreateForm(TfrmTrash, frmTrash);
   frmTrash.OpenForUser(FEmailActual);
+  Hide;
+end;
+
+procedure TfrmUserMenu.btnPrivadosClick(Sender: TObject);
+begin
+  if not Assigned(frmPrivados) then
+    Application.CreateForm(TfrmPrivados, frmPrivados);
+  frmPrivados.OpenForUser(FEmailActual);
   Hide;
 end;
 
@@ -176,10 +193,14 @@ begin
   _ := GenerateAllUserReports(FEmailActual, outDir);
   ShowMessage(
     'Se generaron los reportes de:' + LineEnding +
-    '- correos (inbox)' + LineEnding +
-    '- correos eliminados (papelera)' + LineEnding +
-    '- correos programados' + LineEnding +
-    '- contactos' + LineEnding + LineEnding +
+    '• Correos (Inbox — lista doble)' + LineEnding +
+    '• Papelera (Pila)' + LineEnding +
+    '• Correos Programados (Cola)' + LineEnding +
+    '• Contactos (Lista circular)' + LineEnding +
+    '• Borradores (AVL, por usuario)' + LineEnding +
+    '• Favoritos (Árbol B de orden 5)' + LineEnding +
+    '• Privados (Árbol de Merkle)' + LineEnding +
+    '• Borradores Global (AVL, todos los remitentes)' + LineEnding + LineEnding +
     'Carpeta: ' + outDir
   );
 end;

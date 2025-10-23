@@ -1,0 +1,13 @@
+digraph G {
+  graph [fontname="Helvetica"];
+  labelloc="t"; label="Reporte de Árbol de Merkle";
+  subgraph cluster0 { label="Privados"; style="rounded"; color="gray70";
+  leaf0 [shape=box, style="rounded", fontname="Helvetica", label="De: smejia@edd.com\lAsunto: Consulta sobre arquitectura\lFecha: (sin fecha)\lHash: cb568355"];
+  leaf1 [shape=box, style="rounded", fontname="Helvetica", label="De: bfox@edd.com\lAsunto: Reporte de incidencias\lFecha: (sin fecha)\lHash: 8c601410"];
+  n_0_0 [shape=box, style="rounded", fontname="Helvetica", label="Hash: 979eb86f"];
+  leaf0 -> n_0_0;
+  leaf1 -> n_0_0;
+  root [shape=box, style="rounded", fontname="Helvetica", label="Hash: 979eb86f"];
+  root -> n_0_0;
+  }
+}

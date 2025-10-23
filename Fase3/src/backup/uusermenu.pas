@@ -20,9 +20,10 @@ type
     btnNewContact: TButton;
     btnContactos: TButton;
     btnGenerarReportes: TButton;
-    btnFavoritos: TButton;   // Ver Favoritos
+    btnFavoritos: TButton;
     btnPublicar: TButton;
-    btnVer: TButton;         // Ver Borradores de Mensaje
+    btnVer: TButton;
+    btnPrivados: TButton;
     lblHola: TLabel;
     tmrScheduler: TTimer;
     procedure btnBandejaClick(Sender: TObject);
@@ -30,12 +31,14 @@ type
     procedure btnEnviarClick(Sender: TObject);
     procedure btnFavoritosClick(Sender: TObject);
     procedure btnPapeleraClick(Sender: TObject);
+    procedure btnPrivadosClick(Sender: TObject);
     procedure btnProgListClick(Sender: TObject);
     procedure btnProgramarClick(Sender: TObject);
     procedure btnNewContactClick(Sender: TObject);
     procedure btnContactosClick(Sender: TObject);
     procedure btnPerfilClick(Sender: TObject);
     procedure btnGenerarReportesClick(Sender: TObject);
+    procedure btnPublicarClick(Sender: TObject);
     procedure btnVerClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -58,7 +61,8 @@ uses
   uMain, uData, uInboxForm, uComposeForm, uTrashForm,
   uScheduleForm, uProgListForm, DateUtils, uListaCorreos,
   uContacts, uNewContactForm, uProfileForm, uUserReports,
-  uDraftsForm, uFavoritesForm;
+  uDraftsForm, uFavoritesForm, uCommunityPostForm,
+  uLogControlForm, uPrivadosForm; // << NUEVO: para registrar salidas
 
 { TfrmUserMenu }
 
@@ -91,6 +95,10 @@ end;
 
 procedure TfrmUserMenu.btnCerrarSesionClick(Sender: TObject);
 begin
+  // === NUEVO: registrar salida del usuario actual ===
+  if Trim(FEmailActual) <> '' then
+    LogRegistrarSalida(FEmailActual, Now);
+
   Form1.Show;
   Hide;
 end;
@@ -107,7 +115,6 @@ procedure TfrmUserMenu.btnFavoritosClick(Sender: TObject);
 begin
   if not Assigned(frmFavorites) then
     Application.CreateForm(TfrmFavorites, frmFavorites);
-  // ← usar el email que ya guardamos en el menú
   frmFavorites.OpenForUser(FEmailActual);
   Hide;
 end;
@@ -125,6 +132,14 @@ begin
   if not Assigned(frmTrash) then
     Application.CreateForm(TfrmTrash, frmTrash);
   frmTrash.OpenForUser(FEmailActual);
+  Hide;
+end;
+
+procedure TfrmUserMenu.btnPrivadosClick(Sender: TObject);
+begin
+  if not Assigned(frmPrivados) then
+    Application.CreateForm(TfrmPrivados, frmPrivados);
+  frmPrivados.OpenForUser(FEmailActual);
   Hide;
 end;
 
@@ -182,6 +197,14 @@ begin
     '- contactos' + LineEnding + LineEnding +
     'Carpeta: ' + outDir
   );
+end;
+
+procedure TfrmUserMenu.btnPublicarClick(Sender: TObject);
+begin
+  if not Assigned(frmCommunityPost) then
+    Application.CreateForm(TfrmCommunityPost, frmCommunityPost);
+  frmCommunityPost.OpenForUser(FEmailActual);
+  Hide;
 end;
 
 procedure TfrmUserMenu.btnVerClick(Sender: TObject);

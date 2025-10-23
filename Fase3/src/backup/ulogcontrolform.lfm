@@ -1,0 +1,45 @@
+object frmLogControl: TfrmLogControl
+  Left = 557
+  Height = 677
+  Top = 40
+  Width = 926
+  Anchors = [akTop, akLeft, akRight, akBottom]
+  Caption = 'Control de Logueo'
+  ClientHeight = 677
+  ClientWidth = 926
+  DesignTimePPI = 134
+  Position = poScreenCenter
+  object grid: TStringGrid
+    Left = 0
+    Height = 577
+    Top = 100
+    Width = 926
+    Align = alClient
+    ColCount = 0
+    FixedCols = 0
+    FixedRows = 0
+    RowCount = 0
+    TabOrder = 0
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 100
+    Top = 0
+    Width = 926
+    Align = alTop
+    BevelOuter = bvNone
+    Caption = 'Panel1'
+    ClientHeight = 100
+    ClientWidth = 926
+    TabOrder = 1
+    object btnExport: TButton
+      Left = 152
+      Height = 63
+      Top = 24
+      Width = 225
+      Caption = 'Exportar (Json)'
+      TabOrder = 0
+      OnClick = btnExportClick
+    end
+  end
+end

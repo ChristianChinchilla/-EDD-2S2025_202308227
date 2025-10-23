@@ -8,7 +8,6 @@ object frmRootMenu: TfrmRootMenu
   ClientWidth = 639
   DesignTimePPI = 134
   Position = poScreenCenter
-  LCLVersion = '4.2.0.0'
   OnCreate = FormCreate
   object lblTitle: TLabel
     Left = 313
@@ -19,10 +18,10 @@ object frmRootMenu: TfrmRootMenu
     Caption = 'Root'
   end
   object Button1btnCargaMasiva: TButton
-    Left = 67
+    Left = 43
     Height = 68
-    Top = 82
-    Width = 234
+    Top = 88
+    Width = 258
     Caption = 'Carga Masiva'
     TabOrder = 0
     OnClick = btnCargaMasivaClick
@@ -37,10 +36,10 @@ object frmRootMenu: TfrmRootMenu
     OnClick = btnRepUsuariosClick
   end
   object btnRepRelaciones: TButton
-    Left = 67
+    Left = 43
     Height = 68
     Top = 168
-    Width = 234
+    Width = 258
     Caption = 'Reportes '
     TabOrder = 2
     OnClick = btnRepRelacionesClick
@@ -57,24 +56,32 @@ object frmRootMenu: TfrmRootMenu
   object btnComunidades: TButton
     Left = 335
     Height = 66
-    Top = 82
+    Top = 88
     Width = 234
     Caption = 'Comunidades'
     TabOrder = 4
     OnClick = btnComunidadesClick
   end
   object btnMensaje: TButton
-    Left = 123
+    Left = 43
     Height = 80
-    Top = 268
-    Width = 362
+    Top = 248
+    Width = 258
     Caption = 'Ver mensajes de Comunidad'
     TabOrder = 5
     OnClick = btnMensajeClick
   end
+  object btnLogueo: TButton
+    Left = 335
+    Height = 80
+    Top = 248
+    Width = 233
+    Caption = 'Control de Logueo'
+    TabOrder = 6
+    OnClick = btnLogueoClick
+  end
   object OpenDialog1: TOpenDialog
     Filter = 'JSON|*.json|Todos|*.*'
-    Left = 45
-    Top = 34
+    Left = 8
   end
 end

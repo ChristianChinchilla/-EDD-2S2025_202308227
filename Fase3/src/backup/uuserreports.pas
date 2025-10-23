@@ -12,12 +12,15 @@ function GenerateAllUserReports(const AEmail: string; out ABaseDir: string): str
 implementation
 
 uses
-  FileUtil, Process, Math,
+  FileUtil, Process, Math, md5,
   uData,           // GPapelera, GScheduled, GContacts, GCorreos, GDrafts, GFavorites, GetMailById
   uListaUsuarios,  // PUsuario, GUsuarios
   uListaCorreos;   // PCorreo, TListaCorreos (First/next)
 
-{------------------- utilidades -------------------}
+// ===================================================================
+// Utilidades
+// ===================================================================
+
 function Sanitize(const S: string): string;
 var
   i: Integer;
@@ -77,7 +80,23 @@ begin
   RunDot(Dot, Png);
 end;
 
-{------------------- CONTACTOS (lista circular, HORIZONTAL) -------------------}
+// Pequeñas utilidades extra para Merkle
+function MD5Hex(const S: string): string; inline;
+var D: TMD5Digest;
+begin
+  D := MD5String(S);
+  Result := LowerCase(MD5Print(D));
+end;
+
+function Trunc8(const H: string): string; inline;
+begin
+  if Length(H) <= 8 then Result := H else Result := Copy(H, 1, 8) + '...';
+end;
+
+// ===================================================================
+// CONTACTOS (lista circular, horizontal)
+// ===================================================================
+
 procedure ExportContactsDOT(const OwnerEmail, TargetDot, TargetPng: string);
 var
   L, List : TStringList;
@@ -138,7 +157,10 @@ begin
   end;
 end;
 
-{------------------- INBOX (lista doblemente enlazada) -------------------}
+// ===================================================================
+// INBOX (lista doblemente enlazada)
+// ===================================================================
+
 procedure ExportInboxDOT(const OwnerEmail, TargetDot, TargetPng: string);
 var
   L          : TStringList;
@@ -202,7 +224,10 @@ begin
   end;
 end;
 
-{------------------- PAPELERA (pila) -------------------}
+// ===================================================================
+// PAPELERA (pila)
+// ===================================================================
+
 procedure ExportTrashDOT(const OwnerEmail, TargetDot, TargetPng: string);
 var
   L          : TStringList;
@@ -263,7 +288,10 @@ begin
   end;
 end;
 
-{------------------- PROGRAMADOS (cola, VERTICAL) -------------------}
+// ===================================================================
+// PROGRAMADOS (cola, vertical)
+// ===================================================================
+
 procedure ExportScheduledDOT(const OwnerEmail, TargetDot, TargetPng: string);
 var
   L          : TStringList;
@@ -330,7 +358,10 @@ begin
   end;
 end;
 
-{==================== FASE 2: BORRADORES (ÁRBOL AVL GLOBAL) ====================}
+// ===================================================================
+// FASE 2: BORRADORES (AVL) — GLOBAL (todos los remitentes)
+// ===================================================================
+
 procedure ExportAllDraftsAVL(const TargetDot, TargetPng: string);
 var
   L  : TStringList;
@@ -348,24 +379,12 @@ var
     Result := StringReplace(S, '"','\"',[rfReplaceAll]);
   end;
 
-  function EstadoShort(const S: string): string; inline;
-  var SUp: string;
-  begin
-    SUp := UpperCase(Trim(S));
-    // Normaliza a L / NL por si viniera "LEIDO", "NO LEIDO", etc.
-    if (SUp = 'L') or (SUp = 'LEIDO') then
-      Exit('L')
-    else
-      Exit('NL');
-  end;
-
   function HasAnyDraft: Boolean;
   var j: Integer;
   begin
     Result := False;
     for j := 0 to T.Count-1 do
-      if PDraft(T[j]) <> nil then
-        Exit(True);
+      if PDraft(T[j]) <> nil then Exit(True);
   end;
 
 begin
@@ -373,17 +392,14 @@ begin
   T := TList.Create;
   try
     L.Add('digraph G {');
-    // Un poco más “abierto” para que se vea arborizado
     L.Add('  rankdir=TB;');
     L.Add('  graph [fontname="Helvetica", nodesep="0.35", ranksep="0.5"];');
     L.Add('  node [shape=box, style="rounded,filled", fillcolor="lightyellow", fontname="Helvetica"];');
     L.Add('  labelloc="t";');
-    L.Add('  label="Árbol AVL - correos (todos los remitentes)";');
+    L.Add('  label="Árbol AVL - Borradores (todos los remitentes)";');
 
-    // Volcado rápido del árbol AVL de borradores a un TList
     GDrafts.ListIn(T);
 
-    // ¿Hay algo?
     if not HasAnyDraft then
     begin
       L.Add('  Empty [label="(sin borradores)"];');
@@ -392,30 +408,27 @@ begin
       Exit;
     end;
 
-    // --- NODOS: Remitente + Estado (L/NL) + demás campos ---
+    // NODOS
     for i := 0 to T.Count-1 do
     begin
       D := PDraft(T[i]);
       if D = nil then Continue;
-
       L.Add(Format(
-        '  %s [label="ID: %d\lRemitente: %s\lEstado: %s\lAsunto: %s\lFecha: %s\lMensaje: %s\l"];',
+        '  %s [label="ID: %d\lRemitente: %s\lAsunto: %s\lFecha: %s\lMensaje: %s\l"];',
         [ NodeId(D),
           D^.id,
           Esc(D^.remitente),
-          EstadoShort(D^.estado),
           Esc(D^.asunto),
           Esc(D^.fecha),
           Esc(D^.mensaje)
         ]));
     end;
 
-    // --- ARISTAS: left / right (sin filtrar por dueño) ---
+    // ARISTAS
     for i := 0 to T.Count-1 do
     begin
       D := PDraft(T[i]);
       if D = nil then Continue;
-
       if D^.left  <> nil then
         L.Add(Format('  %s -> %s;', [NodeId(D), NodeId(D^.left)]));
       if D^.right <> nil then
@@ -430,7 +443,92 @@ begin
   end;
 end;
 
-{==================== FASE 2: FAVORITOS (ÁRBOL B visual, orden 5) ====================}
+// ===================================================================
+// FASE 2: BORRADORES (AVL) — POR USUARIO (remitente = OwnerEmail)
+// ===================================================================
+
+procedure ExportDraftsAVL(const OwnerEmail, TargetDot, TargetPng: string);
+var
+  L  : TStringList;
+  T  : TList;
+  i  : Integer;
+  D  : PDraft;
+
+  function NodeId(const N: PDraft): string; inline;
+  begin
+    Result := 'u' + IntToStr(N^.id);
+  end;
+
+  function Esc(const S: string): string; inline;
+  begin
+    Result := StringReplace(S, '"','\"',[rfReplaceAll]);
+  end;
+
+  function HasAnyForUser: Boolean;
+  var j: Integer; P: PDraft;
+  begin
+    Result := False;
+    for j := 0 to T.Count-1 do
+    begin
+      P := PDraft(T[j]);
+      if (P <> nil) and (CompareText(Trim(P^.remitente), Trim(OwnerEmail)) = 0) then
+        Exit(True);
+    end;
+  end;
+
+begin
+  L := TStringList.Create;
+  T := TList.Create;
+  try
+    L.Add('digraph G {');
+    L.Add('  rankdir=TB;');
+    L.Add('  graph [fontname="Helvetica", nodesep="0.35", ranksep="0.5"];');
+    L.Add('  node [shape=box, style="rounded,filled", fillcolor="lightgoldenrod1", fontname="Helvetica"];');
+    L.Add(Format('  labelloc="t"; label="Árbol AVL - Borradores (%s)";', [OwnerEmail]));
+
+    GDrafts.ListIn(T);
+
+    if not HasAnyForUser then
+    begin
+      L.Add('  Empty [label="(sin borradores del usuario)"];');
+      L.Add('}');
+      SaveAndMaybePng(TargetDot, TargetPng, L);
+      Exit;
+    end;
+
+    // NODOS (solo del usuario)
+    for i := 0 to T.Count-1 do
+    begin
+      D := PDraft(T[i]);
+      if (D=nil) or (CompareText(Trim(D^.remitente), Trim(OwnerEmail))<>0) then Continue;
+      L.Add(Format(
+        '  %s [label="ID: %d\lAsunto: %s\lFecha: %s\lMensaje: %s\l"];',
+        [ NodeId(D), D^.id, Esc(D^.asunto), Esc(D^.fecha), Esc(D^.mensaje) ]));
+    end;
+
+    // ARISTAS (si ambos extremos pertenecen al usuario)
+    for i := 0 to T.Count-1 do
+    begin
+      D := PDraft(T[i]);
+      if (D=nil) or (CompareText(Trim(D^.remitente), Trim(OwnerEmail))<>0) then Continue;
+      if (D^.left  <> nil) and (CompareText(Trim(D^.left^.remitente),  Trim(OwnerEmail))=0) then
+        L.Add(Format('  %s -> %s;', [NodeId(D), NodeId(D^.left)]));
+      if (D^.right <> nil) and (CompareText(Trim(D^.right^.remitente), Trim(OwnerEmail))=0) then
+        L.Add(Format('  %s -> %s;', [NodeId(D), NodeId(D^.right)]));
+    end;
+
+    L.Add('}');
+    SaveAndMaybePng(TargetDot, TargetPng, L);
+  finally
+    T.Free;
+    L.Free;
+  end;
+end;
+
+// ===================================================================
+// FASE 2: FAVORITOS (Árbol B orden 5) — visual
+// ===================================================================
+
 procedure ExportFavoritesBTree(const OwnerEmail, TargetDot, TargetPng: string);
 const
   ORDER = 5;
@@ -477,11 +575,13 @@ var
 
     if n = 0 then begin L.Add('  Empty [label="(sin favoritos)"];'); L.Add('}'); Exit; end;
 
+    // Nodo raíz con hasta 4 claves
     rootLbl := '|';
     take := n; if take > KEYS_PER_NODE then take := KEYS_PER_NODE;
     for k := 0 to take-1 do rootLbl += '{' + LabelForMail(mails[k]) + '}|';
     L.Add(Format('  root [label="%s"];', [rootLbl]));
 
+    // Hijos (bloques de 4)
     idx := take; childNo := 0;
     while idx < n do
     begin
@@ -506,6 +606,7 @@ begin
   try
     SortIdsNumeric(ids);
 
+    // Inicializa y llena compacto
     SetLength(mails, ids.Count);
     n := 0;
     for i := 0 to ids.Count-1 do
@@ -513,7 +614,7 @@ begin
       mails[n] := GetMailById(StrToIntDef(ids[i], 0));
       if mails[n] <> nil then Inc(n);
     end;
-    SetLength(mails, n);
+    SetLength(mails, n); // recorta a tamaño real
 
     BuildVisualBTree;
     SaveAndMaybePng(TargetDot, TargetPng, L);
@@ -522,41 +623,219 @@ begin
     L.Free;
   end;
 end;
+// ===================================================================
+// PRIVADOS -> Árbol de Merkle (hojas = correos favoritos del usuario)
+// ===================================================================
+procedure ExportMerklePrivados(const OwnerEmail, TargetDot, TargetPng: string);
+type
+  THashArray = array of string;
 
-{------------------- ORQUESTADOR -------------------}
-function GenerateAllUserReports(const AEmail: string; out ABaseDir: string): string;
+  function Esc(const S: string): string; inline;
+  begin
+    Result := StringReplace(S, '"','\"',[rfReplaceAll]);
+  end;
+
+  function Short(const S: string; N: Integer): string; inline;
+  begin
+    if Length(S) <= N then Exit(S);
+    Result := Copy(S, 1, N) + '...';
+  end;
+
+  // Hash simple y suficiente para el reporte (no-criptográfico)
+  function SimpleHash(const S: string): string;
+  var
+    i: Integer; h: LongWord;
+  begin
+    h := 2166136261;
+    for i := 1 to Length(S) do
+    begin
+      h := h xor Ord(S[i]);
+      h := h * 16777619;
+    end;
+    Result := LowerCase(IntToHex(h, 8));
+  end;
+
+  function MailLabel(const M: PCorreo): string;
+  var
+    remit, asu, fec: string;
+  begin
+    if M = nil then
+    begin
+      Result :=
+        'De: (no encontrado)\l' +
+        'Asunto: (no encontrado)\l' +
+        'Fecha: (no encontrado)\l';
+      Exit;
+    end;
+
+    remit := Trim(M^.remitente);
+    asu   := Trim(M^.asunto);
+    fec   := Trim(M^.fecha);
+
+    if remit = '' then remit := '(sin remitente)';
+    if asu   = '' then asu   := '(sin asunto)';
+    if fec   = '' then fec   := '(sin fecha)';
+
+    Result :=
+      'De: '     + Esc(Short(remit, 32)) + '\l' +
+      'Asunto: ' + Esc(Short(asu,   38)) + '\l' +
+      'Fecha: '  + Esc(Short(fec,   32)) + '\l';
+  end;
+
 var
-  base, userSafe, globalDir: string;
+  ids : TStringList;
+  mails : array of PCorreo;
+  leafH : THashArray;
+  n,i   : Integer;
+  L     : TStringList;
+
+  // Construye niveles hasta llegar a la raíz
+  function BuildLevel(const Prev: THashArray): THashArray;
+  var
+    i, j, outN: Integer;
+    a, b: string;
+  begin
+    if Length(Prev) = 0 then Exit(nil);
+    outN := (Length(Prev) + 1) div 2;
+    SetLength(Result, outN);
+    j := 0;
+    for i := 0 to outN-1 do
+    begin
+      a := Prev[j]; Inc(j);
+      if j < Length(Prev) then
+      begin
+        b := Prev[j]; Inc(j);
+        Result[i] := SimpleHash(a + b);
+      end
+      else
+        Result[i] := SimpleHash(a + a); // duplicar último si es impar
+    end;
+  end;
+
+  procedure AddLeafNode(const idx: Integer; const M: PCorreo; const H: string);
+  begin
+    // Nodo de hoja (correo)
+    L.Add(Format(
+      '  leaf%d [shape=box, style="rounded", fontname="Helvetica", '+
+      'label="%sHash: %s"];',
+      [idx, MailLabel(M), Esc(Short(H, 10))]));
+  end;
+
+  procedure AddInnerNode(const level, idx: Integer; const H: string);
+  begin
+    L.Add(Format(
+      '  n_%d_%d [shape=box, style="rounded", fontname="Helvetica", '+
+      'label="Hash: %s"];',
+      [level, idx, Esc(Short(H, 10))]));
+  end;
+
+var
+  curLevel, nextLevel : THashArray;
+  level, idx, j       : Integer;
 begin
-  // Carpeta por usuario
-  base     := 'Reportes' + DirectorySeparator + 'Usuario-Reportes';
-  userSafe := Sanitize(AEmail);
-  ABaseDir := base + DirectorySeparator + userSafe;
-  ForceDirectories(ABaseDir);
+  L := TStringList.Create;
+  ids := GFavorites.GetIdListCopy(OwnerEmail);
+  try
+    // Recolectar correos favoritos (pueden no existir ya)
+    SetLength(mails, ids.Count);
+    SetLength(leafH, ids.Count);
+    n := 0;
+    for i := 0 to ids.Count-1 do
+    begin
+      mails[n] := GetMailById(StrToIntDef(ids[i], 0));
+      // Hasheamos con los datos que haya (si no hay correo, quedará vacío
+      // pero el hash igual se calcula para mantener la estructura)
+      if mails[n] <> nil then
+        leafH[n] := SimpleHash(
+          mails[n]^.remitente + '|' + mails[n]^.asunto + '|' + mails[n]^.fecha + '|' + mails[n]^.mensaje)
+      else
+        leafH[n] := SimpleHash('nil|' + ids[i]);
+      Inc(n);
+    end;
+    SetLength(mails, n);
+    SetLength(leafH, n);
 
-  // ── Fase 1 (por usuario)
-  ExportInboxDOT     (AEmail, ABaseDir+DirectorySeparator+'inbox.dot',
-                             ABaseDir+DirectorySeparator+'inbox.png');
-  ExportTrashDOT     (AEmail, ABaseDir+DirectorySeparator+'papelera.dot',
-                             ABaseDir+DirectorySeparator+'papelera.png');
-  ExportScheduledDOT (AEmail, ABaseDir+DirectorySeparator+'programados.dot',
-                             ABaseDir+DirectorySeparator+'programados.png');
-  ExportContactsDOT  (AEmail, ABaseDir+DirectorySeparator+'contactos.dot',
-                             ABaseDir+DirectorySeparator+'contactos.png');
+    // DOT header
+    L.Add('digraph G {');
+    L.Add('  graph [fontname="Helvetica"];');
+    L.Add('  labelloc="t"; label="Reporte de Árbol de Merkle";');
+    L.Add('  subgraph cluster0 { label="Privados"; style="rounded"; color="gray70";');
 
-  // ── Fase 2 (por usuario)
-  ExportDraftsAVL      (AEmail, ABaseDir+DirectorySeparator+'borradores_avl.dot',
-                               ABaseDir+DirectorySeparator+'borradores_avl.png');
-  ExportFavoritesBTree (AEmail, ABaseDir+DirectorySeparator+'favoritos_btree.dot',
-                               ABaseDir+DirectorySeparator+'favoritos_btree.png');  // Árbol B (orden 5)
+    if n = 0 then
+    begin
+      L.Add('  Empty [label="(sin privados / favoritos)"];');
+      L.Add('  }');
+      L.Add('}');
+      SaveAndMaybePng(TargetDot, TargetPng, L);
+      Exit;
+    end;
 
-  // ── Fase 2 (GLOBAL: todos los remitentes con borradores)
-  globalDir := 'Reportes' + DirectorySeparator + 'Global';
-  ForceDirectories(globalDir);
-  ExportAllDraftsAVL(globalDir + DirectorySeparator + 'borradores_avl_global.dot',
-                     globalDir + DirectorySeparator + 'borradores_avl_global.png');
+    // Hojas
+    for i := 0 to n-1 do
+      AddLeafNode(i, mails[i], leafH[i]);
 
-  Result := ABaseDir;
+    // Aristas de hojas a primer nivel interno
+    curLevel := leafH;
+    level := 0;
+
+    // Construir niveles y dibujar
+    while Length(curLevel) > 1 do
+    begin
+      nextLevel := BuildLevel(curLevel);
+      // dibujar nodos de este nivel (hijos)
+      for idx := 0 to Length(nextLevel)-1 do
+        AddInnerNode(level, idx, nextLevel[idx]);
+
+      // Conectar (cada par de curLevel -> un nodo de nextLevel)
+      j := 0;
+      for idx := 0 to Length(nextLevel)-1 do
+      begin
+        if level = 0 then
+        begin
+          // desde hojas
+          L.Add(Format('  leaf%d -> n_%d_%d;', [j,     level, idx])); Inc(j);
+          if j < Length(curLevel) then
+          begin
+            L.Add(Format('  leaf%d -> n_%d_%d;', [j,   level, idx])); Inc(j);
+          end
+          else
+          begin
+            // impar: duplicamos última hoja
+            L.Add(Format('  leaf%d -> n_%d_%d;', [j-1, level, idx]));
+          end;
+        end
+        else
+        begin
+          // desde nivel anterior interno
+          L.Add(Format('  n_%d_%d -> n_%d_%d;', [level-1, j,   level, idx])); Inc(j);
+          if j < Length(curLevel) then
+          begin
+            L.Add(Format('  n_%d_%d -> n_%d_%d;', [level-1, j, level, idx])); Inc(j);
+          end
+          else
+          begin
+            L.Add(Format('  n_%d_%d -> n_%d_%d;', [level-1, j-1, level, idx]));
+          end;
+        end;
+      end;
+
+      curLevel := nextLevel;
+      Inc(level);
+    end;
+
+    // Raíz
+    L.Add(Format('  root [shape=box, style="rounded", fontname="Helvetica", '+
+                 'label="Hash: %s"];', [Esc(Short(curLevel[0], 10))]));
+    if level = 0 then
+      L.Add('  root -> leaf0;')
+    else
+      L.Add(Format('  root -> n_%d_%d;', [level-1, 0]));
+
+    L.Add('  }'); // cluster
+    L.Add('}');
+    SaveAndMaybePng(TargetDot, TargetPng, L);
+  finally
+    ids.Free;
+    L.Free;
+  end;
 end;
-
-

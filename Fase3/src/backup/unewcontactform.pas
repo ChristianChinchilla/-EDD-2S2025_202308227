@@ -79,7 +79,7 @@ begin
     for i := 0 to L.Count-1 do
       if SameText(LocalPart(L[i]), needle) then
         Exit(L[i]);
-  finally
+
     L.Free;
   end;
 end;

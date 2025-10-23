@@ -107,8 +107,8 @@ object frmUserMenu: TfrmUserMenu
   end
   object btnFavoritos: TButton
     Left = 469
-    Height = 34
-    Top = 223
+    Height = 42
+    Top = 224
     Width = 209
     Caption = 'Ver Favoritos'
     TabOrder = 10
@@ -131,5 +131,14 @@ object frmUserMenu: TfrmUserMenu
     Caption = 'Ver Borradores De Mensaje'
     TabOrder = 12
     OnClick = btnVerClick
+  end
+  object btnPrivados: TButton
+    Left = 469
+    Height = 40
+    Top = 279
+    Width = 209
+    Caption = 'Privado'
+    TabOrder = 13
+    OnClick = btnPrivadosClick
   end
 end
