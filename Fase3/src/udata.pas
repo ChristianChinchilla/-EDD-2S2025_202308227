@@ -5,7 +5,7 @@ unit uData;
 interface
 
 uses
-  Classes, SysUtils, uListaUsuarios, uListaCorreos, BST_Comunidades;
+  Classes, SysUtils, uListaUsuarios, uListaCorreos, BST_Comunidades, uBlockchain;
 
 type
   { ====== PILA (Papelera) ====== }
@@ -133,7 +133,8 @@ var
   GContacts       : TContacts;
   GFavorites      : TFavorites;
   GDrafts         : TDraftBST;
-  GCommunitiesBST : TBSTree;     // <<--- Árbol BST de comunidades
+  GCommunitiesBST : TBSTree;     // Árbol BST de comunidades
+  GBlockchain     : TBlockchain; // Blockchain global (se usará desde Root)
 
 function EsContacto(const OwnerEmail, DestEmail: string): Boolean;
 function GetMailById(AId: LongInt): PCorreo;  // helper para buscar correo por ID
@@ -665,6 +666,7 @@ begin
 end;
 
 { ---------- Comunidad (BST) ---------- }
+
 procedure CommunityEnsure(const AName: string);
 begin
   if (GCommunitiesBST = nil) or (Trim(AName)='') then Exit;
@@ -685,11 +687,14 @@ begin
   if (Trim(AName)='') or (Trim(AText)='') or (GCommunitiesBST = nil) then Exit;
   if not CommunityExists(AName) then Exit;
 
-  // Si algún día quieres parsear ADateISO, hazlo aquí; por ahora usamos Now.
+  // Fecha (si ADateISO no se usa, tomamos el Now)
   dt := Now;
 
+  // 1) Insertar SOLO en el BST de comunidades
   msg := TMensajeComunidad.Create(AAuthorEmail, AText, dt);
   GCommunitiesBST.Insert(AName, msg);
+
+  // *** Importante: YA NO se registra en el Blockchain aquí ***
 end;
 
 function CommunityListMessages(const AName: string): TArrayOfMensajes;
@@ -719,7 +724,8 @@ initialization
   GContacts       := TContacts.Create;
   GFavorites      := TFavorites.Create;
   GDrafts         := TDraftBST.Create;
-  GCommunitiesBST := TBSTree.Create;     // <<--- BST
+  GCommunitiesBST := TBSTree.Create;
+  GBlockchain     := TBlockchain.Create;   // se usará desde Root para blockchain de correos
 
 finalization
   GUsuarios.Free;
@@ -729,6 +735,8 @@ finalization
   GContacts.Free;
   GFavorites.Free;
   GDrafts.Free;
-  GCommunitiesBST.Free;                  // <<--- BST
+  GCommunitiesBST.Free;
+  GBlockchain.Free;
+
 end.
 

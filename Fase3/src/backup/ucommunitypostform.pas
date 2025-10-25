@@ -35,16 +35,16 @@ implementation
 {$R *.lfm}
 
 uses
-  uData, uUserMenu; // GCommunity vive en uData
+  uData, uUserMenu;
 
 procedure TfrmCommunityPost.FormCreate(Sender: TObject);
 begin
   Caption := 'Publicar mensaje';
-  if Assigned(lblTitle) then lblTitle.Caption := 'Publicar mensaje';
+  if Assigned(lblTitle)     then lblTitle.Caption     := 'Publicar mensaje';
   if Assigned(lblComunidad) then lblComunidad.Caption := 'Comunidad';
-  if Assigned(lblMensaje) then lblMensaje.Caption := 'Mensaje';
-  if Assigned(btnPublicar) then btnPublicar.Caption := 'Publicar';
-  if Assigned(btnVolver) then btnVolver.Caption := 'Volver';
+  if Assigned(lblMensaje)   then lblMensaje.Caption   := 'Mensaje';
+  if Assigned(btnPublicar)  then btnPublicar.Caption  := 'Publicar';
+  if Assigned(btnVolver)    then btnVolver.Caption    := 'Volver';
 end;
 
 procedure TfrmCommunityPost.OpenForUser(const AEmail: string);
@@ -57,7 +57,7 @@ end;
 
 procedure TfrmCommunityPost.btnPublicarClick(Sender: TObject);
 var
-  comu, msg, fecha: string;
+  comu, msg: string;
 begin
   comu := Trim(edtComunidad.Text);
   msg  := Trim(memMensaje.Text);
@@ -67,19 +67,17 @@ begin
     ShowMessage('Ingresa comunidad y mensaje.'); Exit;
   end;
 
-  // Debe EXISTIR la comunidad (según tu requerimiento)
-  if (not GCommunity.Exists(comu)) then
+  // Requisito: la comunidad debe existir previamente
+  if not CommunityExists(comu) then
   begin
     ShowMessage('La comunidad "'+comu+'" no existe.'); Exit;
   end;
 
-  // Guardar el mensaje en el store de comunidades
-  fecha := FormatDateTime('dd/mm/yyyy hh:nn', Now);
-  GCommunity.Post(comu, FOwnerEmail, msg, fecha);
+  // Publicar en el BST
+  CommunityPost(comu, FOwnerEmail, msg);
 
   ShowMessage('Mensaje publicado en "'+comu+'".');
 
-  // Limpiar para otro post
   memMensaje.Clear;
   memMensaje.SetFocus;
 end;

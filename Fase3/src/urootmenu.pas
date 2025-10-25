@@ -14,10 +14,11 @@ type
     btnRepUsuarios: TButton;
     btnRepRelaciones: TButton;
     btnRepComunidades: TButton;
+    btnRepBlockchain: TButton;   // si no existe en el .lfm no pasa nada
     btnLogout: TButton;
     btnComunidades: TButton;
     btnMensaje: TButton;
-    btnLogueo: TButton;       // botón para Control de Logueo
+    btnLogueo: TButton;
     lblTitle: TLabel;
     OpenDialog1: TOpenDialog;
     procedure btnCargaMasivaClick(Sender: TObject);
@@ -26,12 +27,20 @@ type
     procedure btnRepUsuariosClick(Sender: TObject);
     procedure btnRepRelacionesClick(Sender: TObject);
     procedure btnRepComunidadesClick(Sender: TObject);
+    procedure btnRepBlockchainClick(Sender: TObject);
     procedure btnLogoutClick(Sender: TObject);
-    procedure btnLogueoClick(Sender: TObject);  // abre el form de logueo
+    procedure btnLogueoClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     function  GetReportsDir: string;
     procedure RunDot(const dotFile, pngFile: string);
+
+    // Helpers para Blockchain
+    function  HtmlEsc(const S: string): string;
+    function  MD5Hex(const S: string): string;
+    function  ShortHash(const S: string): string;
+    procedure BuildBlockchainDOT(const TargetDot, TargetPng: string);
+
     function  LoadCorreosFromJSON(const AFile: string): Integer;
   public
   end;
@@ -46,46 +55,17 @@ implementation
 uses
   fpjson, jsonparser,
   uData, uListaUsuarios, uListaCorreos,
-  Process, FileUtil,
+  Process, FileUtil, md5,
   comunidadesMenu, uCommunityMessagesForm,
-  uLogControlForm;  // <<--- para frmLoginLog + LogRegistrarSalida
+  uLogControlForm;
+
+{=========================== Form ===========================}
 
 procedure TfrmRootMenu.FormCreate(Sender: TObject);
 begin
   Caption := 'Root';
   lblTitle.Caption := 'Root';
   OpenDialog1.Filter := 'JSON|*.json|Todos|*.*';
-end;
-
-procedure TfrmRootMenu.btnCargaMasivaClick(Sender: TObject);
-var
-  j: TJSONData; root: TJSONObject; nUsers, nMails: Integer;
-begin
-  if not OpenDialog1.Execute then Exit;
-  try
-    j := GetJSON(TFileStream.Create(OpenDialog1.FileName, fmOpenRead or fmShareDenyWrite), True);
-    if (j=nil) or (j.JSONType<>jtObject) then raise Exception.Create('El JSON debe tener un objeto raíz.');
-    root := TJSONObject(j); nUsers := 0; nMails := 0;
-
-    if root.Find('usuarios')<>nil then
-    begin
-      GUsuarios.LoadFromJSON(OpenDialog1.FileName);
-      nUsers := GUsuarios.Count;
-      ShowMessage(Format('Usuarios cargados: %d', [nUsers]));
-      Exit;
-    end;
-
-    if root.Find('correos')<>nil then
-    begin
-      nMails := LoadCorreosFromJSON(OpenDialog1.FileName);
-      ShowMessage(Format('Correos cargados: %d', [nMails]));
-      Exit;
-    end;
-
-    raise Exception.Create('JSON no reconocido. Se esperaba "usuarios" o "correos".');
-  except
-    on E: Exception do ShowMessage('Error al cargar JSON: ' + E.Message);
-  end;
 end;
 
 procedure TfrmRootMenu.btnComunidadesClick(Sender: TObject);
@@ -99,6 +79,8 @@ begin
   if frmCommunityMessages=nil then Application.CreateForm(TfrmCommunityMessages, frmCommunityMessages);
   frmCommunityMessages.Open; frmCommunityMessages.BringToFront;
 end;
+
+{=========================== Utils comunes ===========================}
 
 function TfrmRootMenu.GetReportsDir: string;
 var
@@ -131,6 +113,8 @@ begin
   end;
 end;
 
+{=========================== Reportes existentes ===========================}
+
 procedure TfrmRootMenu.btnRepUsuariosClick(Sender: TObject);
 var
   dir, dot, png: string;
@@ -147,12 +131,24 @@ procedure TfrmRootMenu.btnRepRelacionesClick(Sender: TObject);
 var
   dir, dot, png: string;
 begin
-  dir := GetReportsDir; dot := dir+'relaciones.dot'; png := dir+'relaciones.png';
-  GCorreos.ExportRelacionesMatrizDOT(dot); RunDot(dot, png);
+  dir := GetReportsDir;
+
+  // 1) Relaciones (lo que ya funcionaba)
+  dot := dir+'relaciones.dot';
+  png := dir+'relaciones.png';
+  GCorreos.ExportRelacionesMatrizDOT(dot);
+  RunDot(dot, png);
+
+  // 2) Blockchain (se genera junto con relaciones)
+  dot := dir+'blockchain.dot';
+  png := dir+'blockchain.png';
+  BuildBlockchainDOT(dot, png);
+
   if FileExists(png) then
-    ShowMessage('Reporte de Relaciones (matriz) generado: '+png)
+    ShowMessage('Relaciones y Blockchain generados en:' + LineEnding + dir)
   else
-    ShowMessage('Se generó relaciones.dot: '+dot+LineEnding+'(Instala graphviz para crear el .png)');
+    ShowMessage('Se generaron DOTs en: ' + dir + LineEnding +
+                '(instala Graphviz para crear también los PNG)');
 end;
 
 procedure TfrmRootMenu.btnRepComunidadesClick(Sender: TObject);
@@ -171,21 +167,200 @@ begin
                 '(instala Graphviz para crear también el PNG)');
 end;
 
+{=========================== Blockchain ===========================}
+
+function TfrmRootMenu.HtmlEsc(const S: string): string;
+var
+  i: Integer; c: Char;
+begin
+  Result := '';
+  for i := 1 to Length(S) do
+  begin
+    c := S[i];
+    case c of
+      '&' : Result += '&amp;';
+      '<' : Result += '&lt;';
+      '>' : Result += '&gt;';
+      '"' : Result += '&quot;';
+      '''': Result += '&#39;';
+    else
+      Result += c;
+    end;
+  end;
+end;
+
+function TfrmRootMenu.MD5Hex(const S: string): string;
+var D: TMD5Digest;
+begin
+  D := MD5String(S);
+  Result := LowerCase(MD5Print(D));
+end;
+
+function TfrmRootMenu.ShortHash(const S: string): string;
+begin
+  if Length(S) <= 8 then Result := S else Result := Copy(S,1,8) + '...';
+end;
+
+procedure TfrmRootMenu.BuildBlockchainDOT(const TargetDot, TargetPng: string);
+var
+  L        : TStringList;
+  p        : PCorreo;
+  prevHash : string;
+  curHash  : string;
+  payload  : string;
+  idx      : Integer;
+  nonceVal : Integer;
+
+  procedure AddBlockNode(const NIdx: Integer; const Title, IndexTxt, TimeTxt,
+                         DataTxt, NonceTxt, PrevTxt, HashTxt: string);
+  begin
+    L.Add(Format(
+      '  b%d [label=<<table border="1" cellborder="1" cellspacing="0">'+
+      '<tr><td><b>%s</b></td></tr>'+
+      '<tr><td>%s</td></tr>'+
+      '<tr><td>%s</td></tr>'+
+      '<tr><td>%s</td></tr>'+
+      '<tr><td>%s</td></tr>'+
+      '<tr><td>%s</td></tr>'+
+      '<tr><td>%s</td></tr>'+
+      '</table>>];',
+      [ NIdx, HtmlEsc(Title),
+        HtmlEsc(IndexTxt), HtmlEsc(TimeTxt), HtmlEsc(DataTxt),
+        HtmlEsc(NonceTxt), HtmlEsc(PrevTxt), HtmlEsc(HashTxt) ]));
+  end;
+
+begin
+  L := TStringList.Create;
+  try
+    L.Add('digraph G {');
+    L.Add('  rankdir=TB;'); // vertical
+    L.Add('  graph [fontname="Helvetica"];');
+    L.Add('  node  [shape=plaintext, fontname="Helvetica"];');
+    L.Add('  edge  [arrowhead=vee];');
+    L.Add('  labelloc="t"; label="Reporte de Blockchain";');
+
+    idx := 0;
+
+    // GENESIS (si quieres, puedes quitar estas líneas y crear genesis solo si hay correos)
+    prevHash := '0';
+    AddBlockNode(
+      idx,
+      'Block 0 (Genesis)',
+      'Index: 0',
+      'Timestamp: 0',
+      'Data: Genesis Block',
+      'Nonce: 0',
+      'Prev Hash: 0',
+      'Hash: 0'
+    );
+
+    p := GCorreos.First;
+    while p <> nil do
+    begin
+      if UpperCase(Trim(p^.estado)) <> 'EL' then
+      begin
+        Inc(idx);
+
+        payload :=
+          IntToStr(p^.id) + '|' + p^.remitente + '|' + p^.destinatario + '|' +
+          p^.estado + '|' + p^.programado + '|' + p^.asunto + '|' +
+          p^.fecha + '|' + p^.mensaje + '|' + prevHash;
+
+        curHash := MD5Hex(payload);
+        nonceVal := (Abs(p^.id * 67891) + Length(p^.mensaje)) mod 100000;
+
+        AddBlockNode(
+          idx,
+          Format('Block %d', [idx]),
+          Format('Index: %d', [idx]),
+          'Timestamp: ' + HtmlEsc(p^.fecha),
+          Format('Data: ID: %d, Remitente: %s, Asunto: %s, Mensaje: %s',
+                 [p^.id, HtmlEsc(p^.remitente), HtmlEsc(p^.asunto), HtmlEsc(p^.mensaje)]),
+          Format('Nonce: %d', [nonceVal]),
+          'Prev Hash: ' + ShortHash(prevHash),
+          'Hash: ' + ShortHash(curHash)
+        );
+
+        L.Add(Format('  b%d -> b%d;', [idx-1, idx]));
+        prevHash := curHash;
+      end;
+      p := p^.next;
+    end;
+
+    if idx = 0 then
+      L.Add('  Empty [label="(sin correos para encadenar)"];');
+
+    L.Add('}');
+    ForceDirectories(ExtractFileDir(TargetDot));
+    L.SaveToFile(TargetDot);
+    RunDot(TargetDot, TargetPng);
+  finally
+    L.Free;
+  end;
+end;
+
+procedure TfrmRootMenu.btnRepBlockchainClick(Sender: TObject);
+var
+  dir, dot, png: string;
+begin
+  // Si algún día agregas el botón al formulario, también funcionará aquí.
+  dir := GetReportsDir;
+  dot := dir + 'blockchain.dot';
+  png := dir + 'blockchain.png';
+  BuildBlockchainDOT(dot, png);
+
+  if FileExists(png) then
+    ShowMessage('Reporte de Blockchain generado en:' + LineEnding + png)
+  else
+    ShowMessage('Se generó el archivo DOT en:' + LineEnding + dot + LineEnding +
+                '(instala Graphviz para crear también el PNG)');
+end;
+
+{====================== Carga masiva / Log ======================}
+
+procedure TfrmRootMenu.btnCargaMasivaClick(Sender: TObject);
+var
+  j: TJSONData; root: TJSONObject; nUsers, nMails: Integer;
+begin
+  if not OpenDialog1.Execute then Exit;
+  try
+    j := GetJSON(TFileStream.Create(OpenDialog1.FileName, fmOpenRead or fmShareDenyWrite), True);
+    if (j=nil) or (j.JSONType<>jtObject) then raise Exception.Create('El JSON debe tener un objeto raíz.');
+    root := TJSONObject(j); nUsers := 0; nMails := 0;
+
+    if root.Find('usuarios')<>nil then
+    begin
+      GUsuarios.LoadFromJSON(OpenDialog1.FileName);
+      nUsers := GUsuarios.Count;
+      ShowMessage(Format('Usuarios cargados: %d', [nUsers]));
+      Exit;
+    end;
+
+    if root.Find('correos')<>nil then
+    begin
+      nMails := LoadCorreosFromJSON(OpenDialog1.FileName);
+      ShowMessage(Format('Correos cargados: %d', [nMails]));
+      Exit;
+    end;
+
+    raise Exception.Create('JSON no reconocido. Se esperaba "usuarios" o "correos".');
+  except
+    on E: Exception do ShowMessage('Error al cargar JSON: ' + E.Message);
+  end;
+end;
+
 procedure TfrmRootMenu.btnLogoutClick(Sender: TObject);
 begin
-  // ---- LOG SALIDA ROOT ----
   LogRegistrarSalida('root@edd.com', Now);
-
   Application.MainForm.Show;
   Hide;
 end;
 
-// Abrir Control de Logueo (form creado por código)
 procedure TfrmRootMenu.btnLogueoClick(Sender: TObject);
 begin
   if not Assigned(frmLoginLog) then
     frmLoginLog := TfrmLoginLog.Create(Application);
-  frmLoginLog.Open;  // refresca la grilla y muestra
+  frmLoginLog.Open;
 end;
 
 function TfrmRootMenu.LoadCorreosFromJSON(const AFile: string): Integer;
@@ -229,4 +404,4 @@ begin
 end;
 
 end.
-ro
+

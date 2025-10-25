@@ -73,7 +73,7 @@ begin
     ShowMessage('La comunidad "'+comu+'" no existe.'); Exit;
   end;
 
-  // Publicar en el BST
+  // Publicar (también registrará en Blockchain vía uData)
   CommunityPost(comu, FOwnerEmail, msg);
 
   ShowMessage('Mensaje publicado en "'+comu+'".');

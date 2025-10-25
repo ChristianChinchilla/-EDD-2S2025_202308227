@@ -9,8 +9,8 @@ uses
   uUserMenu, uInboxForm, uComposeForm, uTrashForm, uScheduleForm, uProgListForm,
   uContacts, uNewContactForm, uProfileForm, uUserReports, comunidadesMenu,
   ListaDeListas, uDraftsForm, uFavoritesForm, uCommunityPostForm,
-  BST_Comunidades, uCommunityMessagesForm, uLogControlForm,
-  uLZWCompressor, uPrivadosForm;  // <- el form existe, pero NO se autocrea
+  BST_Comunidades, uCommunityMessagesForm, uLogControlForm, uLZWCompressor,
+  uPrivadosForm, uBlockchain;  // <- el form existe, pero NO se autocrea
 
 {$R *.res}
 
@@ -18,7 +18,7 @@ begin
   // Permitir formularios sin .lfm (resource-less), como TfrmLoginLog
   RequireDerivedFormResource := False;
 
-  Application.Scaled := True;
+  Application.Scaled:=True;
   {$PUSH}{$WARN 5044 OFF}
   Application.MainFormOnTaskbar := True;
   {$POP}
@@ -41,7 +41,6 @@ begin
   Application.CreateForm(TfrmCommunityMessages, frmCommunityMessages);
 
   // OJO: ya no hay "Application.CreateForm(TfrmLoginLog, frmLoginLog);"
-  Application.CreateForm(TForm2, Form2);
   Application.Run;
 end.
 

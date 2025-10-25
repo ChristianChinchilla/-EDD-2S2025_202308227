@@ -219,8 +219,14 @@
         <Filename Value="uprivadosform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form2"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uPrivadosForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ublockchain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uBlockchain"/>
       </Unit>
     </Units>
   </ProjectOptions>

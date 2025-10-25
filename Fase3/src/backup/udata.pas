@@ -5,7 +5,7 @@ unit uData;
 interface
 
 uses
-  Classes, SysUtils, uListaUsuarios, uListaCorreos, BST_Comunidades;
+  Classes, SysUtils, uListaUsuarios, uListaCorreos, BST_Comunidades, uBlockchain;
 
 type
   { ====== PILA (Papelera) ====== }
@@ -133,7 +133,8 @@ var
   GContacts       : TContacts;
   GFavorites      : TFavorites;
   GDrafts         : TDraftBST;
-  GCommunitiesBST : TBSTree;     // <<--- Árbol BST de comunidades
+  GCommunitiesBST : TBSTree;     // Árbol BST de comunidades
+  GBlockchain     : TBlockchain; // <<< NUEVO: Blockchain global
 
 function EsContacto(const OwnerEmail, DestEmail: string): Boolean;
 function GetMailById(AId: LongInt): PCorreo;  // helper para buscar correo por ID
@@ -141,7 +142,7 @@ function GetMailById(AId: LongInt): PCorreo;  // helper para buscar correo por I
 // ===== API de Comunidades (BST) expuesta a la UI =====
 procedure CommunityEnsure(const AName: string);
 function  CommunityExists(const AName: string): Boolean;
-procedure CommunityPost(const AName, AAuthorEmail, AText, ADateISO: string = '');
+procedure CommunityPost(const AName, AAuthorEmail, AText: string; const ADateISO: string = '');
 function  CommunityListMessages(const AName: string): TArrayOfMensajes;
 procedure CommunityReport(const ADotPath: string = 'reporte_comunidades.dot');
 
@@ -664,7 +665,7 @@ begin
   end;
 end;
 
-// ---------- Comunidad (BST) ----------
+{ ---------- Comunidad (BST) ---------- }
 procedure CommunityEnsure(const AName: string);
 begin
   if (GCommunitiesBST = nil) or (Trim(AName)='') then Exit;
@@ -677,21 +678,24 @@ begin
   Result := (GCommunitiesBST <> nil) and (GCommunitiesBST.Search(Trim(AName)) <> nil);
 end;
 
-procedure CommunityPost(const AName, AAuthorEmail, AText, ADateISO: string);
+procedure CommunityPost(const AName, AAuthorEmail, AText: string; const ADateISO: string);
 var
   msg : TMensajeComunidad;
   dt  : TDateTime;
 begin
   if (Trim(AName)='') or (Trim(AText)='') or (GCommunitiesBST = nil) then Exit;
-
-  // Debe existir
   if not CommunityExists(AName) then Exit;
 
-  // Fecha: usa Now (simple y robusto)
+  // Fecha (si ADateISO no se usa, tomamos el Now)
   dt := Now;
 
+  // 1) Insertar en el BST de comunidades
   msg := TMensajeComunidad.Create(AAuthorEmail, AText, dt);
   GCommunitiesBST.Insert(AName, msg);
+
+  // 2) Registrar también en Blockchain global
+  if Assigned(GBlockchain) then
+    GBlockchain.AddCommunityPost(AAuthorEmail, AName, AText);
 end;
 
 function CommunityListMessages(const AName: string): TArrayOfMensajes;
@@ -721,7 +725,8 @@ initialization
   GContacts       := TContacts.Create;
   GFavorites      := TFavorites.Create;
   GDrafts         := TDraftBST.Create;
-  GCommunitiesBST := TBSTree.Create;     // <<--- BST
+  GCommunitiesBST := TBSTree.Create;
+  GBlockchain     := TBlockchain.Create;   // <<< crear blockchain
 
 finalization
   GUsuarios.Free;
@@ -731,6 +736,7 @@ finalization
   GContacts.Free;
   GFavorites.Free;
   GDrafts.Free;
-  GCommunitiesBST.Free;                  // <<--- BST
+  GCommunitiesBST.Free;
+  GBlockchain.Free;                        // <<< liberar blockchain
 end.
 

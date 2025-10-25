@@ -1,6 +1,7 @@
 digraph G {
+  rankdir=TB;
   graph [fontname="Helvetica"];
-  node  [shape=record, style="rounded,filled", fillcolor="lightgreen", fontname="Helvetica"];
-  label="Árbol B (Orden 5) - Correos Favoritos (mitzep@edd.com)"; labelloc=t; fontsize=20;
-  root [label="|{ID: 3\lRemitente: bfox@edd.com\lAsunto: Reporte de incidencias\lFecha: (sin fecha)\lMensaje: Encontré algunos errores en el módulo de autenticación.\l}|{ID: 27\lRemitente: smejia@edd.com\lAsunto: Consulta sobre arquitectura\lFecha: (sin fecha)\lMensaje: ¿Podrías revisar el diseño del microservicio que propusimos?\l}|"];
+  label="Árbol B de Favoritos (mitzep@edd.com)"; labelloc=t;
+  node [shape=box, style="rounded,filled", fillcolor="lightblue"];
+  Empty [label="(sin favoritos o función no implementada)"];
 }

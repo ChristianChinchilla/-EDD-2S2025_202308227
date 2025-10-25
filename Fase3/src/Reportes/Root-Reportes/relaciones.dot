@@ -1,0 +1,59 @@
+digraph G {
+  graph [splines=true, nodesep=0.35, ranksep=0.45, labelloc="t", label="Matriz Dispersa"];
+  node  [fontname="Helvetica"];
+  { rank=same;
+    Corner [label="", shape=box, style=filled, fillcolor="gray70", width=1, height=0.5, fixedsize=true];
+    C0 [label="ksandler@edd.com", shape=box, style=filled, fillcolor="lightblue", fontsize=10, width=2.6, height=0.6, fixedsize=true];
+    C1 [label="lgarcia@edd.com", shape=box, style=filled, fillcolor="lightblue", fontsize=10, width=2.6, height=0.6, fixedsize=true];
+    C2 [label="mitzep@edd.com", shape=box, style=filled, fillcolor="lightblue", fontsize=10, width=2.6, height=0.6, fixedsize=true];
+    Corner -> C0 [style=invis, weight=50];
+    C0 -> C1 [style=invis, weight=50];
+    C1 -> C2 [style=invis, weight=50];
+  }
+  C0 -> C1 [dir=both, arrowsize=0.5];
+  C1 -> C2 [dir=both, arrowsize=0.5];
+  { rank=same;
+    R0 [label="bfox@edd.com", shape=box, style=filled, fillcolor="lightgreen", fontsize=10, width=2.8, height=0.6, fixedsize=true];
+    X_0_0 [label="1", shape=box, style=filled, fillcolor="orange", fontsize=11, width=1.0, height=0.6, fixedsize=true];
+    X_0_1 [label="4", shape=box, style=filled, fillcolor="orange", fontsize=11, width=1.0, height=0.6, fixedsize=true];
+    X_0_2 [label="6", shape=box, style=filled, fillcolor="orange", fontsize=11, width=1.0, height=0.6, fixedsize=true];
+    R0 -> X_0_0 [style=invis, weight=50];
+    X_0_0 -> X_0_1 [style=invis, weight=50];
+    X_0_1 -> X_0_2 [style=invis, weight=50];
+  }
+  R0 -> X_0_0 [dir=both, arrowsize=0.5];
+  X_0_0 -> C0 [dir=both, arrowsize=0.5];
+  R0 -> X_0_1 [dir=both, arrowsize=0.5];
+  X_0_1 -> C1 [dir=both, arrowsize=0.5];
+  R0 -> X_0_2 [dir=both, arrowsize=0.5];
+  X_0_2 -> C2 [dir=both, arrowsize=0.5];
+  { rank=same;
+    R1 [label="jcorbet@edd.com", shape=box, style=filled, fillcolor="lightgreen", fontsize=10, width=2.8, height=0.6, fixedsize=true];
+    P_1_0 [label="", shape=box, style=invis, width=1.0, height=0.6, fixedsize=true];
+    X_1_1 [label="3", shape=box, style=filled, fillcolor="orange", fontsize=11, width=1.0, height=0.6, fixedsize=true];
+    X_1_2 [label="2", shape=box, style=filled, fillcolor="orange", fontsize=11, width=1.0, height=0.6, fixedsize=true];
+    R1 -> P_1_0 [style=invis, weight=50];
+    P_1_0 -> X_1_1 [style=invis, weight=50];
+    X_1_1 -> X_1_2 [style=invis, weight=50];
+  }
+  R1 -> X_1_1 [dir=both, arrowsize=0.5];
+  X_1_1 -> C1 [dir=both, arrowsize=0.5];
+  R1 -> X_1_2 [dir=both, arrowsize=0.5];
+  X_1_2 -> C2 [dir=both, arrowsize=0.5];
+  { rank=same;
+    R2 [label="smejia@edd.com", shape=box, style=filled, fillcolor="lightgreen", fontsize=10, width=2.8, height=0.6, fixedsize=true];
+    P_2_0 [label="", shape=box, style=invis, width=1.0, height=0.6, fixedsize=true];
+    X_2_1 [label="5", shape=box, style=filled, fillcolor="orange", fontsize=11, width=1.0, height=0.6, fixedsize=true];
+    X_2_2 [label="6", shape=box, style=filled, fillcolor="orange", fontsize=11, width=1.0, height=0.6, fixedsize=true];
+    R2 -> P_2_0 [style=invis, weight=50];
+    P_2_0 -> X_2_1 [style=invis, weight=50];
+    X_2_1 -> X_2_2 [style=invis, weight=50];
+  }
+  R2 -> X_2_1 [dir=both, arrowsize=0.5];
+  X_2_1 -> C1 [dir=both, arrowsize=0.5];
+  R2 -> X_2_2 [dir=both, arrowsize=0.5];
+  X_2_2 -> C2 [dir=both, arrowsize=0.5];
+  R0 -> R1 [dir=both, arrowsize=0.5];
+  R1 -> R2 [dir=both, arrowsize=0.5];
+  Corner -> R0 [dir=both, arrowsize=0.5];
+}
